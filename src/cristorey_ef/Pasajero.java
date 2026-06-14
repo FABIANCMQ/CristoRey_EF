@@ -54,4 +54,11 @@ public class Pasajero {
     public void setCorreo(String correo) {
         this.correo = correo;
     }
+    
+    public void verDatos(){
+        System.out.println("Pasajero:\nApellido Paterno: "+this.ap_paterno+
+                "\tApellido Materno: "+this.ap_materno+
+                "\nNombre: "+this.nombre+"\tTelefono: "+this.telefono+
+                "\nCorreo Electronico: "+this.correo);
+    }
 }

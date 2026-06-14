@@ -80,7 +80,6 @@ public class Documento {
         }else{
             System.out.println("Edad invalida");
         }
-        
     }
 
 
