@@ -81,5 +81,5 @@ public abstract class Usuario {
         return !this.bloquedo;
     } 
     
-    public abstract void validarAcceso(String correo, String clave);
+    public abstract boolean validarAcceso(String correo, String clave);
 }
