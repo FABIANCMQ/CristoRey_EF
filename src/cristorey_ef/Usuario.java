@@ -15,6 +15,8 @@ public abstract class Usuario {
     protected String clave_ingreso;
     protected boolean bloquedo;
     private static int contador =0;
+    
+    protected Documento documento;
 
     public String getCodigo_usuario() {
         return codigo_usuario;
@@ -56,18 +58,15 @@ public abstract class Usuario {
         this.bloquedo = bloquedo;
     }
 
-    public Usuario(String codigo_usuario, String nombre, String correo, String clave_ingreso, boolean bloquedo) {
+    public Usuario(String codigo_usuario, String nombre, String correo, String clave_ingreso, boolean bloquedo, Documento documento) {
         this.codigo_usuario ="U" + String.format("%05d", ++contador);
         this.nombre = nombre;
         this.correo = correo;
         this.clave_ingreso = clave_ingreso;
         this.bloquedo = bloquedo;
+        this.documento = documento;
     }
 
-    
-    
-    
-    
     public void identificarUsuario(){
         System.out.println("===IDENTIFICACION DEL USUARIO===}"
                 + "\nCodigo Usuario: "+this.codigo_usuario+"\nNombre: "+this.nombre);
