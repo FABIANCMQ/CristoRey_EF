@@ -21,8 +21,15 @@ public class UsuarioControlador {
     private void cargarUsuarios(){
         // Crearemos un Administrador
         
-        Documento doc1 = new Documento("DNI","98765432",LocalDate.of(2024,1,1),LocalDate.of(2032,1,1),"Nacional",35);
-        
+        Documento doc1 = new Documento("DNI","12345678",LocalDate.of(2024, 1, 1),
+        LocalDate.of(2032, 1, 1),"Nacional",35);
+        usuario.add(new Administrador("Administrativo",
+                "Carlos Medina",
+                "admin@cristorey.com",
+                "admin123",
+                doc1
+            )
+        );
     }
     
 }

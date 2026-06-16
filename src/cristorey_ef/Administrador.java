@@ -11,11 +11,11 @@ package cristorey_ef;
 public class Administrador extends Usuario {
     private String nivel_acceso;
 
-    public Administrador(String nivel_acceso, String codigo_usuario, String nombre, String correo, String clave_ingreso, boolean bloquedo, Documento documento) {
-        super(codigo_usuario, nombre, correo, clave_ingreso, bloquedo, documento);
+    public Administrador(String nivel_acceso, String nombre, String correo, String clave_ingreso, Documento documento) {
+        super(nombre, correo, clave_ingreso, documento);
         this.nivel_acceso = nivel_acceso;
     }
-
+    
     public String getNivel_acceso() {
         return nivel_acceso;
     }
@@ -25,11 +25,11 @@ public class Administrador extends Usuario {
     }
     
     public void BloquearUsuario(Usuario usuario){
-        usuario.setBloquedo(true);
+        usuario.setBloqueado(true);
         System.out.println("Usuario Bloqueado Exitosamente.");
     }
     public void desbloquearUsuario(Usuario usuario){
-        usuario.setBloquedo(false);
+        usuario.setBloqueado(false);
         System.out.println("Usuario Desbloqueado Exitosamente.");
     }
     public void generarReportePasajero(PasajeroControlador controlador){
@@ -75,7 +75,7 @@ public class Administrador extends Usuario {
     
     @Override
     public boolean validarAcceso(String correo, String clave) {
-        return this.correo.equals(correo) && this.clave_ingreso.equals(clave) && !this.bloquedo;
+        return this.correo.equals(correo) && this.clave_ingreso.equals(clave) && !this.bloqueado;
     }
 
     

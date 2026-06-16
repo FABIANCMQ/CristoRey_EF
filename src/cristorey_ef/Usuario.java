@@ -13,10 +13,21 @@ public abstract class Usuario {
     protected String nombre;
     protected String correo;
     protected String clave_ingreso;
-    protected boolean bloquedo;
+    protected boolean bloqueado;
     private static int contador =0;
     
     protected Documento documento;
+
+    public Usuario(String nombre, String correo, String clave_ingreso, Documento documento) {
+        this.codigo_usuario ="U" + String.format("%05d", ++contador);
+        this.nombre = nombre;
+        this.correo = correo;
+        this.clave_ingreso = clave_ingreso;
+        this.documento = documento;
+        this.bloqueado = false;
+    }
+    
+    
 
     public String getCodigo_usuario() {
         return codigo_usuario;
@@ -50,36 +61,36 @@ public abstract class Usuario {
         this.clave_ingreso = clave_ingreso;
     }
 
-    public boolean isBloquedo() {
-        return bloquedo;
+    public boolean isBloqueado() {
+        return bloqueado;
     }
 
-    public void setBloquedo(boolean bloquedo) {
-        this.bloquedo = bloquedo;
+    public void setBloqueado(boolean bloqueado) {
+        this.bloqueado = bloqueado;
     }
 
-    public Usuario(String codigo_usuario, String nombre, String correo, String clave_ingreso, boolean bloquedo, Documento documento) {
-        this.codigo_usuario ="U" + String.format("%05d", ++contador);
-        this.nombre = nombre;
-        this.correo = correo;
-        this.clave_ingreso = clave_ingreso;
-        this.bloquedo = bloquedo;
-        this.documento = documento;
+    public int getContador() {
+        return contador;
     }
-
-    public void identificarUsuario(){
-        System.out.println("===IDENTIFICACION DEL USUARIO===}"
-                + "\nCodigo Usuario: "+this.codigo_usuario+"\nNombre: "+this.nombre);
-    }
+    
+    
+    
     public void IniciarSesion(){
         System.out.println("Bienvenido " + nombre);
     }
-    public void bloquearEdicion(){
-           this.bloquedo = true;
+    
+    public void identificarUsuario(){
+        System.out.println("===IDENTIFICACION DEL USUARIO===\nCodigo Usuario: "
+                +this.codigo_usuario+"\nNombre: "+this.nombre);
+    }
+   
+    public void bloquearEdicion() {
+        this.bloqueado = true;
     }
     public boolean puedeEditar(){
-        return !this.bloquedo;
+        return !this.bloqueado;
     } 
     
     public abstract boolean validarAcceso(String correo, String clave);
+    
 }
