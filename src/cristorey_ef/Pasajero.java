@@ -14,7 +14,27 @@ public class Pasajero {
     private String nombre;
     private String telefono;
     private String correo;
+    
+    private Documento documento;
 
+    public Pasajero(String ap_paterno, String ap_materno, String nombre, String telefono, String correo, Documento documento) {
+        this.ap_paterno = ap_paterno;
+        this.ap_materno = ap_materno;
+        this.nombre = nombre;
+        this.telefono = telefono;
+        this.correo = correo;
+        this.documento = documento;
+    }
+
+    public Documento getDocumento() {
+        return documento;
+    }
+
+    public void setDocumento(Documento documento) {
+        this.documento = documento;
+    }
+    
+    
     public String getAp_paterno() {
         return ap_paterno;
     }

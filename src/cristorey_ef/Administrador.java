@@ -32,6 +32,46 @@ public class Administrador extends Usuario {
         usuario.setBloquedo(false);
         System.out.println("Usuario Desbloqueado Exitosamente.");
     }
+    public void generarReportePasajero(PasajeroControlador controlador){
+        System.out.println("\n===== REPORTE DE PASAJEROS =====");
+        controlador.listarPasajero();
+    }
+    
+    public void generarReportesPaquetes(PaqueteTuristicoControlador PaqControlador){
+        System.out.println("\n===== REPORTE DE PAQUETES =====");
+        PaqControlador.mostrarPaquetes();
+    }
+    public void verEstadisticas(PaqueteTuristicoControlador PaqControlador){
+        int totalPasajeros = 0;
+        for (int i = 0; i < PaqControlador.getPaquete().size(); i++) {
+            PaqueteTuristico p = PaqControlador.getPaquete().get(i);
+            totalPasajeros += p.contarPasajeros();
+        }
+        System.out.println("Total de pasajeros registrados: "+totalPasajeros);
+    }
+    public void controlViajesDiarios(PaqueteTuristicoControlador PaqControlador){
+        for (int i = 0; i < PaqControlador.getPaquete().size(); i++) {
+            PaqueteTuristico p = PaqControlador.getPaquete().get(i);
+            
+            System.out.println("\nPaquete: "+p.getNombre_paquete()+
+                    "\nOcupación: "+p.porcentajeOcupacion());
+        }
+    }
+    public void validarDatos(PasajeroControlador controlador){
+        if (controlador.psjr.size()==0){
+            System.out.println("No existen pasajeros registrados.");
+        }
+        else{
+            System.out.println("Validacion Completada.");
+        }
+    }
+    public void reporteControlMatutino(PaqueteTuristicoControlador PaqControlador){
+        System.out.println("\n===== CONTROL MATUTINO =====");
+        for (int i = 0; i < PaqControlador.getPaquete().size(); i++) {
+            PaqueteTuristico p = PaqControlador.getPaquete().get(i);
+            System.out.println(p.getNombre_paquete()+" -> "+p.getCupos_disponibles()+" cupos disponibles.");
+        }
+    }
     
     @Override
     public boolean validarAcceso(String correo, String clave) {
