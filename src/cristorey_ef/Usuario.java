@@ -9,11 +9,12 @@ package cristorey_ef;
  * @author coolg
  */
 public abstract class Usuario {
-    private String codigo_usuario;
-    private String nombre;
-    private String correo;
-    private String clave_ingreso;
-    private boolean bloquedo;
+    protected String codigo_usuario;
+    protected String nombre;
+    protected String correo;
+    protected String clave_ingreso;
+    protected boolean bloquedo;
+    private static int contador =0;
 
     public String getCodigo_usuario() {
         return codigo_usuario;
@@ -55,10 +56,15 @@ public abstract class Usuario {
         this.bloquedo = bloquedo;
     }
 
-    public Usuario() {
-        int contador = 0;
-        this.codigo_usuario = "U" + String.format("%05d", ++contador);
+    public Usuario(String codigo_usuario, String nombre, String correo, String clave_ingreso, boolean bloquedo) {
+        this.codigo_usuario ="U" + String.format("%05d", ++contador);
+        this.nombre = nombre;
+        this.correo = correo;
+        this.clave_ingreso = clave_ingreso;
+        this.bloquedo = bloquedo;
     }
+
+    
     
     
     
@@ -67,26 +73,10 @@ public abstract class Usuario {
                 + "\nCodigo Usuario: "+this.codigo_usuario+"\nNombre: "+this.nombre);
     }
     public void IniciarSesion(){
-        System.out.println("===INICIO DE SESION==="
-                + "\nNombre: "+nombre+""
-                + "\nCorreo: "+correo+""
-                + "\nClave: "+clave_ingreso);
+        System.out.println("Bienvenido " + nombre);
     }
-    public void bloquearEdicion(String rol){
-        if(rol.equalsIgnoreCase("Administrador")){
-            this.bloquedo=true;
-            System.out.println("Usuario bloqueado exitosamente.");
-        }else{
-            System.out.println("Acceso Denegado. Solo el administrador puede acceder a esta función.");
-        }
-    }
-    public void desbloquearEdicion(String rol){
-        if (rol.equalsIgnoreCase("Administrador")) {
-            this.bloquedo=false;
-            System.out.println("Usuario desbloqueado exitosamente");
-        }else{
-            System.out.println("Acceso Denegado. Solo el administrador puede acceder a esta función.");
-        }
+    public void bloquearEdicion(){
+           this.bloquedo = true;
     }
     public boolean puedeEditar(){
         return !this.bloquedo;
