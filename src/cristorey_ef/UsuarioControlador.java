@@ -16,7 +16,7 @@ public class UsuarioControlador {
 
     public UsuarioControlador() {
         usuario = new ArrayList<>();
-        
+        cargarUsuarios();
     }
     private void cargarUsuarios(){
         // Crearemos un Administrador

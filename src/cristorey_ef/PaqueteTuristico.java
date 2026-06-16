@@ -29,6 +29,7 @@ public class PaqueteTuristico {
         this.horario = horario;
         this.cupos_disponibles = cupos_disponibles;
         this.cupos_maximos = cupos_maximos;
+        this.listaPasajeros = new ArrayList<>();
     }
 
     public PaqueteTuristico(ArrayList<Pasajero> listaPasajeros) {

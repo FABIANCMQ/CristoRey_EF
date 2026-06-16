@@ -84,9 +84,9 @@ public class Documento {
 
     public void setEdad(int edad) {
         if(edad < 1 || edad > 100){
-            this.edad = edad;
-        }else{
             System.out.println("Edad invalida");
+        }else{
+            this.edad = edad;
         }
     }
 
