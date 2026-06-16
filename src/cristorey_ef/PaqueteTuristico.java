@@ -21,7 +21,7 @@ public class PaqueteTuristico {
     
     private ArrayList<Pasajero> listaPasajeros;
 
-    public PaqueteTuristico(String nombre_paquete, String codigo_paquete, String destino, double costo, String horario, int cupos_disponibles, int cupos_maximos, ArrayList<Pasajero> listaPasajeros) {
+    public PaqueteTuristico(String nombre_paquete, String codigo_paquete, String destino, double costo, String horario, int cupos_disponibles, int cupos_maximos) {
         this.nombre_paquete = nombre_paquete;
         this.codigo_paquete = codigo_paquete;
         this.destino = destino;
@@ -29,8 +29,13 @@ public class PaqueteTuristico {
         this.horario = horario;
         this.cupos_disponibles = cupos_disponibles;
         this.cupos_maximos = cupos_maximos;
+    }
+
+    public PaqueteTuristico(ArrayList<Pasajero> listaPasajeros) {
         this.listaPasajeros = listaPasajeros;
     }
+    
+    
 
     public String getNombre_paquete() {
         return nombre_paquete;
@@ -151,8 +156,8 @@ public class PaqueteTuristico {
     
     public void listarPasajeros() {
         System.out.println("\nLISTA DE PASAJEROS");
-        for (Pasajero p : listaPasajeros) {
-            System.out.println(p.unificarDatos());
+        for (int i = 0; i < listaPasajeros.size(); i++) {
+            System.out.println(listaPasajeros.get(i).unificarDatos());
         }
     }
     
