@@ -40,6 +40,7 @@ public class CristoRey_EF {
             System.out.println("9. Salir");
             System.out.print("Seleccione una opcion: ");
             opcion = sc.nextInt();
+            sc.nextLine();
 
             if (opcion == 1) {
 
@@ -80,7 +81,9 @@ public class CristoRey_EF {
                             System.out.println("6. Validar datos");
                             System.out.println("7. Volver");
                             System.out.print("Seleccione una opcion: ");
-                            opAdmin = Integer.parseInt(sc.nextLine());
+                            opAdmin = sc.nextInt();
+                            
+                            sc.nextLine();
 
                             if (opAdmin == 1) {
                                 admin.generarReportePasajero(pasajeroControlador);
@@ -116,6 +119,7 @@ public class CristoRey_EF {
                             System.out.println("5. Volver");
                             System.out.print("Seleccione una opcion: ");
                             opPlanillero = sc.nextInt();
+                            sc.nextLine();
 
                             if (opPlanillero == 1) {
                                 planillero.verDatos();
