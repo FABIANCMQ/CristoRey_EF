@@ -31,6 +31,136 @@ public class PaqueteTuristico {
         this.cupos_maximos = cupos_maximos;
         this.listaPasajeros = listaPasajeros;
     }
+
+    public String getNombre_paquete() {
+        return nombre_paquete;
+    }
+
+    public void setNombre_paquete(String nombre_paquete) {
+        this.nombre_paquete = nombre_paquete;
+    }
+
+    public String getCodigo_paquete() {
+        return codigo_paquete;
+    }
+
+    public void setCodigo_paquete(String codigo_paquete) {
+        this.codigo_paquete = codigo_paquete;
+    }
+
+    public String getDestino() {
+        return destino;
+    }
+
+    public void setDestino(String destino) {
+        this.destino = destino;
+    }
+
+    public double getCosto() {
+        return costo;
+    }
+
+    public void setCosto(double costo) {
+        this.costo = costo;
+    }
+
+    public String getHorario() {
+        return horario;
+    }
+
+    public void setHorario(String horario) {
+        this.horario = horario;
+    }
+
+    public int getCupos_disponibles() {
+        return cupos_disponibles;
+    }
+
+    public void setCupos_disponibles(int cupos_disponibles) {
+        this.cupos_disponibles = cupos_disponibles;
+    }
+
+    public int getCupos_maximos() {
+        return cupos_maximos;
+    }
+
+    public void setCupos_maximos(int cupos_maximos) {
+        this.cupos_maximos = cupos_maximos;
+    }
+
+    public ArrayList<Pasajero> getListaPasajeros() {
+        return listaPasajeros;
+    }
+
+    public void setListaPasajeros(ArrayList<Pasajero> listaPasajeros) {
+        this.listaPasajeros = listaPasajeros;
+    }
     
+    public void reservarCupos(){
+        if(cupos_disponibles > 0){
+            cupos_disponibles--;
+            
+        }else{
+            System.out.println("No hay cupos disponibles.");
+        }
+    }
     
+    public void liberarCupos() {
+        if (cupos_disponibles < cupos_maximos) {
+            cupos_disponibles++;
+        }   
+    }
+    
+    public boolean tieneCupos() {
+        if(cupos_disponibles > 0){
+            return true;
+        }else {
+            return false;
+        }
+    }
+    
+    public void agregarPasajero(Pasajero pasajero) {
+        if (tieneCupos()== true) {
+            listaPasajeros.add(pasajero);
+            reservarCupos();
+            System.out.println("Pasajero agregado correctamente.");
+        } else {
+            System.out.println("No hay cupos disponibles.");
+        }
+    }
+    
+    public void eliminarPasajero(Pasajero pasajero) {
+        if (listaPasajeros.remove(pasajero)) {
+            liberarCupos();
+            System.out.println("Pasajero eliminado correctamente.");
+        } else {
+            System.out.println("El pasajero no pertenece al paquete.");
+        }
+    }
+    
+    public void mostrarInfo() {
+        System.out.println("INFORMACION DEL PAQUETE");
+        System.out.println("Codigo             : " + codigo_paquete);
+        System.out.println("Nombre             : " + nombre_paquete);
+        System.out.println("Destino            : " + destino);
+        System.out.println("Horario            : " + horario);
+        System.out.println("Costo              : S/. " + costo);
+        System.out.println("Cupos disponibles  : " + cupos_disponibles);
+        System.out.println("Cupos maximos      : " + cupos_maximos);
+    }
+    
+    public void listarPasajeros() {
+        System.out.println("\nLISTA DE PASAJEROS");
+        for (Pasajero p : listaPasajeros) {
+            System.out.println(p.unificarDatos());
+        }
+    }
+    
+    public int contarPasajeros() {
+        return listaPasajeros.size();
+    }
+    public double porcentajeOcupacion() {
+        int ocupados = cupos_maximos - cupos_disponibles;
+        return (ocupados * 100.0) / cupos_maximos;
+    }
 }
