@@ -18,6 +18,14 @@ public class Documento {
     private String tipo_residencia;
     private int edad;
 
+    public Documento(String tipo_doc, String nro_doc, LocalDate fecha_emision, LocalDate fecha_vencimiento, String tipo_residencia, int edad) {
+        this.tipo_doc = tipo_doc;
+        this.nro_doc = nro_doc;
+        this.fecha_emision = fecha_emision;
+        this.fecha_vencimiento = fecha_vencimiento;
+        this.tipo_residencia = tipo_residencia;
+        this.edad = edad;
+    }
     public String getTipo_doc() {
         return tipo_doc;
     }
