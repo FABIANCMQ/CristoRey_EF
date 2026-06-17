@@ -114,7 +114,7 @@ public class PaqueteTuristico {
     public void liberarCupos() {
         if (cupos_disponibles < cupos_maximos) {
             cupos_disponibles++;
-        }   
+        }       
     }
     
     public boolean tieneCupos() {
