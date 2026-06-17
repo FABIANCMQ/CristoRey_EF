@@ -12,8 +12,8 @@ import java.util.ArrayList;
  */
 public class PasajeroControlador {
     ArrayList<Pasajero> psjr = new ArrayList();
-    public void registrarPasajero(Pasajero nuevo_estudiante){
-        psjr.add(nuevo_estudiante);
+    public void registrarPasajero(Pasajero nuevo_pasajero){
+        psjr.add(nuevo_pasajero);
     }
     public void listarPasajero(){
         for(int i=0; i<psjr.size();i++){
