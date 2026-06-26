@@ -24,6 +24,11 @@ public class ReservaControlador {
                 return false;
             }
             
+            double precio_final = calcularPrecioFinal(paquete.getCosto(), descuento);
+            
+            Reserva nueva_reserva = new Reserva(pasajero, paquete, precio_final);
+            reserva.add(nueva_reserva);
+            
             paquete.agregarPasajero(pasajero);
             
             System.out.println("Reserva Registrada Correctamente.");
