@@ -18,7 +18,7 @@ public class PaqueteTuristico {
     private String horario;
     private int cupos_disponibles;
     private int cupos_maximos;
-    
+
     private ArrayList<Pasajero> listaPasajeros;
 
     public PaqueteTuristico(String nombre_paquete, String codigo_paquete, String destino, double costo, String horario, int cupos_disponibles, int cupos_maximos) {
@@ -35,8 +35,8 @@ public class PaqueteTuristico {
     public PaqueteTuristico(ArrayList<Pasajero> listaPasajeros) {
         this.listaPasajeros = listaPasajeros;
     }
-    
-    
+
+
 
     public String getNombre_paquete() {
         return nombre_paquete;
@@ -101,22 +101,22 @@ public class PaqueteTuristico {
     public void setListaPasajeros(ArrayList<Pasajero> listaPasajeros) {
         this.listaPasajeros = listaPasajeros;
     }
-    
+
     public void reservarCupos(){
         if(cupos_disponibles > 0){
             cupos_disponibles--;
-            
+
         }else{
             System.out.println("No hay cupos disponibles.");
         }
     }
-    
+
     public void liberarCupos() {
         if (cupos_disponibles < cupos_maximos) {
             cupos_disponibles++;
         }       
     }
-    
+
     public boolean tieneCupos() {
         if(cupos_disponibles > 0){
             return true;
@@ -124,7 +124,7 @@ public class PaqueteTuristico {
             return false;
         }
     }
-    
+
     public void agregarPasajero(Pasajero pasajero) {
         if (tieneCupos()== true) {
             listaPasajeros.add(pasajero);
@@ -134,7 +134,7 @@ public class PaqueteTuristico {
             System.out.println("No hay cupos disponibles.");
         }
     }
-    
+
     public void eliminarPasajero(Pasajero pasajero) {
         if (listaPasajeros.remove(pasajero)) {
             liberarCupos();
@@ -143,7 +143,7 @@ public class PaqueteTuristico {
             System.out.println("El pasajero no pertenece al paquete.");
         }
     }
-    
+
     public void mostrarInfo() {
         System.out.println("INFORMACION DEL PAQUETE");
         System.out.println("Codigo             : " + codigo_paquete);
@@ -154,14 +154,14 @@ public class PaqueteTuristico {
         System.out.println("Cupos disponibles  : " + cupos_disponibles);
         System.out.println("Cupos maximos      : " + cupos_maximos);
     }
-    
+
     public void listarPasajeros() {
         System.out.println("\nLISTA DE PASAJEROS");
         for (int i = 0; i < listaPasajeros.size(); i++) {
             System.out.println(listaPasajeros.get(i).unificarDatos());
         }
     }
-    
+
     public int contarPasajeros() {
         return listaPasajeros.size();
     }
