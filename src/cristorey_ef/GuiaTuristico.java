@@ -77,7 +77,7 @@ public class GuiaTuristico extends Usuario{
         try {
             if (paquete == null) {
                 System.out.println("No se encontró el paquete turistico");
-                return
+                return;
             }
             
             System.out.println("===LISTA PREVIA AL VIAJE===\nRecorrido: "+paquete.getNombre_paquete()+
