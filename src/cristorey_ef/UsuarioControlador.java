@@ -80,6 +80,11 @@ public class UsuarioControlador {
                 return false;
             }
             
+            if (buscarCorreo(nuevo_usuario.getCorreo()) != null) {
+                System.out.println("Ya existe un usuario con ese correo.");
+                return false;
+            }
+            
             usuario.add(nuevo_usuario);
             System.out.println("Usuario registrado exitosamente");
             return true;
@@ -89,6 +94,47 @@ public class UsuarioControlador {
             return false;   
         }
     }
+    
+    public Usuario InicioSesion(String correo, String clave){
+        try {
+            if (correo == null || correo.trim().isEmpty()) {
+                System.out.println("Ingrese correo.");
+                return null;
+            }
+
+            if (clave == null || clave.trim().isEmpty()) {
+                System.out.println("Ingrese clave.");
+                return null;
+            }
+
+            for (int i = 0; i < usuario.size(); i++) {
+                Usuario user = usuario.get(i);
+
+                if (user.validarAcceso(correo, clave)) {
+                    System.out.println("Inicio de sesion correcto.");
+                    System.out.println("Bienvenido: " + user.getNombre());
+                    System.out.println("Rol: " + obtenerRol(user));
+                    return user;
+                }
+            }
+
+            System.out.println("Correo o clave incorrectos.");
+            return null;
+
+        } catch (Exception e) {
+            System.out.println("Error al iniciar sesion: " + e.getMessage());
+            return null;
+        }
+    }
+    
+    public Usuario buscarCorreo(String correo){
+        for (int i = 0; i < usuario.size(); i++) {
+            if (usuario.get(i).getCorreo().equalsIgnoreCase(correo)) {
+                return usuario.get(i);
+            }
+        }
+        return null;
+    }
 
     public Usuario buscarNombre(String nombre){
         for (int i = 0; i < usuario.size(); i++) {
@@ -97,5 +143,33 @@ public class UsuarioControlador {
             }
         }
         return null;
+    }
+    
+    public String obtenerRol(Usuario user){
+        if (user instanceof Administrador) {
+            return "Administrador";
+        }else if (user instanceof Planillero) {
+            return "Planillero";
+        }else if (user instanceof GuiaTuristico) {
+            return "Guia Turistico";
+        }else if (user instanceof Gerente) {
+            return "Gerente";
+        }else if (user instanceof AsesorVentas) {
+            return "Asesor de Ventas";
+        }else{
+            return "Usuario";
+        }
+    }
+    
+    public void listarUsuarios(){
+        for (int i = 0; i < usuario.size(); i++) {
+            Usuario user = usuario.get(i);
+
+            System.out.println("\nCodigo: " + user.getCodigo_usuario());
+            System.out.println("Nombre: " + user.getNombre());
+            System.out.println("Correo: " + user.getCorreo());
+            System.out.println("Rol: " + obtenerRol(user));
+            System.out.println("Estado: " + (user.isBloqueado() ? "Bloqueado" : "Activo"));
+        }
     }
 }
