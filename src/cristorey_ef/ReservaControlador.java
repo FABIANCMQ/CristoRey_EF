@@ -19,9 +19,17 @@ public class ReservaControlador {
                 System.out.println("No se puede registrar la reserva. Datos incompletos.");
                 return false;
             }
+            if (!pasajero.getDocumento().documentoVigente()) {
+                System.out.println("Documento vencido. No se puede registrar la reserva");
+                return false;
+            }
+            
             if (!paquete.tieneCupos()) {
                 System.out.println("No se puede registrar la reserva. No existen cupos disponibles.");
                 return false;
+            }
+            if (buscarReservaActiva(pasajero.getDocumento().getNro_doc(), paquete.getCodigo_paquete()) != null) {
+                System.out.println("El pasajero ya tiene una reserva en este paquete.");
             }
             
             double precio_final = calcularPrecioFinal(paquete.getCosto(), descuento);
@@ -33,6 +41,7 @@ public class ReservaControlador {
             
             System.out.println("Reserva Registrada Correctamente.");
             return true;
+            
         }catch(Exception e){
             System.out.println("Error al registrar  reserva: "+e.getMessage());
             return false;
@@ -65,12 +74,12 @@ public class ReservaControlador {
     
     public Reserva buscarReservaActiva(String nro_doc, String codigo_paquete){
         for (int i = 0; i < reserva.size(); i++) {
-            Reserva r = reserva.get(i);
+            Reserva reservas = reserva.get(i);
             
-            if (r.getPasajero().getDocumento().getNro_doc().equalsIgnoreCase(nro_doc)
-                    && r.getPaquete().getCodigo_paquete().equalsIgnoreCase(codigo_paquete)
-                    && r.getEstado().equalsIgnoreCase("Activa")) {
-                return r;
+            if (reservas.getPasajero().getDocumento().getNro_doc().equalsIgnoreCase(nro_doc)
+                    && reservas.getPaquete().getCodigo_paquete().equalsIgnoreCase(codigo_paquete)
+                    && reservas.getEstado().equalsIgnoreCase("Activa")) {
+                return reservas;
             }
         }
         return null;
@@ -88,10 +97,13 @@ public class ReservaControlador {
     
     public void historialCliente(String nro_doc){
         boolean cliente_encontrado = false;
+        
         for (int i = 0; i < reserva.size(); i++) {
-            Reserva r = reserva.get(i);
-            if (r.getPasajero().getDocumento().getNro_doc().equalsIgnoreCase(nro_doc)) {
-                r.mostrarReserva();
+            Reserva reservas = reserva.get(i);
+            
+            if (reservas.getPasajero().getDocumento().getNro_doc().equalsIgnoreCase(nro_doc)) {
+                reservas.mostrarReserva();
+                
                 cliente_encontrado = true;
             }
         }
@@ -103,19 +115,19 @@ public class ReservaControlador {
     
     public boolean cancelarReserva(String codigo_reserva){
         try {
-            Reserva reserva = buscarReserva(codigo_reserva);
-            if (reserva == null) {
+            Reserva reservas = buscarReserva(codigo_reserva);
+            if (reservas == null) {
                 System.out.println("No se encontró la reserva.");
                 return false;
             }
             
-            if(reserva.getEstado().equalsIgnoreCase("Cancelada")){
+            if(reservas.getEstado().equalsIgnoreCase("Cancelada")){
                 System.out.println("La reserva ya se encuentra cancelada.");
                 return false;
             }
             
-            reserva.setEstado("Cancelada");
-            reserva.getPaquete().eliminarPasajero(reserva.getPasajero());
+            reservas.setEstado("Cancelada");
+            reservas.getPaquete().eliminarPasajero(reservas.getPasajero());
             
             System.out.println("Reserva cancelada correctamente.");
             return true;
