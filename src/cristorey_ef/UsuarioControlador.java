@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * @author coolg
  */
 public class UsuarioControlador {
-    private ArrayList<Usuario> usuario;
+    ArrayList<Usuario> usuario = new ArrayList();
 
     public UsuarioControlador() {
         usuario = new ArrayList<>();

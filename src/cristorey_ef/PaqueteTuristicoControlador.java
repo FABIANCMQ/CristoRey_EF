@@ -11,7 +11,7 @@ import java.util.ArrayList;
  * @author coolg
  */
 public class PaqueteTuristicoControlador {
-    private ArrayList<PaqueteTuristico> paquete;
+    ArrayList<PaqueteTuristico> paquete = new ArrayList();
 
     public PaqueteTuristicoControlador(){
         paquete = new ArrayList<>();

@@ -11,7 +11,7 @@ import java.util.ArrayList;
  * @author coolg
  */
 public class ReservaControlador {
-    private ArrayList<Reserva> reserva;
+    ArrayList<Reserva> reserva = new ArrayList();
     
     public boolean registrarReserva(Pasajero pasajero, PaqueteTuristico paquete, double descuento){
         try{
