@@ -46,8 +46,8 @@ public class AsesorVentas extends Usuario{
             return;
         }
         
-        for (int i = 0; i < controlador.getPaquete().size(); i++) {
-            PaqueteTuristico p = controlador.getPaquete().get(i);
+        for (int i = 0; i < controlador.paquete.size(); i++) {
+            PaqueteTuristico p = controlador.paquete.get(i);
             
             if (p.getDestino().toLowerCase().contains(destino.toLowerCase()) || 
                     p.getNombre_paquete().toLowerCase().contains(destino.toLowerCase())) {

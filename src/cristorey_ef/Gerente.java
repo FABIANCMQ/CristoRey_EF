@@ -32,15 +32,15 @@ public class Gerente extends Usuario{
     
     public void reporteDisponibilidad(PaqueteTuristicoControlador controlador){
         try {
-            if (controlador == null || controlador.getPaquete().size() == 00) {
+            if (controlador == null || controlador.paquete.size() == 00) {
                 System.out.println("No existen paquetes turisticos registrados");
                 return;
             }
             
             System.out.println("===REPORTE DE CUPOS DISPONIBLES===");
             
-            for (int i = 0; i < controlador.getPaquete().size(); i++) {
-                PaqueteTuristico paquete = controlador.getPaquete().get(i);
+            for (int i = 0; i < controlador.paquete.size(); i++) {
+                PaqueteTuristico paquete = controlador.paquete.get(i);
                 
                 int cupos_ocupados = paquete.getCupos_maximos() - paquete.getCupos_disponibles();
                 
@@ -63,12 +63,12 @@ public class Gerente extends Usuario{
                 return;
             }
             
-            int total_paquetes = paquete_controlador.getPaquete().size();
+            int total_paquetes = paquete_controlador.paquete.size();
             int total_pasajeros= 0;
             int cupos_disponibles = 0;
             
-            for (int i = 0; i < paquete_controlador.getPaquete().size(); i++) {
-                PaqueteTuristico paquete = paquete_controlador.getPaquete().get(i);
+            for (int i = 0; i < paquete_controlador.paquete.size(); i++) {
+                PaqueteTuristico paquete = paquete_controlador.paquete.get(i);
                 total_pasajeros += paquete.contarPasajeros();
                 cupos_disponibles += paquete.getCupos_disponibles();
             }

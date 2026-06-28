@@ -43,15 +43,15 @@ public class Administrador extends Usuario {
     }
     public void verEstadisticas(PaqueteTuristicoControlador PaqControlador){
         int totalPasajeros = 0;
-        for (int i = 0; i < PaqControlador.getPaquete().size(); i++) {
-            PaqueteTuristico p = PaqControlador.getPaquete().get(i);
+        for (int i = 0; i < PaqControlador.paquete.size(); i++) {
+            PaqueteTuristico p = PaqControlador.paquete.get(i);
             totalPasajeros += p.contarPasajeros();
         }
         System.out.println("Total de pasajeros registrados: "+totalPasajeros);
     }
     public void controlViajesDiarios(PaqueteTuristicoControlador PaqControlador){
-        for (int i = 0; i < PaqControlador.getPaquete().size(); i++) {
-            PaqueteTuristico p = PaqControlador.getPaquete().get(i);
+        for (int i = 0; i < PaqControlador.paquete.size(); i++) {
+            PaqueteTuristico p = PaqControlador.paquete.get(i);
             
             System.out.println("\nPaquete: "+p.getNombre_paquete()+
                     "\nOcupación: "+p.porcentajeOcupacion());
@@ -67,8 +67,8 @@ public class Administrador extends Usuario {
     }
     public void reporteControlMatutino(PaqueteTuristicoControlador PaqControlador){
         System.out.println("\n===== CONTROL MATUTINO =====");
-        for (int i = 0; i < PaqControlador.getPaquete().size(); i++) {
-            PaqueteTuristico p = PaqControlador.getPaquete().get(i);
+        for (int i = 0; i < PaqControlador.paquete.size(); i++) {
+            PaqueteTuristico p = PaqControlador.paquete.get(i);
             System.out.println(p.getNombre_paquete()+" -> "+p.getCupos_disponibles()+" cupos disponibles.");
         }
     }
