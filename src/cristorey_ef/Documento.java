@@ -103,4 +103,30 @@ public class Documento {
         }
     }
     
+    public boolean documentoVigente(){
+        LocalDate fecha_actual = LocalDate.now();
+        
+        if (tipo_doc.equalsIgnoreCase("DNI") && edad >= 60) {
+            return true;
+        }
+        if (fecha_vencimiento == null) {
+            return false;   
+        }
+        
+        return fecha_actual.isBefore(fecha_vencimiento);
+    }
+    
+    public boolean documentacionCompleta(){
+        if (tipo_doc == null || tipo_doc.trim().isEmpty()) {
+            return false;
+        }
+        if (nro_doc == null || nro_doc.trim().isEmpty()) {
+            return false;
+        }
+        if (fecha_emision == null || fecha_vencimiento == null) {
+            return false;
+        }
+        return true;
+    }
+    
 }
