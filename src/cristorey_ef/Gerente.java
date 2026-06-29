@@ -26,13 +26,13 @@ public class Gerente extends Usuario{
     }
     
     public void verDatos(){
-        System.out.println("===DATOS GUÍA TURISTICO===\nCodigo usuario: "+this.codigo_usuario+"\nNombre: "+this.nombre+
+        System.out.println("===DATOS GERENTE===\nCodigo usuario: "+this.codigo_usuario+"\nNombre: "+this.nombre+
                 "Correo: "+this.correo+"\nArea gerencia: "+this.area_gerencia);
     }
     
     public void reporteDisponibilidad(PaqueteTuristicoControlador controlador){
         try {
-            if (controlador == null || controlador.paquete.size() == 00) {
+            if (controlador == null || controlador.paquete.size() == 0) {
                 System.out.println("No existen paquetes turisticos registrados");
                 return;
             }

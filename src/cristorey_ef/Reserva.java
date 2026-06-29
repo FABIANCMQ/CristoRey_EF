@@ -73,8 +73,9 @@ public class Reserva {
     }
     
     public void mostrarReserva(){
-        System.out.println("===DATOS RESERVA===\nCodigo Reserva: "+this.codigo_reserva+"\nPasajero: "+this.pasajero.unificarDatos()+
-                "Paquete: "+this.paquete.getNombre_paquete()+"\nDestino: "+this.paquete.getDestino()+"Precio Final: S/ "+this.precio_final+
-                "Estado: "+this.estado);
+        System.out.println("===DATOS RESERVA===\n"
+                + "Codigo Reserva: "+this.codigo_reserva+"\nPasajero: "+this.pasajero.unificarDatos()+
+                "\nPaquete: "+this.paquete.getNombre_paquete()+"\nDestino: "+this.paquete.getDestino()+
+                "\nPrecio Final: S/ "+this.precio_final+"\nEstado: "+this.estado);
     }
 }

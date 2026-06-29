@@ -19,6 +19,10 @@ public class ReservaControlador {
                 System.out.println("No se puede registrar la reserva. Datos incompletos.");
                 return false;
             }
+            if (!pasajero.getDocumento().documentacionCompleta()) {
+                System.out.println("Documentacion incompleta. No se puede registrar la reserva");
+                return false;
+            }
             if (!pasajero.getDocumento().documentoVigente()) {
                 System.out.println("Documento vencido. No se puede registrar la reserva");
                 return false;
@@ -30,6 +34,7 @@ public class ReservaControlador {
             }
             if (buscarReservaActiva(pasajero.getDocumento().getNro_doc(), paquete.getCodigo_paquete()) != null) {
                 System.out.println("El pasajero ya tiene una reserva en este paquete.");
+                return false;
             }
             
             double precio_final = calcularPrecioFinal(paquete.getCosto(), descuento);
@@ -89,7 +94,7 @@ public class ReservaControlador {
         if (reserva.size()==0) {
             System.out.println("No existen reservar registradas");
         }else{
-            for (int i = 0; reserva.size() < 10; i++) {
+            for (int i = 0; i < reserva.size(); i++) {
                 reserva.get(i).mostrarReserva();
             }
         }

@@ -73,6 +73,12 @@ public class Administrador extends Usuario {
         }
     }
     
+    public void verDatos(){
+        System.out.println("===DATOS ADMINISTRADOR===\nCodigo: "+this.codigo_usuario+
+                "\nNombre: "+this.nombre+"\nCorreo: "+this.correo+"\nNivel de acceso: "+this.nivel_acceso+
+                "\nDocumento: "+this.documento.getNro_doc());
+    }
+    
     @Override
     public boolean validarAcceso(String correo, String clave) {
         return this.correo.equals(correo) && this.clave_ingreso.equals(clave) && !this.bloqueado;
