@@ -38,6 +38,10 @@ public class PaqueteTuristicoControlador {
                 "Ventanillas de Otuzco - Puente Colgante - Jardin Botanico - Fundo Tres Molinos",
                 20.0, "3:30 pm - 7:00 pm", 30, 30));
     }
+    
+    public ArrayList<PaqueteTuristico> getPaquete() {
+        return paquete;
+    }
 
     public void mostrarPaquetes(){
         for (int i = 0; i < paquete.size(); i++) {

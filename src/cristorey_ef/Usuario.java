@@ -10,16 +10,17 @@ package cristorey_ef;
  */
 public abstract class Usuario {
     protected String codigo_usuario;
+    protected String cargo;
     protected String nombre;
     protected String correo;
     protected String clave_ingreso;
     protected boolean bloqueado;
-    private static int contador =0;
     
-    protected Documento documento;
+    public Documento documento;
 
-    public Usuario(String nombre, String correo, String clave_ingreso, Documento documento) {
-        this.codigo_usuario ="U" + String.format("%05d", ++contador);
+    public Usuario(String codigo_usuario, String cargo, String nombre, String correo, String clave_ingreso, Documento documento) {
+        this.codigo_usuario = codigo_usuario;
+        this.cargo = cargo;
         this.nombre = nombre;
         this.correo = correo;
         this.clave_ingreso = clave_ingreso;
@@ -35,6 +36,14 @@ public abstract class Usuario {
 
     public void setCodigo_usuario(String codigo_usuario) {
         this.codigo_usuario = codigo_usuario;
+    }
+
+    public String getCargo() {
+        return cargo;
+    }
+
+    public void setCargo(String cargo) {
+        this.cargo = cargo;
     }
 
     public String getNombre() {
@@ -68,10 +77,6 @@ public abstract class Usuario {
     public void setBloqueado(boolean bloqueado) {
         this.bloqueado = bloqueado;
     }
-
-    public int getContador() {
-        return contador;
-    }
     
     
     
@@ -91,6 +96,7 @@ public abstract class Usuario {
         return !this.bloqueado;
     } 
     
-    public abstract boolean validarAcceso(String correo, String clave);
-    
+    public boolean validarAcceso(String correo, String clave) {
+        return this.correo.equals(correo) && this.clave_ingreso.equals(clave);
+    }
 }

@@ -12,8 +12,8 @@ public class GuiaTuristico extends Usuario{
     
     private String recorrido_asignado;
 
-    public GuiaTuristico(String recorrido_asignado, String nombre, String correo, String clave_ingreso, Documento documento) {
-        super(nombre, correo, clave_ingreso, documento);
+    public GuiaTuristico(String recorrido_asignado,String codigo_usuario, String cargo, String nombre, String correo, String clave_ingreso, Documento documento) {
+        super(codigo_usuario, cargo, nombre, correo, clave_ingreso, documento);
         this.recorrido_asignado = recorrido_asignado;
     }
 
@@ -97,11 +97,4 @@ public class GuiaTuristico extends Usuario{
     public void modificarPasajero(){
         System.out.println("Accion no autorizada para su rol");
     }
-    @Override
-    public boolean validarAcceso(String correo, String clave) {
-        return this.correo.equals(correo) && 
-                this.clave_ingreso.equals(clave)
-                && !this.bloqueado;
-    }
-    
 }

@@ -13,6 +13,15 @@ import java.util.ArrayList;
  */
 public class UsuarioControlador {
     ArrayList<Usuario> usuario = new ArrayList();
+    
+    private static int contador = 0;
+    private static UsuarioControlador instancia = null;
+    public static UsuarioControlador getInstancia() {
+        if (instancia == null) {
+            instancia = new UsuarioControlador();
+        }
+        return instancia;
+    }
 
     public UsuarioControlador() {
         cargarUsuarios();
@@ -23,40 +32,69 @@ public class UsuarioControlador {
                 LocalDate.of(2024, 1, 1),
                 LocalDate.of(2032, 1, 1),
                 "Nacional", 35);
-        usuario.add(new Administrador("Administrativo", "Carlos Medina",
-                "admin@cristorey.com", "admin123", doc1));
+        usuario.add(new Administrador("Adsoluto",
+                "U" + String.format("%05d", ++contador),
+                "Administrador",
+                "Mariela Medina",
+                "admin@cristorey.com",
+                "admin123",
+                doc1));
         
         //Creamos un planillero 
         Documento doc2 = new Documento("DNI", "87654321",
                 LocalDate.of(2025, 2, 12),
                 LocalDate.of(2033, 2, 12),
                 "Nacional", 28);
-        usuario.add(new Planillero("Operaciones", "Luis Torres",
-                "planillero@cristorey.com", "plan123", doc2));
+        usuario.add(new Planillero("Operaciones",
+                "U" + String.format("%05d", ++contador),
+                "Planillero",
+                "Diego Torres",
+                "planillero@cristorey.com",
+                "plan123",
+                doc2));
         
         //Crearemos un Guia Turistico
         Documento doc3 = new Documento("DNI", "44556677",
                 LocalDate.of(2023, 3, 10),
                 LocalDate.of(2031, 3, 10),
                 "Nacional", 32);
-        usuario.add(new GuiaTuristico("Recorridos Cajamarca", "Ana Robles",
-                "guia@cristorey.com", "guia123", doc3));
+        usuario.add(new GuiaTuristico("Recorridos Cajamarca",
+                "U" + String.format("%05d", ++contador),
+                "Guía turistico" ,
+                "Ana Robles",
+                "guia@cristorey.com",
+                "guia123",
+                doc3));
         
         //Crearemos un Gerente
         Documento doc4 = new Documento("DNI", "11223344",
                 LocalDate.of(2022, 4, 20),
                 LocalDate.of(2030, 4, 20),
                 "Nacional", 40);
-        usuario.add(new Gerente("Gerencia General", "Ramirez Salazar",
-                "gerente@cristorey.com", "gerente123", doc4));
+        usuario.add(new Gerente("Gerencia General",
+                "U" + String.format("%05d", ++contador),
+                "Gerente", 
+                "Ramirez Salazar",
+                "gerente@cristorey.com", 
+                "gerente123", 
+                doc4));
         
         //Crearemos un asesor de ventas
         Documento doc5 = new Documento("DNI", "99887766",
                 LocalDate.of(2024, 5, 18),
                 LocalDate.of(2032, 5, 18),
                 "Nacional", 26);
-        usuario.add(new AsesorVentas("Sede Cajamarca", "Carlos Rojas",
-                "asesor@cristorey.com", "asesor123", doc5));
+        usuario.add(new AsesorVentas("Sede Cajamarca",
+                "U" + String.format("%05d", ++contador),
+                "Asesor de ventas",
+                "Carlos Rojas",
+                "asesor@cristorey.com", 
+                "asesor123", 
+                doc5));
+    }
+    
+    public ArrayList<Usuario> getUsuario() {
+        return usuario;
     }
     
     public boolean registrarUsuario(Usuario nuevo_usuario){
@@ -139,6 +177,15 @@ public class UsuarioControlador {
     public Usuario buscarNombre(String nombre){
         for (int i = 0; i < usuario.size(); i++) {
             if (usuario.get(i).getNombre().equalsIgnoreCase(nombre)) {
+                return usuario.get(i);
+            }
+        }
+        return null;
+    }
+    
+    public Usuario buscarCargo(String cargo){
+        for (int i = 0; i < usuario.size(); i++) {
+            if (usuario.get(i).getCargo().equalsIgnoreCase(cargo)) {
                 return usuario.get(i);
             }
         }

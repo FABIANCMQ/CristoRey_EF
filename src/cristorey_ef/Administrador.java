@@ -11,8 +11,8 @@ package cristorey_ef;
 public class Administrador extends Usuario {
     private String nivel_acceso;
 
-    public Administrador(String nivel_acceso, String nombre, String correo, String clave_ingreso, Documento documento) {
-        super(nombre, correo, clave_ingreso, documento);
+    public Administrador(String nivel_acceso, String codigo_usuario, String cargo, String nombre, String correo, String clave_ingreso, Documento documento) {
+        super(codigo_usuario, cargo, nombre, correo, clave_ingreso, documento);
         this.nivel_acceso = nivel_acceso;
     }
     
@@ -25,6 +25,10 @@ public class Administrador extends Usuario {
     }
     
     public void BloquearUsuario(Usuario usuario){
+        if (usuario instanceof Administrador) {
+            System.out.println("No se puede bloquear a un Administrador.");
+            return;
+        }
         usuario.setBloqueado(true);
         System.out.println("Usuario Bloqueado Exitosamente.");
     }
@@ -58,7 +62,7 @@ public class Administrador extends Usuario {
         }
     }
     public void validarDatos(PasajeroControlador controlador){
-        if (controlador.psjr.size()==0){
+        if (controlador.pasajero.size()==0){
             System.out.println("No existen pasajeros registrados.");
         }
         else{
@@ -78,11 +82,4 @@ public class Administrador extends Usuario {
                 "\nNombre: "+this.nombre+"\nCorreo: "+this.correo+"\nNivel de acceso: "+this.nivel_acceso+
                 "\nDocumento: "+this.documento.getNro_doc());
     }
-    
-    @Override
-    public boolean validarAcceso(String correo, String clave) {
-        return this.correo.equals(correo) && this.clave_ingreso.equals(clave) && !this.bloqueado;
-    }
-
-    
 }

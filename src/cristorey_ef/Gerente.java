@@ -20,8 +20,8 @@ public class Gerente extends Usuario{
         this.area_gerencia = area_gerencia;
     }
 
-    public Gerente(String area_gerencia, String nombre, String correo, String clave_ingreso, Documento documento) {
-        super(nombre, correo, clave_ingreso, documento);
+    public Gerente(String area_gerencia, String codigo_usuario, String cargo, String nombre, String correo, String clave_ingreso, Documento documento) {
+        super(codigo_usuario, cargo, nombre, correo, clave_ingreso, documento);
         this.area_gerencia = area_gerencia;
     }
     
@@ -124,11 +124,4 @@ public class Gerente extends Usuario{
             System.out.println("Error al consultar el historial de reservas: "+e.getMessage());
         }
     }
-    @Override
-    public boolean validarAcceso(String correo, String clave) {
-        return this.correo.equalsIgnoreCase(correo) 
-                && this.clave_ingreso.equalsIgnoreCase(clave) 
-                && !this.bloqueado;
-    }
-    
 }

@@ -12,8 +12,8 @@ public class AsesorVentas extends Usuario{
     
     private String sede;    
 
-    public AsesorVentas(String sede, String nombre, String correo, String clave_ingreso, Documento documento) {
-        super(nombre, correo, clave_ingreso, documento);
+    public AsesorVentas(String sede,String codigo_usuario, String cargo, String nombre, String correo, String clave_ingreso, Documento documento) {
+        super(codigo_usuario, cargo, nombre, correo, clave_ingreso, documento);
         this.sede = sede;
     }
 
@@ -85,11 +85,6 @@ public class AsesorVentas extends Usuario{
     public void verDatos(){
         System.out.println("===DATOS DEL ASESOR DE VENTAS===\nCodigo: "+this.codigo_usuario+
                 "\nNombre: "+this.nombre+"\nCorreo: "+this.correo+"\nSede: "+this.sede);
-    }
-
-    @Override
-    public boolean validarAcceso(String correo, String clave) {
-        return this.correo.equals(correo) && this.clave_ingreso.equals(clave) && !this.bloqueado;
     }
     
 }

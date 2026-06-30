@@ -18,7 +18,7 @@ public class Respaldos {
                 return;
             }
             
-            System.out.println("===RESPALDO AUTOMATICO===\nPasajeros respaldados: "+pasajero_controlador.psjr.size()+
+            System.out.println("===RESPALDO AUTOMATICO===\nPasajeros respaldados: "+pasajero_controlador.pasajero.size()+
                     "\nPaquete Turistico respaldados: "+paquete_controlador.paquete.size()+
                     "\nReservas respaldadas: "+reserva_controlador.reserva.size());
             

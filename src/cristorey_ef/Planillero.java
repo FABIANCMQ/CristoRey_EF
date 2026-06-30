@@ -20,8 +20,8 @@ public class Planillero extends Usuario{
         this.area_trabajo = area_trabajo;
     }
 
-    public Planillero(String area_trabajo, String nombre, String correo, String clave_ingreso, Documento documento) {
-        super(nombre, correo, clave_ingreso, documento);
+    public Planillero(String area_trabajo,String codigo_usuario, String cargo, String nombre, String correo, String clave_ingreso, Documento documento) {
+        super(codigo_usuario, cargo, nombre, correo, clave_ingreso, documento);
         this.area_trabajo = area_trabajo;
     }
     
@@ -47,17 +47,11 @@ public class Planillero extends Usuario{
         +"\nNombre : " + this.nombre+"\nCorreo : " + this.correo+"Área   : " + this.area_trabajo);
     }
     public void consultarPaquetes(PaqueteTuristico paquete){
-        paquete.mostrarInfo();;
+        paquete.mostrarInfo();
     }
     
     public void listarPasajerosPaquete(PaqueteTuristico paquete){
         paquete.listarPasajeros();
-    }
-
-    @Override
-    public boolean validarAcceso(String correo, String clave) {
-        return this.correo.equals(correo) && this.clave_ingreso.equals(clave)
-          && !this.bloqueado;
     }
     
 }
