@@ -66,7 +66,7 @@ public class Administrador extends Usuario {
         }
     }
     public void reporteControlMatutino(PaqueteTuristicoControlador PaqControlador){
-        System.out.println("\n===== CONTROL MATUTINO =====");
+        System.out.println("\n=====CONTROL MATUTINO=====");
         for (int i = 0; i < PaqControlador.paquete.size(); i++) {
             PaqueteTuristico p = PaqControlador.paquete.get(i);
             System.out.println(p.getNombre_paquete()+" -> "+p.getCupos_disponibles()+" cupos disponibles.");
