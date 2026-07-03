@@ -102,19 +102,21 @@ public class PaqueteTuristico {
         this.listaPasajeros = listaPasajeros;
     }
 
-    public void reservarCupos(){
-        if(cupos_disponibles > 0){
-            cupos_disponibles--;
-
-        }else{
-            System.out.println("No hay cupos disponibles.");
+    public boolean reservarCupos(){
+        if(cupos_disponibles <= 0){
+            return false;
         }
+        cupos_disponibles--;
+        return true;
     }
 
-    public void liberarCupos() {
-        if (cupos_disponibles < cupos_maximos) {
-            cupos_disponibles++;
-        }       
+    public boolean liberarCupos() {
+        if (cupos_disponibles >= cupos_maximos) {
+            return false;
+        }
+
+        cupos_disponibles++;
+        return true;     
     }
 
     public boolean tieneCupos() {
@@ -125,23 +127,23 @@ public class PaqueteTuristico {
         }
     }
 
-    public void agregarPasajero(Pasajero pasajero) {
-        if (tieneCupos()== true) {
-            listaPasajeros.add(pasajero);
-            reservarCupos();
-            System.out.println("Pasajero agregado correctamente.");
-        } else {
-            System.out.println("No hay cupos disponibles.");
-        }
+    public boolean agregarPasajero(Pasajero pasajero) {
+        if (pasajero == null)
+            return false;
+
+        if (!reservarCupos())
+            return false;
+
+        listaPasajeros.add(pasajero);
+        return true;
     }
 
-    public void eliminarPasajero(Pasajero pasajero) {
-        if (listaPasajeros.remove(pasajero)) {
-            liberarCupos();
-            System.out.println("Pasajero eliminado correctamente.");
-        } else {
-            System.out.println("El pasajero no pertenece al paquete.");
-        }
+    public boolean eliminarPasajero(Pasajero pasajero) {
+        if (!listaPasajeros.remove(pasajero))
+            return false;
+
+        liberarCupos();
+        return true;
     }
 
     public void mostrarInfo() {

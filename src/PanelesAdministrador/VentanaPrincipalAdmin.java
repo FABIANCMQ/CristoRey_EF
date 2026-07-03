@@ -4,6 +4,12 @@
  */
 package PanelesAdministrador;
 
+import PanelesGenerales.ControlViajes;
+import PanelesGenerales.Pasajeros;
+import cristorey_ef.PaqueteTuristicoControlador;
+import cristorey_ef.PasajeroControlador;
+import cristorey_ef.ReservaControlador;
+import cristorey_ef.UsuarioControlador;
 import cristorey_ef.VentanaPrincipal;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -19,19 +25,28 @@ public class VentanaPrincipalAdmin extends javax.swing.JPanel {
     /**
      * Creates new form PantallaAdministrador
      */
-    Inicio i = new Inicio();
-    Pasajeros p = new Pasajeros();
-    Tours t = new Tours();
-    Estadisticas e = new Estadisticas();
-    ControlMatutino c = new ControlMatutino();
-    GestionarAccesos g = new GestionarAccesos();
+    Inicio i;
+    Pasajeros p;
+    ControlViajes cv;
+    ReporteDiario r;
+    ControlMatutino cm;
+    GestionarAccesos g;
+    Estadisticas e;
     private JPanel panelSeleccionado;
     private boolean expandido = false;
-    public VentanaPrincipalAdmin() {
+    public VentanaPrincipalAdmin(UsuarioControlador uc, PasajeroControlador pc,
+            ReservaControlador rc, PaqueteTuristicoControlador ptc) {
         initComponents();
+        i = new Inicio(rc, ptc, uc);
+        p = new Pasajeros(pc, rc);
+        cv = new ControlViajes(ptc);
+        r = new ReporteDiario(ptc);
+        cm = new ControlMatutino(ptc);
+        g = new GestionarAccesos(uc);
+        e = new Estadisticas(rc);
         pnlMenu.setPreferredSize(new Dimension(50, pnlMenu.getHeight()));
         pnlMenu.revalidate();
-        JPanel[] paneles = {i,p,t,e,c,g};
+        JPanel[] paneles = {i,p,cv,r,cm,g,e};
 
         for(JPanel panel : paneles){
             lypPrincipal.add(panel);
@@ -41,16 +56,17 @@ public class VentanaPrincipalAdmin extends javax.swing.JPanel {
         seleccionarMenu(pnlInicio);
     }
     
-    private void seleccionarMenu(JPanel panel) {
+    public void seleccionarMenu(JPanel panel) {
 
         panelSeleccionado = panel;
         JPanel[] paneles = {
             pnlInicio,
             pnlPasajeros,
-            pnlTours,
-            pnlEstadisticas,
+            pnlControlViajes,
+            pnlReporteDiario,
             pnlControlMatutino,
-            pnlGestionarAccesos
+            pnlGestionarAccesos,
+            pnlEstadisticas
         };
 
         for (JPanel p : paneles) {
@@ -61,9 +77,9 @@ public class VentanaPrincipalAdmin extends javax.swing.JPanel {
         panelSeleccionado.setBackground(new Color(255,170,44));
         }
     }
-    private void mostrarPanel(JPanel panelVisible){
+    void mostrarPanel(JPanel panelVisible){
 
-        JPanel[] paneles = {i, p, t, e, c, g};
+        JPanel[] paneles = {i, p, cv, r, cm, g, e};
 
         for(JPanel panel : paneles){
             panel.setVisible(false);
@@ -90,9 +106,9 @@ public class VentanaPrincipalAdmin extends javax.swing.JPanel {
         pnlPasajeros = new javax.swing.JPanel();
         jLabel13 = new javax.swing.JLabel();
         btnPasajeros = new javax.swing.JButton();
-        pnlEstadisticas = new javax.swing.JPanel();
+        pnlReporteDiario = new javax.swing.JPanel();
         jLabel16 = new javax.swing.JLabel();
-        btnEstadisticas = new javax.swing.JButton();
+        btnReporteDiario = new javax.swing.JButton();
         pnlControlMatutino = new javax.swing.JPanel();
         jLabel14 = new javax.swing.JLabel();
         btnControlMatutino = new javax.swing.JButton();
@@ -102,9 +118,12 @@ public class VentanaPrincipalAdmin extends javax.swing.JPanel {
         pnlCerrarSesion = new javax.swing.JPanel();
         jLabel11 = new javax.swing.JLabel();
         btnCerrarSesion = new javax.swing.JButton();
-        pnlTours = new javax.swing.JPanel();
+        pnlControlViajes = new javax.swing.JPanel();
         jLabel17 = new javax.swing.JLabel();
-        btnTours = new javax.swing.JButton();
+        btnControlViajes = new javax.swing.JButton();
+        pnlEstadisticas = new javax.swing.JPanel();
+        jLabel18 = new javax.swing.JLabel();
+        btnEstadistica = new javax.swing.JButton();
         lypPrincipal = new javax.swing.JLayeredPane();
 
         setLayout(new java.awt.BorderLayout());
@@ -187,38 +206,38 @@ public class VentanaPrincipalAdmin extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        pnlEstadisticas.setBackground(new java.awt.Color(255, 255, 255));
+        pnlReporteDiario.setBackground(new java.awt.Color(255, 255, 255));
 
-        jLabel16.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/histograma-de-grafico.png"))); // NOI18N
+        jLabel16.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/calendario-reloj.png"))); // NOI18N
 
-        btnEstadisticas.setText("Estadisticas");
-        btnEstadisticas.setBorderPainted(false);
-        btnEstadisticas.setContentAreaFilled(false);
-        btnEstadisticas.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnEstadisticas.setFocusPainted(false);
-        btnEstadisticas.addActionListener(this::btnEstadisticasActionPerformed);
+        btnReporteDiario.setText("Reporte diario");
+        btnReporteDiario.setBorderPainted(false);
+        btnReporteDiario.setContentAreaFilled(false);
+        btnReporteDiario.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnReporteDiario.setFocusPainted(false);
+        btnReporteDiario.addActionListener(this::btnReporteDiarioActionPerformed);
 
-        javax.swing.GroupLayout pnlEstadisticasLayout = new javax.swing.GroupLayout(pnlEstadisticas);
-        pnlEstadisticas.setLayout(pnlEstadisticasLayout);
-        pnlEstadisticasLayout.setHorizontalGroup(
-            pnlEstadisticasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlEstadisticasLayout.createSequentialGroup()
+        javax.swing.GroupLayout pnlReporteDiarioLayout = new javax.swing.GroupLayout(pnlReporteDiario);
+        pnlReporteDiario.setLayout(pnlReporteDiarioLayout);
+        pnlReporteDiarioLayout.setHorizontalGroup(
+            pnlReporteDiarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlReporteDiarioLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel16)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnEstadisticas)
+                .addComponent(btnReporteDiario)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-        pnlEstadisticasLayout.setVerticalGroup(
-            pnlEstadisticasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlEstadisticasLayout.createSequentialGroup()
-                .addGroup(pnlEstadisticasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnlEstadisticasLayout.createSequentialGroup()
+        pnlReporteDiarioLayout.setVerticalGroup(
+            pnlReporteDiarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlReporteDiarioLayout.createSequentialGroup()
+                .addGroup(pnlReporteDiarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlReporteDiarioLayout.createSequentialGroup()
                         .addGap(8, 8, 8)
                         .addComponent(jLabel16))
-                    .addGroup(pnlEstadisticasLayout.createSequentialGroup()
+                    .addGroup(pnlReporteDiarioLayout.createSequentialGroup()
                         .addGap(9, 9, 9)
-                        .addComponent(btnEstadisticas)))
+                        .addComponent(btnReporteDiario)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -318,35 +337,67 @@ public class VentanaPrincipalAdmin extends javax.swing.JPanel {
                 .addGap(9, 9, 9))
         );
 
-        pnlTours.setBackground(new java.awt.Color(255, 255, 255));
+        pnlControlViajes.setBackground(new java.awt.Color(255, 255, 255));
 
         jLabel17.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/viaje-en-coche.png"))); // NOI18N
 
-        btnTours.setText("Tours     ");
-        btnTours.setBorderPainted(false);
-        btnTours.setContentAreaFilled(false);
-        btnTours.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnTours.setFocusPainted(false);
-        btnTours.addActionListener(this::btnToursActionPerformed);
+        btnControlViajes.setText("Control de Viajes");
+        btnControlViajes.setBorderPainted(false);
+        btnControlViajes.setContentAreaFilled(false);
+        btnControlViajes.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnControlViajes.setFocusPainted(false);
+        btnControlViajes.addActionListener(this::btnControlViajesActionPerformed);
 
-        javax.swing.GroupLayout pnlToursLayout = new javax.swing.GroupLayout(pnlTours);
-        pnlTours.setLayout(pnlToursLayout);
-        pnlToursLayout.setHorizontalGroup(
-            pnlToursLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlToursLayout.createSequentialGroup()
+        javax.swing.GroupLayout pnlControlViajesLayout = new javax.swing.GroupLayout(pnlControlViajes);
+        pnlControlViajes.setLayout(pnlControlViajesLayout);
+        pnlControlViajesLayout.setHorizontalGroup(
+            pnlControlViajesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlControlViajesLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel17)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnTours)
+                .addComponent(btnControlViajes)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-        pnlToursLayout.setVerticalGroup(
-            pnlToursLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlToursLayout.createSequentialGroup()
+        pnlControlViajesLayout.setVerticalGroup(
+            pnlControlViajesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlControlViajesLayout.createSequentialGroup()
                 .addGap(8, 8, 8)
-                .addGroup(pnlToursLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnTours)
+                .addGroup(pnlControlViajesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnControlViajes)
                     .addComponent(jLabel17))
+                .addGap(8, 8, 8))
+        );
+
+        pnlEstadisticas.setBackground(new java.awt.Color(255, 255, 255));
+
+        jLabel18.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/histograma-de-grafico.png"))); // NOI18N
+
+        btnEstadistica.setText("Estadísticas");
+        btnEstadistica.setBorderPainted(false);
+        btnEstadistica.setContentAreaFilled(false);
+        btnEstadistica.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnEstadistica.setFocusPainted(false);
+        btnEstadistica.addActionListener(this::btnEstadisticaActionPerformed);
+
+        javax.swing.GroupLayout pnlEstadisticasLayout = new javax.swing.GroupLayout(pnlEstadisticas);
+        pnlEstadisticas.setLayout(pnlEstadisticasLayout);
+        pnlEstadisticasLayout.setHorizontalGroup(
+            pnlEstadisticasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlEstadisticasLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnEstadistica)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        pnlEstadisticasLayout.setVerticalGroup(
+            pnlEstadisticasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlEstadisticasLayout.createSequentialGroup()
+                .addGap(8, 8, 8)
+                .addGroup(pnlEstadisticasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel18)
+                    .addComponent(btnEstadistica))
                 .addGap(8, 8, 8))
         );
 
@@ -362,11 +413,12 @@ public class VentanaPrincipalAdmin extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addComponent(pnlInicio, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(pnlPasajeros, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(pnlTours, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(pnlEstadisticas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(pnlControlViajes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(pnlReporteDiario, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(pnlControlMatutino, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(pnlGestionarAccesos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(pnlCerrarSesion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(pnlEstadisticas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         pnlMenuLayout.setVerticalGroup(
             pnlMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -381,16 +433,18 @@ public class VentanaPrincipalAdmin extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(pnlPasajeros, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(pnlTours, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(pnlControlViajes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(pnlEstadisticas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(pnlReporteDiario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(pnlControlMatutino, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(pnlGestionarAccesos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(pnlEstadisticas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(31, 31, 31)
                 .addComponent(pnlCerrarSesion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(22, 22, 22))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         add(pnlMenu, java.awt.BorderLayout.LINE_START);
@@ -426,22 +480,22 @@ public class VentanaPrincipalAdmin extends javax.swing.JPanel {
         mostrarPanel(p);
     }//GEN-LAST:event_btnPasajerosActionPerformed
 
-    private void btnToursActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnToursActionPerformed
+    private void btnControlViajesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnControlViajesActionPerformed
         // TODO add your handling code here:
-        seleccionarMenu(pnlTours);
-        mostrarPanel(t);
-    }//GEN-LAST:event_btnToursActionPerformed
+        seleccionarMenu(pnlControlViajes);
+        mostrarPanel(cv);
+    }//GEN-LAST:event_btnControlViajesActionPerformed
 
-    private void btnEstadisticasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEstadisticasActionPerformed
+    private void btnReporteDiarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReporteDiarioActionPerformed
         // TODO add your handling code here:
-        seleccionarMenu(pnlEstadisticas);
-        mostrarPanel(e);
-    }//GEN-LAST:event_btnEstadisticasActionPerformed
+        seleccionarMenu(pnlReporteDiario);
+        mostrarPanel(r);
+    }//GEN-LAST:event_btnReporteDiarioActionPerformed
 
     private void btnControlMatutinoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnControlMatutinoActionPerformed
         // TODO add your handling code here:
         seleccionarMenu(pnlControlMatutino);
-        mostrarPanel(c);
+        mostrarPanel(cm);
     }//GEN-LAST:event_btnControlMatutinoActionPerformed
 
     private void btnGestionarAccesosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionarAccesosActionPerformed
@@ -456,16 +510,23 @@ public class VentanaPrincipalAdmin extends javax.swing.JPanel {
         ventana.volverInicio();
     }//GEN-LAST:event_btnCerrarSesionActionPerformed
 
+    private void btnEstadisticaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEstadisticaActionPerformed
+        // TODO add your handling code here:
+        seleccionarMenu(pnlEstadisticas);
+        mostrarPanel(e);
+    }//GEN-LAST:event_btnEstadisticaActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCerrarSesion;
     private javax.swing.JButton btnControlMatutino;
-    private javax.swing.JButton btnEstadisticas;
+    private javax.swing.JButton btnControlViajes;
+    private javax.swing.JButton btnEstadistica;
     private javax.swing.JButton btnGestionarAccesos;
     private javax.swing.JButton btnInicio;
     private javax.swing.JButton btnMenu;
     private javax.swing.JButton btnPasajeros;
-    private javax.swing.JButton btnTours;
+    private javax.swing.JButton btnReporteDiario;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
@@ -474,14 +535,16 @@ public class VentanaPrincipalAdmin extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
     private javax.swing.JLayeredPane lypPrincipal;
     private javax.swing.JPanel pnlCerrarSesion;
     private javax.swing.JPanel pnlControlMatutino;
+    private javax.swing.JPanel pnlControlViajes;
     private javax.swing.JPanel pnlEstadisticas;
     private javax.swing.JPanel pnlGestionarAccesos;
     private javax.swing.JPanel pnlInicio;
     private javax.swing.JPanel pnlMenu;
     private javax.swing.JPanel pnlPasajeros;
-    private javax.swing.JPanel pnlTours;
+    private javax.swing.JPanel pnlReporteDiario;
     // End of variables declaration//GEN-END:variables
 }

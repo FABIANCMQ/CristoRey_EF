@@ -93,8 +93,4 @@ public class GuiaTuristico extends Usuario{
             System.out.println("Error al generar lista previa: "+e.getMessage());
         }
     }
-    
-    public void modificarPasajero(){
-        System.out.println("Accion no autorizada para su rol");
-    }
 }

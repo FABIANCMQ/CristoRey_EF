@@ -4,6 +4,12 @@
  */
 package PanelesPlanillero;
 
+import PanelesGenerales.ControlViajes;
+import PanelesGenerales.Pasajeros;
+import cristorey_ef.PaqueteTuristicoControlador;
+import cristorey_ef.PasajeroControlador;
+import cristorey_ef.ReservaControlador;
+import cristorey_ef.UsuarioControlador;
 import cristorey_ef.VentanaPrincipal;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -19,16 +25,38 @@ public class VentanaPrincipalPlani extends javax.swing.JPanel {
     /**
      * Creates new form VentanaPrincipalPlani
      */
-    Inicio i = new Inicio();
-    Pasajeros p = new Pasajeros();
-    Tours t = new Tours();;
+    
     private JPanel panelSeleccionado;
     private boolean expandido = false;
-    public VentanaPrincipalPlani() {
+    private final PasajeroControlador pasajeroControlador;
+    private final UsuarioControlador usuarioControlador;
+    private final ReservaControlador reservaControlador;
+    private final PaqueteTuristicoControlador paqueteTuristicoControlador;
+    Inicio i;
+    Pasajeros p;
+    ControlViajes cv;
+    RegistroPasajero r;
+    public VentanaPrincipalPlani(PasajeroControlador pasajeroControlador,
+            UsuarioControlador usuarioControlador,
+            ReservaControlador reservaControlador,
+            PaqueteTuristicoControlador paqueteTuristicoControlador) {
+        
         initComponents();
+        
+        this.pasajeroControlador = pasajeroControlador;
+        this.usuarioControlador = usuarioControlador;
+        this.reservaControlador = reservaControlador;
+        this.paqueteTuristicoControlador = paqueteTuristicoControlador;
+        
+        i = new Inicio(paqueteTuristicoControlador, usuarioControlador);
+        p = new Pasajeros(pasajeroControlador, reservaControlador);
+        cv = new ControlViajes(paqueteTuristicoControlador);
+        r = new RegistroPasajero(pasajeroControlador, reservaControlador, paqueteTuristicoControlador);
+        
         pnlMenu.setPreferredSize(new Dimension(50, pnlMenu.getHeight()));
         pnlMenu.revalidate();
-        JPanel[] paneles = {i,p,t};
+        
+        JPanel[] paneles = {i,p,cv,r};
 
         for(JPanel panel : paneles){
             lypPrincipal.add(panel);
@@ -45,9 +73,7 @@ public class VentanaPrincipalPlani extends javax.swing.JPanel {
             pnlInicio,
             pnlPasajeros,
             pnlTours,
-            pnlEstadisticas,
-            pnlControlMatutino,
-            pnlGestionarAccesos
+            pnlRegistroPasajero,
         };
 
         for (JPanel p : paneles) {
@@ -55,12 +81,12 @@ public class VentanaPrincipalPlani extends javax.swing.JPanel {
         }
 
         if (expandido && panelSeleccionado != null) {
-        panelSeleccionado.setBackground(new Color(255,170,44));
+            panelSeleccionado.setBackground(new Color(255,170,44));
         }
     }
     private void mostrarPanel(JPanel panelVisible){
 
-        JPanel[] paneles = {i, p, t};
+        JPanel[] paneles = {i, p, cv, r};
 
         for(JPanel panel : paneles){
             panel.setVisible(false);
@@ -87,15 +113,9 @@ public class VentanaPrincipalPlani extends javax.swing.JPanel {
         pnlPasajeros = new javax.swing.JPanel();
         jLabel13 = new javax.swing.JLabel();
         btnPasajeros = new javax.swing.JButton();
-        pnlEstadisticas = new javax.swing.JPanel();
+        pnlRegistroPasajero = new javax.swing.JPanel();
         jLabel16 = new javax.swing.JLabel();
-        btnEstadisticas = new javax.swing.JButton();
-        pnlControlMatutino = new javax.swing.JPanel();
-        jLabel14 = new javax.swing.JLabel();
-        btnControlMatutino = new javax.swing.JButton();
-        pnlGestionarAccesos = new javax.swing.JPanel();
-        jLabel15 = new javax.swing.JLabel();
-        btnGestionarAccesos = new javax.swing.JButton();
+        btnRegistroPasajero = new javax.swing.JButton();
         pnlCerrarSesion = new javax.swing.JPanel();
         jLabel11 = new javax.swing.JLabel();
         btnCerrarSesion = new javax.swing.JButton();
@@ -184,103 +204,39 @@ public class VentanaPrincipalPlani extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        pnlEstadisticas.setBackground(new java.awt.Color(255, 255, 255));
+        pnlRegistroPasajero.setBackground(new java.awt.Color(255, 255, 255));
 
-        jLabel16.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/histograma-de-grafico.png"))); // NOI18N
+        jLabel16.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/registro.png"))); // NOI18N
 
-        btnEstadisticas.setText("Estadisticas");
-        btnEstadisticas.setBorderPainted(false);
-        btnEstadisticas.setContentAreaFilled(false);
-        btnEstadisticas.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnEstadisticas.setFocusPainted(false);
-        btnEstadisticas.addActionListener(this::btnEstadisticasActionPerformed);
+        btnRegistroPasajero.setText("Registro de pasajeros");
+        btnRegistroPasajero.setBorderPainted(false);
+        btnRegistroPasajero.setContentAreaFilled(false);
+        btnRegistroPasajero.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnRegistroPasajero.setFocusPainted(false);
+        btnRegistroPasajero.addActionListener(this::btnRegistroPasajeroActionPerformed);
 
-        javax.swing.GroupLayout pnlEstadisticasLayout = new javax.swing.GroupLayout(pnlEstadisticas);
-        pnlEstadisticas.setLayout(pnlEstadisticasLayout);
-        pnlEstadisticasLayout.setHorizontalGroup(
-            pnlEstadisticasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlEstadisticasLayout.createSequentialGroup()
+        javax.swing.GroupLayout pnlRegistroPasajeroLayout = new javax.swing.GroupLayout(pnlRegistroPasajero);
+        pnlRegistroPasajero.setLayout(pnlRegistroPasajeroLayout);
+        pnlRegistroPasajeroLayout.setHorizontalGroup(
+            pnlRegistroPasajeroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlRegistroPasajeroLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel16)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnEstadisticas)
+                .addComponent(btnRegistroPasajero)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-        pnlEstadisticasLayout.setVerticalGroup(
-            pnlEstadisticasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlEstadisticasLayout.createSequentialGroup()
-                .addGroup(pnlEstadisticasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnlEstadisticasLayout.createSequentialGroup()
+        pnlRegistroPasajeroLayout.setVerticalGroup(
+            pnlRegistroPasajeroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlRegistroPasajeroLayout.createSequentialGroup()
+                .addGroup(pnlRegistroPasajeroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlRegistroPasajeroLayout.createSequentialGroup()
                         .addGap(8, 8, 8)
                         .addComponent(jLabel16))
-                    .addGroup(pnlEstadisticasLayout.createSequentialGroup()
+                    .addGroup(pnlRegistroPasajeroLayout.createSequentialGroup()
                         .addGap(9, 9, 9)
-                        .addComponent(btnEstadisticas)))
+                        .addComponent(btnRegistroPasajero)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        pnlControlMatutino.setBackground(new java.awt.Color(255, 255, 255));
-
-        jLabel14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/calendario.png"))); // NOI18N
-
-        btnControlMatutino.setText("Control matutino");
-        btnControlMatutino.setBorderPainted(false);
-        btnControlMatutino.setContentAreaFilled(false);
-        btnControlMatutino.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnControlMatutino.setFocusPainted(false);
-        btnControlMatutino.addActionListener(this::btnControlMatutinoActionPerformed);
-
-        javax.swing.GroupLayout pnlControlMatutinoLayout = new javax.swing.GroupLayout(pnlControlMatutino);
-        pnlControlMatutino.setLayout(pnlControlMatutinoLayout);
-        pnlControlMatutinoLayout.setHorizontalGroup(
-            pnlControlMatutinoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlControlMatutinoLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel14)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnControlMatutino)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        pnlControlMatutinoLayout.setVerticalGroup(
-            pnlControlMatutinoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlControlMatutinoLayout.createSequentialGroup()
-                .addGap(8, 8, 8)
-                .addGroup(pnlControlMatutinoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnControlMatutino)
-                    .addComponent(jLabel14))
-                .addGap(8, 8, 8))
-        );
-
-        pnlGestionarAccesos.setBackground(new java.awt.Color(255, 255, 255));
-
-        jLabel15.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/control-de-acceso.png"))); // NOI18N
-
-        btnGestionarAccesos.setText("Gestionar accesos");
-        btnGestionarAccesos.setBorderPainted(false);
-        btnGestionarAccesos.setContentAreaFilled(false);
-        btnGestionarAccesos.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnGestionarAccesos.setFocusPainted(false);
-        btnGestionarAccesos.addActionListener(this::btnGestionarAccesosActionPerformed);
-
-        javax.swing.GroupLayout pnlGestionarAccesosLayout = new javax.swing.GroupLayout(pnlGestionarAccesos);
-        pnlGestionarAccesos.setLayout(pnlGestionarAccesosLayout);
-        pnlGestionarAccesosLayout.setHorizontalGroup(
-            pnlGestionarAccesosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlGestionarAccesosLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel15)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnGestionarAccesos)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        pnlGestionarAccesosLayout.setVerticalGroup(
-            pnlGestionarAccesosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlGestionarAccesosLayout.createSequentialGroup()
-                .addGap(8, 8, 8)
-                .addGroup(pnlGestionarAccesosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel15)
-                    .addComponent(btnGestionarAccesos))
-                .addGap(8, 8, 8))
         );
 
         pnlCerrarSesion.setBackground(new java.awt.Color(255, 255, 255));
@@ -360,9 +316,7 @@ public class VentanaPrincipalPlani extends javax.swing.JPanel {
             .addComponent(pnlInicio, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(pnlPasajeros, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(pnlTours, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(pnlEstadisticas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(pnlControlMatutino, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(pnlGestionarAccesos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(pnlRegistroPasajero, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(pnlCerrarSesion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         pnlMenuLayout.setVerticalGroup(
@@ -380,12 +334,8 @@ public class VentanaPrincipalPlani extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(pnlTours, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(pnlEstadisticas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(pnlControlMatutino, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(pnlGestionarAccesos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
+                .addComponent(pnlRegistroPasajero, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 123, Short.MAX_VALUE)
                 .addComponent(pnlCerrarSesion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(22, 22, 22))
         );
@@ -423,20 +373,11 @@ public class VentanaPrincipalPlani extends javax.swing.JPanel {
         mostrarPanel(p);
     }//GEN-LAST:event_btnPasajerosActionPerformed
 
-    private void btnEstadisticasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEstadisticasActionPerformed
+    private void btnRegistroPasajeroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistroPasajeroActionPerformed
         // TODO add your handling code here:
-        seleccionarMenu(pnlEstadisticas);
-    }//GEN-LAST:event_btnEstadisticasActionPerformed
-
-    private void btnControlMatutinoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnControlMatutinoActionPerformed
-        // TODO add your handling code here:
-        seleccionarMenu(pnlControlMatutino);
-    }//GEN-LAST:event_btnControlMatutinoActionPerformed
-
-    private void btnGestionarAccesosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionarAccesosActionPerformed
-        // TODO add your handling code here:
-        seleccionarMenu(pnlGestionarAccesos);
-    }//GEN-LAST:event_btnGestionarAccesosActionPerformed
+        seleccionarMenu(pnlRegistroPasajero);
+        mostrarPanel(r);
+    }//GEN-LAST:event_btnRegistroPasajeroActionPerformed
 
     private void btnCerrarSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarSesionActionPerformed
         // TODO add your handling code here:
@@ -447,35 +388,29 @@ public class VentanaPrincipalPlani extends javax.swing.JPanel {
     private void btnToursActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnToursActionPerformed
         // TODO add your handling code here:
         seleccionarMenu(pnlTours);
-        mostrarPanel(t);
+        mostrarPanel(cv);
     }//GEN-LAST:event_btnToursActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCerrarSesion;
-    private javax.swing.JButton btnControlMatutino;
-    private javax.swing.JButton btnEstadisticas;
-    private javax.swing.JButton btnGestionarAccesos;
     private javax.swing.JButton btnInicio;
     private javax.swing.JButton btnMenu;
     private javax.swing.JButton btnPasajeros;
+    private javax.swing.JButton btnRegistroPasajero;
     private javax.swing.JButton btnTours;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
-    private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLayeredPane lypPrincipal;
     private javax.swing.JPanel pnlCerrarSesion;
-    private javax.swing.JPanel pnlControlMatutino;
-    private javax.swing.JPanel pnlEstadisticas;
-    private javax.swing.JPanel pnlGestionarAccesos;
     private javax.swing.JPanel pnlInicio;
     private javax.swing.JPanel pnlMenu;
     private javax.swing.JPanel pnlPasajeros;
+    private javax.swing.JPanel pnlRegistroPasajero;
     private javax.swing.JPanel pnlTours;
     // End of variables declaration//GEN-END:variables
 }

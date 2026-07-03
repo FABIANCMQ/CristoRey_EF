@@ -46,12 +46,11 @@ public class PaqueteTuristicoControlador {
     public void mostrarPaquetes(){
         for (int i = 0; i < paquete.size(); i++) {
             paquete.get(i).mostrarInfo();
-            System.out.println("----------------");
         }
     }
-    public PaqueteTuristico buscarPaquete(String codigo){
+    public PaqueteTuristico buscarNombre(String Nombre){
         for (int i = 0; i < paquete.size(); i++) {
-            if (paquete.get(i).getCodigo_paquete().equalsIgnoreCase(codigo)) {
+            if (paquete.get(i).getNombre_paquete().equalsIgnoreCase(Nombre)) {
                 return paquete.get(i);
             }   
         }

@@ -28,7 +28,4 @@ public class Respaldos {
         }
     }
     
-    public void recuperarDatos(){
-        System.out.println("===RECUPERACION DE DATOS===\nSe utilizo el ultimo respaldo disponible.\nLos datos fueron recuperados correctamente.");
-    }
 }

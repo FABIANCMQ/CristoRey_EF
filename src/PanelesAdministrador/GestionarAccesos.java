@@ -20,9 +20,10 @@ public class GestionarAccesos extends javax.swing.JPanel {
     /**
      * Creates new form GestionarAccesos
      */
-    UsuarioControlador uc = UsuarioControlador.getInstancia();
-    public GestionarAccesos() {
+    private UsuarioControlador uc;
+    public GestionarAccesos(UsuarioControlador uc) {
         initComponents();
+        this.uc = uc;
         tblUsuarios.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 actualizarPanelAcciones();
@@ -87,12 +88,12 @@ public class GestionarAccesos extends javax.swing.JPanel {
             lblEstado.setText("Bloqueado");
             lblEstado.setForeground(new Color(180, 30, 30));
             btnBloquear.setText("Desbloquear");
-            btnBloquear.setBackground(new Color(46, 125, 50));  // verde
+            btnBloquear.setBackground(new Color(46, 125, 50));
         } else {
             lblEstado.setText("Activo");
             lblEstado.setForeground(new Color(27, 94, 32));
             btnBloquear.setText("Bloquear");
-            btnBloquear.setBackground(new Color(180, 30, 30));  // rojo
+            btnBloquear.setBackground(new Color(180, 30, 30));
         }
         btnBloquear.setEnabled(true);
     }
@@ -104,7 +105,6 @@ public class GestionarAccesos extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-        java.awt.GridBagConstraints gridBagConstraints;
 
         jLabel17 = new javax.swing.JLabel();
         btnActualizar = new javax.swing.JButton();
@@ -120,18 +120,11 @@ public class GestionarAccesos extends javax.swing.JPanel {
         btnBloquear = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(252, 242, 226));
-        setLayout(new java.awt.GridBagLayout());
 
         jLabel17.setFont(new java.awt.Font("Forte", 0, 24)); // NOI18N
         jLabel17.setForeground(new java.awt.Color(80, 50, 22));
+        jLabel17.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/GestionarAcceso.png"))); // NOI18N
         jLabel17.setText("Gestión de accesos");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.ipadx = 64;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(18, 20, 0, 0);
-        add(jLabel17, gridBagConstraints);
 
         btnActualizar.setBackground(new java.awt.Color(255, 189, 105));
         btnActualizar.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -140,14 +133,6 @@ public class GestionarAccesos extends javax.swing.JPanel {
         btnActualizar.setBorderPainted(false);
         btnActualizar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnActualizar.addActionListener(this::btnActualizarActionPerformed);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.ipadx = 45;
-        gridBagConstraints.ipady = 7;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(18, 234, 0, 24);
-        add(btnActualizar, gridBagConstraints);
 
         tblUsuarios.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         tblUsuarios.setModel(new javax.swing.table.DefaultTableModel(
@@ -166,21 +151,8 @@ public class GestionarAccesos extends javax.swing.JPanel {
         tblUsuarios.setShowVerticalLines(true);
         jScrollPane2.setViewportView(tblUsuarios);
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.ipadx = 611;
-        gridBagConstraints.ipady = 121;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(42, 20, 0, 24);
-        add(jScrollPane2, gridBagConstraints);
-
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(150, 111, 68)));
+        jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(245, 164, 61)));
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel1.setText("Usuario:");
@@ -245,15 +217,34 @@ public class GestionarAccesos extends javax.swing.JPanel {
                 .addContainerGap(42, Short.MAX_VALUE))
         );
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.ipadx = 42;
-        gridBagConstraints.ipady = 36;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(46, 20, 24, 24);
-        add(jPanel1, gridBagConstraints);
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 700, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnActualizar)))
+                .addGap(15, 15, 15))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel17)
+                    .addComponent(btnActualizar))
+                .addGap(42, 42, 42)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(46, 46, 46)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(35, Short.MAX_VALUE))
+        );
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
@@ -280,7 +271,7 @@ public class GestionarAccesos extends javax.swing.JPanel {
                 u.getNombre() + " fue desbloqueado correctamente.",
                 "Acceso restaurado", JOptionPane.INFORMATION_MESSAGE);
         } else {
-            admin.BloquearUsuario(u);
+            admin.bloquearUsuario(u);
             JOptionPane.showMessageDialog(this,
                 u.getNombre() + " fue bloqueado correctamente.",
                 "Acceso bloqueado", JOptionPane.WARNING_MESSAGE);

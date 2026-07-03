@@ -4,6 +4,8 @@
  */
 package cristorey_ef;
 
+import java.time.LocalDate;
+
 /**
  *
  * @author coolg
@@ -14,6 +16,7 @@ public class Reserva {
     private PaqueteTuristico paquete;
     private double precio_final;
     private String estado;
+    private LocalDate fecha_reserva;
     private static int contador = 0;
 
     public Reserva(Pasajero pasajero, PaqueteTuristico paquete, double precio_final) {
@@ -22,6 +25,7 @@ public class Reserva {
         this.paquete = paquete;
         this.precio_final = precio_final;
         this.estado = "Activa";
+        this.fecha_reserva = LocalDate.now();
     }
 
     public String getCodigo_reserva() {
@@ -62,6 +66,14 @@ public class Reserva {
 
     public void setEstado(String estado) {
         this.estado = estado;
+    }
+
+    public LocalDate getFecha_reserva() {
+        return fecha_reserva;
+    }
+
+    public void setFecha_reserva(LocalDate fecha_reserva) {
+        this.fecha_reserva = fecha_reserva;
     }
 
     public static int getContador() {

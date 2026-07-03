@@ -4,7 +4,13 @@
  */
 package cristorey_ef;
 
+import java.time.DayOfWeek;
+import java.time.YearMonth;
 import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  *
@@ -16,39 +22,31 @@ public class ReservaControlador {
     public boolean registrarReserva(Pasajero pasajero, PaqueteTuristico paquete, double descuento){
         try{
             if (pasajero == null || paquete == null) {
-                System.out.println("No se puede registrar la reserva. Datos incompletos.");
-                return false;
-            }
-            if (!pasajero.getDocumento().documentacionCompleta()) {
-                System.out.println("Documentacion incompleta. No se puede registrar la reserva");
                 return false;
             }
             if (!pasajero.getDocumento().documentoVigente()) {
-                System.out.println("Documento vencido. No se puede registrar la reserva");
                 return false;
             }
             
             if (!paquete.tieneCupos()) {
-                System.out.println("No se puede registrar la reserva. No existen cupos disponibles.");
                 return false;
             }
             if (buscarReservaActiva(pasajero.getDocumento().getNro_doc(), paquete.getCodigo_paquete()) != null) {
-                System.out.println("El pasajero ya tiene una reserva en este paquete.");
                 return false;
             }
             
             double precio_final = calcularPrecioFinal(paquete.getCosto(), descuento);
             
             Reserva nueva_reserva = new Reserva(pasajero, paquete, precio_final);
+            if (!paquete.agregarPasajero(pasajero)) {
+                return false;
+            }
+
             reserva.add(nueva_reserva);
-            
-            paquete.agregarPasajero(pasajero);
-            
-            System.out.println("Reserva Registrada Correctamente.");
+
             return true;
             
         }catch(Exception e){
-            System.out.println("Error al registrar  reserva: "+e.getMessage());
             return false;
         }
     }
@@ -56,14 +54,12 @@ public class ReservaControlador {
     public double calcularPrecioFinal(double precio, double descuento){
         try {
             if (descuento < 0 || descuento > 100) {
-                System.out.println("Descuento invalido. No se aplicara descuento");
                 descuento = 0;
             }
             
             return precio - (precio*descuento / 100);
             
         } catch (Exception e) {
-            System.out.println("Error al calcular precio final.");
             return precio;
         }
     }
@@ -90,10 +86,20 @@ public class ReservaControlador {
         return null;
     }
     
+    public ArrayList<Reserva> buscarReservasActivasPorDocumento(String nro_doc) {
+    ArrayList<Reserva> activas = new ArrayList<>();
+    for (int i = 0; i < reserva.size(); i++) {
+        Reserva r = reserva.get(i);
+        if (r.getPasajero().getDocumento().getNro_doc().equalsIgnoreCase(nro_doc)
+                && r.getEstado().equalsIgnoreCase("Activa")) {
+            activas.add(r); 
+        }
+    }
+    return activas;
+}
+    
     public void listarReserva(){
-        if (reserva.size()==0) {
-            System.out.println("No existen reservar registradas");
-        }else{
+        if (!reserva.isEmpty()) {
             for (int i = 0; i < reserva.size(); i++) {
                 reserva.get(i).mostrarReserva();
             }
@@ -113,32 +119,147 @@ public class ReservaControlador {
             }
         }
         
-        if(!cliente_encontrado){
-            System.out.println("El cliente no tiene historial de reservas.");
-        }
     }
     
     public boolean cancelarReserva(String codigo_reserva){
         try {
             Reserva reservas = buscarReserva(codigo_reserva);
             if (reservas == null) {
-                System.out.println("No se encontró la reserva.");
                 return false;
             }
             
             if(reservas.getEstado().equalsIgnoreCase("Cancelada")){
-                System.out.println("La reserva ya se encuentra cancelada.");
                 return false;
             }
             
+            if (!reservas.getPaquete().eliminarPasajero(reservas.getPasajero())) {
+                return false;
+            }
+
             reservas.setEstado("Cancelada");
-            reservas.getPaquete().eliminarPasajero(reservas.getPasajero());
-            
-            System.out.println("Reserva cancelada correctamente.");
+
             return true;
         } catch (Exception e) {
-            System.out.println("Error al cancelar la reserva "+ e.getMessage());
             return false;
         }
     }
+    
+    public ArrayList<Reserva> reservasUltimoMes(){
+        ArrayList<Reserva> resultado = new ArrayList<>();
+        YearMonth mesActual = YearMonth.now();
+
+        for (int i = 0; i < reserva.size(); i++) {
+            Reserva r = reserva.get(i);
+
+            if (r.getEstado().equalsIgnoreCase("Activa")
+                    && YearMonth.from(r.getFecha_reserva()).equals(mesActual)) {
+                resultado.add(r);
+            }
+        }
+        return resultado;
+    }
+    
+    public double gananciasUltimoMes(){
+        double total = 0;
+        for (Reserva r : reservasUltimoMes()) {
+            total += r.getPrecio_final();
+        }
+        return total;
+    }
+    
+    public String diaMasConcurridoUltimoMes(){
+        ArrayList<Reserva> reservasMes = reservasUltimoMes();
+
+        if (reservasMes.isEmpty()) {
+            return "Sin datos";
+        }
+
+        Map<DayOfWeek, Integer> conteo = new EnumMap<>(DayOfWeek.class);
+        for (Reserva r : reservasMes) {
+            DayOfWeek dia = r.getFecha_reserva().getDayOfWeek();
+            conteo.put(dia, conteo.getOrDefault(dia, 0) + 1);
+        }
+
+        DayOfWeek diaPopular = null;
+        int max = -1;
+        for (Map.Entry<DayOfWeek, Integer> entry : conteo.entrySet()) {
+            if (entry.getValue() > max) {
+                max = entry.getValue();
+                diaPopular = entry.getKey();
+            }
+        }
+
+        return traducirDia(diaPopular);
+    }
+
+    private String traducirDia(DayOfWeek dia){
+        if (dia == null) {
+            return "Sin datos";
+        }
+        switch (dia) {
+            case MONDAY: return "Lunes";
+            case TUESDAY: return "Martes";
+            case WEDNESDAY: return "Miércoles";
+            case THURSDAY: return "Jueves";
+            case FRIDAY: return "Viernes";
+            case SATURDAY: return "Sábado";
+            case SUNDAY: return "Domingo";
+            default: return "-";
+        }
+    }
+    
+    public static class RankingPaquete {
+        private final PaqueteTuristico paquete;
+        private final int cantidadReservas;
+        private final double porcentaje;
+
+        public RankingPaquete(PaqueteTuristico paquete, int cantidadReservas, double porcentaje) {
+            this.paquete = paquete;
+            this.cantidadReservas = cantidadReservas;
+            this.porcentaje = porcentaje;
+        }
+
+        public PaqueteTuristico getPaquete() {
+            return paquete;
+        }
+
+        public int getCantidadReservas() {
+            return cantidadReservas;
+        }
+
+        public double getPorcentaje() {
+            return porcentaje;
+        }
+    }
+    
+    public ArrayList<RankingPaquete> rankingPopularidadPaquetes(){
+        ArrayList<Reserva> reservasMes = reservasUltimoMes();
+
+        LinkedHashMap<String, Integer> conteoPorCodigo = new LinkedHashMap<>();
+        HashMap<String, PaqueteTuristico> paquetesPorCodigo = new HashMap<>();
+
+        for (Reserva r : reservasMes) {
+            PaqueteTuristico p = r.getPaquete();
+            String codigo = p.getCodigo_paquete();
+
+            conteoPorCodigo.put(codigo, conteoPorCodigo.getOrDefault(codigo, 0) + 1);
+            paquetesPorCodigo.put(codigo, p);
+        }
+
+        int totalReservas = reservasMes.size();
+        ArrayList<RankingPaquete> ranking = new ArrayList<>();
+
+        for (Map.Entry<String, Integer> entry : conteoPorCodigo.entrySet()) {
+            PaqueteTuristico p = paquetesPorCodigo.get(entry.getKey());
+            int cantidad = entry.getValue();
+            double porcentaje = totalReservas == 0 ? 0 : (cantidad * 100.0) / totalReservas;
+
+            ranking.add(new RankingPaquete(p, cantidad, porcentaje));
+        }
+
+        ranking.sort((a, b) -> Integer.compare(b.getCantidadReservas(), a.getCantidadReservas()));
+
+        return ranking;
+    }
+    
 }

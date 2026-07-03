@@ -15,13 +15,6 @@ public class UsuarioControlador {
     ArrayList<Usuario> usuario = new ArrayList();
     
     private static int contador = 0;
-    private static UsuarioControlador instancia = null;
-    public static UsuarioControlador getInstancia() {
-        if (instancia == null) {
-            instancia = new UsuarioControlador();
-        }
-        return instancia;
-    }
 
     public UsuarioControlador() {
         cargarUsuarios();
@@ -61,7 +54,7 @@ public class UsuarioControlador {
         usuario.add(new GuiaTuristico("Recorridos Cajamarca",
                 "U" + String.format("%05d", ++contador),
                 "Guía turistico" ,
-                "Ana Robles",
+                "Lucía Robles",
                 "guia@cristorey.com",
                 "guia123",
                 doc3));
@@ -74,7 +67,7 @@ public class UsuarioControlador {
         usuario.add(new Gerente("Gerencia General",
                 "U" + String.format("%05d", ++contador),
                 "Gerente", 
-                "Ramirez Salazar",
+                "Mike Ramirez",
                 "gerente@cristorey.com", 
                 "gerente123", 
                 doc4));
@@ -133,7 +126,7 @@ public class UsuarioControlador {
         }
     }
     
-    public Usuario InicioSesion(String correo, String clave){
+    public Usuario inicioSesion(String correo, String clave){
         try {
             if (correo == null || correo.trim().isEmpty()) {
                 System.out.println("Ingrese correo.");

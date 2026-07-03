@@ -8,10 +8,12 @@ import cristorey_ef.Documento;
 import cristorey_ef.PaqueteTuristico;
 import cristorey_ef.PaqueteTuristicoControlador;
 import cristorey_ef.Pasajero;
+import java.awt.Color;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.DefaultListModel;
+import javax.swing.border.LineBorder;
 
 
 /**
@@ -23,26 +25,15 @@ public class ControlMatutino extends javax.swing.JPanel {
     /**
      * Creates new form ControlMatutino
      */
-    public ControlMatutino() {
+    DefaultListModel<String> modeloLista = new DefaultListModel<>();
+    private PaqueteTuristicoControlador ptc;
+    public ControlMatutino(PaqueteTuristicoControlador ptc) {
         initComponents();
+        this.ptc = ptc;
+        modeloLista.addElement("Lista de documentos vencidos");
+        listDocsVencidos.setModel(modeloLista);
         lblAlerta.setVisible(false);
         lblFecha.setText(LocalDate.now().format(DateTimeFormatter.ofPattern("EEEE, dd 'de' MMMM 'de' yyyy")));
-        tblPaquetes.getTableHeader().setBackground(new java.awt.Color(255, 170, 44));
-        tblPaquetes.getTableHeader().setForeground(java.awt.Color.WHITE);
-        tblPaquetes.getTableHeader().setDefaultRenderer(new javax.swing.table.DefaultTableCellRenderer(){
-            @Override
-            public java.awt.Component getTableCellRendererComponent(javax.swing.JTable table, Object value,
-                    boolean isSelected, boolean hasFocus, int row, int column) {
-                javax.swing.JLabel c = (javax.swing.JLabel) super.getTableCellRendererComponent(
-                        table, value, isSelected, hasFocus, row, column);
-                c.setBackground(table.getTableHeader().getBackground());
-                c.setForeground(table.getTableHeader().getForeground());
-                c.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-                c.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 1, java.awt.Color.LIGHT_GRAY));
-
-                return c;
-            }
-        });
     }
     
 
@@ -59,43 +50,33 @@ public class ControlMatutino extends javax.swing.JPanel {
         jLabel17 = new javax.swing.JLabel();
         lblFecha = new javax.swing.JLabel();
         btnCargarReporte = new javax.swing.JButton();
-        jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        lblNumPasajeros = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
-        jLabel3 = new javax.swing.JLabel();
-        lblNumViajes = new javax.swing.JLabel();
-        jPanel3 = new javax.swing.JPanel();
-        jLabel5 = new javax.swing.JLabel();
+        jPanel5 = new javax.swing.JPanel();
+        jPanel6 = new javax.swing.JPanel();
+        jLabel9 = new javax.swing.JLabel();
         lblNumVencidos = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        pnlPasajeros = new javax.swing.JPanel();
+        jLabel11 = new javax.swing.JLabel();
+        lblNumPasajeros = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
+        jPanel8 = new javax.swing.JPanel();
+        jLabel13 = new javax.swing.JLabel();
+        lblNumViajes = new javax.swing.JLabel();
+        jLabel14 = new javax.swing.JLabel();
         lblAlerta = new javax.swing.JLabel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        tblPaquetes = new javax.swing.JTable();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        listDocsVencidos = new javax.swing.JList<>();
 
         setBackground(new java.awt.Color(252, 242, 226));
-        setLayout(new java.awt.GridBagLayout());
 
         jLabel17.setFont(new java.awt.Font("Forte", 0, 24)); // NOI18N
         jLabel17.setForeground(new java.awt.Color(80, 50, 22));
+        jLabel17.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/ControlMatutino.png"))); // NOI18N
         jLabel17.setText("Control Matutino");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.gridheight = 2;
-        gridBagConstraints.ipadx = 66;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(14, 17, 0, 0);
-        add(jLabel17, gridBagConstraints);
 
         lblFecha.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
         lblFecha.setText("Fecha actual");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(23, 6, 0, 0);
-        add(lblFecha, gridBagConstraints);
 
         btnCargarReporte.setBackground(new java.awt.Color(255, 189, 105));
         btnCargarReporte.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -104,192 +85,218 @@ public class ControlMatutino extends javax.swing.JPanel {
         btnCargarReporte.setBorderPainted(false);
         btnCargarReporte.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnCargarReporte.addActionListener(this::btnCargarReporteActionPerformed);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 9;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridwidth = 7;
-        gridBagConstraints.gridheight = 2;
-        gridBagConstraints.ipadx = 8;
-        gridBagConstraints.ipady = 7;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(14, 2, 0, 19);
-        add(btnCargarReporte, gridBagConstraints);
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(245, 164, 61), 2));
+        jPanel2.setOpaque(false);
+        jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(102, 102, 102));
-        jLabel1.setText("Total de pasajeros");
+        jPanel5.setOpaque(false);
+        jPanel5.setPreferredSize(new java.awt.Dimension(635, 150));
+        jPanel5.setLayout(new java.awt.GridBagLayout());
 
-        lblNumPasajeros.setFont(new java.awt.Font("Forte", 0, 28)); // NOI18N
-        lblNumPasajeros.setForeground(new java.awt.Color(245, 164, 61));
-        lblNumPasajeros.setText("0");
+        jPanel6.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(144, 110, 88), 2));
+        jPanel6.setMaximumSize(new java.awt.Dimension(180, 140));
+        jPanel6.setPreferredSize(new java.awt.Dimension(180, 140));
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(72, 72, 72)
-                .addComponent(lblNumPasajeros)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(40, Short.MAX_VALUE)
-                .addComponent(jLabel1)
-                .addGap(34, 34, 34))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addGap(18, 18, 18)
-                .addComponent(lblNumPasajeros, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(52, Short.MAX_VALUE))
-        );
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.ipadx = 34;
-        gridBagConstraints.ipady = 46;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(35, 47, 0, 0);
-        add(jPanel1, gridBagConstraints);
-
-        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(196, 164, 110), 2));
-
-        jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(102, 102, 102));
-        jLabel3.setText("Viajes del día");
-
-        lblNumViajes.setFont(new java.awt.Font("Forte", 0, 28)); // NOI18N
-        lblNumViajes.setForeground(new java.awt.Color(196, 164, 110));
-        lblNumViajes.setText("0");
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(72, 72, 72)
-                        .addComponent(lblNumViajes))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(48, 48, 48)
-                        .addComponent(jLabel3)))
-                .addContainerGap(52, Short.MAX_VALUE))
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel3)
-                .addGap(18, 18, 18)
-                .addComponent(lblNumViajes, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(52, Short.MAX_VALUE))
-        );
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.gridwidth = 3;
-        gridBagConstraints.ipadx = 46;
-        gridBagConstraints.ipady = 46;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(35, 18, 0, 0);
-        add(jPanel2, gridBagConstraints);
-
-        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(144, 110, 88), 2));
-
-        jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
-        jLabel5.setForeground(new java.awt.Color(102, 102, 102));
-        jLabel5.setText("Docs. vencidos");
+        jLabel9.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
+        jLabel9.setForeground(new java.awt.Color(102, 102, 102));
+        jLabel9.setText("Docs. vencidos");
 
         lblNumVencidos.setFont(new java.awt.Font("Forte", 0, 28)); // NOI18N
         lblNumVencidos.setForeground(new java.awt.Color(144, 110, 88));
         lblNumVencidos.setText("0");
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(72, 72, 72)
-                        .addComponent(lblNumVencidos))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
+        jLabel10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/documento.png"))); // NOI18N
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel6Layout.createSequentialGroup()
                         .addGap(48, 48, 48)
-                        .addComponent(jLabel5)))
-                .addContainerGap(44, Short.MAX_VALUE))
+                        .addComponent(jLabel9))
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addGap(74, 74, 74)
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel10)
+                            .addComponent(lblNumVencidos))))
+                .addContainerGap(57, Short.MAX_VALUE))
         );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel5)
-                .addGap(18, 18, 18)
+                .addComponent(jLabel9)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel10)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE)
                 .addComponent(lblNumVencidos, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(52, Short.MAX_VALUE))
+                .addGap(25, 25, 25))
         );
 
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 4;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.gridwidth = 6;
-        gridBagConstraints.ipadx = 38;
-        gridBagConstraints.ipady = 46;
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.ipadx = 51;
+        gridBagConstraints.ipady = 43;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(35, 18, 0, 0);
-        add(jPanel3, gridBagConstraints);
+        gridBagConstraints.insets = new java.awt.Insets(6, 44, 0, 6);
+        jPanel5.add(jPanel6, gridBagConstraints);
+
+        pnlPasajeros.setBackground(new java.awt.Color(255, 255, 255));
+        pnlPasajeros.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(245, 164, 61), 2));
+        pnlPasajeros.setMaximumSize(new java.awt.Dimension(180, 140));
+        pnlPasajeros.setPreferredSize(new java.awt.Dimension(180, 140));
+
+        jLabel11.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
+        jLabel11.setForeground(new java.awt.Color(102, 102, 102));
+        jLabel11.setText("Total de pasajeros");
+
+        lblNumPasajeros.setFont(new java.awt.Font("Forte", 0, 28)); // NOI18N
+        lblNumPasajeros.setForeground(new java.awt.Color(245, 164, 61));
+        lblNumPasajeros.setText("0");
+
+        jLabel12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/usuarios-alt.png"))); // NOI18N
+
+        javax.swing.GroupLayout pnlPasajerosLayout = new javax.swing.GroupLayout(pnlPasajeros);
+        pnlPasajeros.setLayout(pnlPasajerosLayout);
+        pnlPasajerosLayout.setHorizontalGroup(
+            pnlPasajerosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlPasajerosLayout.createSequentialGroup()
+                .addGroup(pnlPasajerosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlPasajerosLayout.createSequentialGroup()
+                        .addGap(78, 78, 78)
+                        .addComponent(lblNumPasajeros))
+                    .addGroup(pnlPasajerosLayout.createSequentialGroup()
+                        .addGap(44, 44, 44)
+                        .addComponent(jLabel11))
+                    .addGroup(pnlPasajerosLayout.createSequentialGroup()
+                        .addGap(69, 69, 69)
+                        .addComponent(jLabel12)))
+                .addContainerGap(44, Short.MAX_VALUE))
+        );
+        pnlPasajerosLayout.setVerticalGroup(
+            pnlPasajerosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlPasajerosLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel11)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel12)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
+                .addComponent(lblNumPasajeros, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(29, 29, 29))
+        );
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.ipadx = 38;
+        gridBagConstraints.ipady = 25;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
+        jPanel5.add(pnlPasajeros, gridBagConstraints);
+
+        jPanel8.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel8.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(196, 164, 110), 2));
+        jPanel8.setMaximumSize(new java.awt.Dimension(180, 140));
+        jPanel8.setPreferredSize(new java.awt.Dimension(180, 140));
+
+        jLabel13.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
+        jLabel13.setForeground(new java.awt.Color(102, 102, 102));
+        jLabel13.setText("Viajes del día");
+
+        lblNumViajes.setFont(new java.awt.Font("Forte", 0, 28)); // NOI18N
+        lblNumViajes.setForeground(new java.awt.Color(196, 164, 110));
+        lblNumViajes.setText("0");
+
+        jLabel14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/lado-del-coche.png"))); // NOI18N
+
+        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
+        jPanel8.setLayout(jPanel8Layout);
+        jPanel8Layout.setHorizontalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addGap(73, 73, 73)
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel14)
+                    .addGroup(jPanel8Layout.createSequentialGroup()
+                        .addGap(9, 9, 9)
+                        .addComponent(lblNumViajes)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
+                .addContainerGap(56, Short.MAX_VALUE)
+                .addComponent(jLabel13)
+                .addGap(55, 55, 55))
+        );
+        jPanel8Layout.setVerticalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel13)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel14)
+                .addGap(32, 32, 32)
+                .addComponent(lblNumViajes, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(34, Short.MAX_VALUE))
+        );
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.ipadx = 50;
+        gridBagConstraints.ipady = 28;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 56, 0, 0);
+        jPanel5.add(jPanel8, gridBagConstraints);
+
+        jPanel2.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 10, 770, 210));
 
         lblAlerta.setBackground(new java.awt.Color(255, 220, 220));
         lblAlerta.setForeground(new java.awt.Color(180, 30, 30));
         lblAlerta.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblAlerta.setText("⚠ Existen documentos vencidos. Revise los pasajeros afectados.");
         lblAlerta.setOpaque(true);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 4;
-        gridBagConstraints.gridwidth = 5;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(26, 148, 31, 0);
-        add(lblAlerta, gridBagConstraints);
+        jPanel2.add(lblAlerta, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 220, -1, -1));
 
-        tblPaquetes.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        tblPaquetes.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
-            },
-            new String [] {
-                "Paquete Turístico", "Horario", "Inscritos", "Cupos Máx.", "Disponibles", "%  Ocupado"
-            }
-        ));
-        tblPaquetes.setRowHeight(28);
-        tblPaquetes.setShowHorizontalLines(true);
-        tblPaquetes.setShowVerticalLines(true);
-        jScrollPane2.setViewportView(tblPaquetes);
+        listDocsVencidos.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
+        listDocsVencidos.setMaximumSize(new java.awt.Dimension(45, 50));
+        listDocsVencidos.setMinimumSize(new java.awt.Dimension(45, 50));
+        listDocsVencidos.setPreferredSize(new java.awt.Dimension(45, 50));
+        jScrollPane1.setViewportView(listDocsVencidos);
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.gridwidth = 16;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.ipadx = 595;
-        gridBagConstraints.ipady = 121;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(18, 17, 0, 19);
-        add(jScrollPane2, gridBagConstraints);
+        jPanel2.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 250, 650, 97));
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(135, 135, 135)
+                .addComponent(lblFecha)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnCargarReporte, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(21, 21, 21))
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 861, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(25, 25, 25)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblFecha)
+                    .addComponent(jLabel17)
+                    .addComponent(btnCargarReporte, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(35, 35, 35)
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 430, Short.MAX_VALUE))
+        );
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCargarReporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCargarReporteActionPerformed
@@ -298,69 +305,68 @@ public class ControlMatutino extends javax.swing.JPanel {
     }//GEN-LAST:event_btnCargarReporteActionPerformed
 
     private void cargarReporte() {
-        PaqueteTuristicoControlador ptc = new PaqueteTuristicoControlador();
         ArrayList<PaqueteTuristico> paquetes = ptc.getPaquete();
-
-        // limpiar tabla antes de recargar
-        DefaultTableModel modelo = (DefaultTableModel) tblPaquetes.getModel();
-        modelo.setRowCount(0);
+        
+        ArrayList<String> numDocsVencidos = new ArrayList();
 
         int totalPasajeros = 0;
         int docsVencidos   = 0;
-        LocalDate hoy      = LocalDate.now();
 
         for (PaqueteTuristico p : paquetes) {
 
-            // cuántos pasajeros tiene inscrito este paquete
             int inscritos = p.getCupos_maximos() - p.getCupos_disponibles();
             totalPasajeros += inscritos;
 
-            // revisar si algún pasajero tiene documento vencido (HU001 – Esc. 6)
             for (Pasajero pas : p.getListaPasajeros()) {
                 Documento doc = pas.getDocumento();
-                // regla del sistema: DNI + edad ≥ 60 no vence nunca
-                boolean esVitalicio = doc.getTipo_doc().equalsIgnoreCase("DNI")
-                                   && doc.getEdad() >= 60;
-                if (!esVitalicio && hoy.isAfter(doc.getFecha_vencimiento())) {
+                if (!doc.documentoVigente()) {
                     docsVencidos++;
+                    
+                    numDocsVencidos.add(doc.getNro_doc());
                 }
             }
-
-            // agregar fila a la tabla (HU001 – Esc. 7)
-            modelo.addRow(new Object[]{
-                p.getNombre_paquete(),
-                p.getHorario(),
-                inscritos,
-                p.getCupos_maximos(),
-                p.getCupos_disponibles(),
-                String.format("%.1f %%", p.porcentajeOcupacion())
-            });
         }
 
-        // actualizar las 3 tarjetas de resumen
         lblNumPasajeros.setText(String.valueOf(totalPasajeros));
         lblNumViajes.setText(String.valueOf(paquetes.size()));
         lblNumVencidos.setText(String.valueOf(docsVencidos));
 
-        // mostrar u ocultar la alerta de documentos vencidos
         lblAlerta.setVisible(docsVencidos > 0);
+        
+        modeloLista.clear();
+        
+        if (numDocsVencidos.isEmpty()) {
+            modeloLista.addElement("No hay documentos vencidos :)");
+        } else {
+            for (String numeroDoc : numDocsVencidos) {
+                modeloLista.addElement(numeroDoc);
+            }
+            ((javax.swing.JComponent) listDocsVencidos.getParent().getParent())
+                .setBorder(new LineBorder(Color.RED, 2));
+        }
+        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCargarReporte;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel17;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JPanel jPanel1;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel8;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblAlerta;
     private javax.swing.JLabel lblFecha;
     private javax.swing.JLabel lblNumPasajeros;
     private javax.swing.JLabel lblNumVencidos;
     private javax.swing.JLabel lblNumViajes;
-    private javax.swing.JTable tblPaquetes;
+    private javax.swing.JList<String> listDocsVencidos;
+    private javax.swing.JPanel pnlPasajeros;
     // End of variables declaration//GEN-END:variables
 }

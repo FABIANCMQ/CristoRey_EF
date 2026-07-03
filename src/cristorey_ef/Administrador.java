@@ -24,7 +24,7 @@ public class Administrador extends Usuario {
         this.nivel_acceso = nivel_acceso;
     }
     
-    public void BloquearUsuario(Usuario usuario){
+    public void bloquearUsuario(Usuario usuario){
         if (usuario instanceof Administrador) {
             System.out.println("No se puede bloquear a un Administrador.");
             return;

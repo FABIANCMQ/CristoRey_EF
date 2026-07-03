@@ -5,8 +5,12 @@
 package PanelesAdministrador;
 
 import cristorey_ef.PaqueteTuristico;
-import cristorey_ef.PaqueteTuristicoControlador;
+import cristorey_ef.ReservaControlador;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author Usuario
@@ -16,42 +20,62 @@ public class Estadisticas extends javax.swing.JPanel {
     /**
      * Creates new form Estadisticas
      */
-    public Estadisticas() {
+    private ReservaControlador rc;
+
+    public Estadisticas(ReservaControlador rc) {
         initComponents();
+
+        this.rc=rc;
+        tblRanking.getTableHeader().setBackground(new java.awt.Color(255, 170, 44));
+        tblRanking.getTableHeader().setForeground(java.awt.Color.WHITE);
+        tblRanking.getTableHeader().setDefaultRenderer(new javax.swing.table.DefaultTableCellRenderer(){
+            @Override
+            public java.awt.Component getTableCellRendererComponent(javax.swing.JTable table, Object value,
+                    boolean isSelected, boolean hasFocus, int row, int column) {
+                javax.swing.JLabel c = (javax.swing.JLabel) super.getTableCellRendererComponent(
+                        table, value, isSelected, hasFocus, row, column);
+                c.setBackground(table.getTableHeader().getBackground());
+                c.setForeground(table.getTableHeader().getForeground());
+                c.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+                c.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 1, java.awt.Color.LIGHT_GRAY));
+
+                return c;
+            }
+        });
+
+        lblMes.setText(LocalDate.now().format(DateTimeFormatter.ofPattern("EEEE, dd 'de' MMMM 'de' yyyy")));
+
         cargarEstadisticas();
     }
-    
+
     private void cargarEstadisticas() {
-        PaqueteTuristicoControlador ptc = new PaqueteTuristicoControlador();
-        ArrayList<PaqueteTuristico> paquetes = ptc.getPaquete();
+        double ganancias = rc.gananciasUltimoMes();
+        lblGanancias.setText(String.valueOf("S/"+ ganancias));
 
+        String diaPopular = rc.diaMasConcurridoUltimoMes();
+        lblDiaConcurrido.setText(diaPopular);
 
-        int totalInscritos     = 0;
-        double sumaOcupacion   = 0;
-        String nombrePopular   = "–";
-        int maxInscritos       = -1;
+        DefaultTableModel modelo = (DefaultTableModel) tblRanking.getModel();
+        modelo.setRowCount(0);
 
-        for (PaqueteTuristico p : paquetes) {
-            int inscritos   = p.contarPasajeros();
-            double ocup     = p.porcentajeOcupacion();
+        ArrayList<ReservaControlador.RankingPaquete> ranking = rc.rankingPopularidadPaquetes();
 
-            totalInscritos += inscritos;
-            sumaOcupacion  += ocup;
-
-            // detectar el paquete con más inscritos
-            if (inscritos > maxInscritos) {
-                maxInscritos   = inscritos;
-                nombrePopular  = p.getNombre_paquete();
-            }
+        if (ranking.isEmpty()) {
+            modelo.addRow(new Object[]{"Sin reservas registradas este mes", "-", "-", "-"});
+            return;
         }
 
-        // Actualizar tarjetas
-        lblNumTotal.setText(String.valueOf(totalInscritos));
-        lblNomPopular.setText(paquetes.isEmpty() ? "–" : nombrePopular);
-
-        double promedio = paquetes.isEmpty() ? 0 : sumaOcupacion / paquetes.size();
-        lblNumPromedio.setText(String.format("%.1f %%", promedio));
+        for (ReservaControlador.RankingPaquete item : ranking) {
+            PaqueteTuristico p = item.getPaquete();
+            modelo.addRow(new Object[]{
+                p.getNombre_paquete(),
+                p.getDestino(),
+                item.getCantidadReservas(),
+                String.format("%.1f %%", item.getPorcentaje())
+            });
+        }
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -60,187 +84,125 @@ public class Estadisticas extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-        java.awt.GridBagConstraints gridBagConstraints;
 
         jLabel17 = new javax.swing.JLabel();
+        lblMes = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        lblNumTotal = new javax.swing.JLabel();
+        lblGanancias = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
-        lblNomPopular = new javax.swing.JLabel();
-        jPanel3 = new javax.swing.JPanel();
-        jLabel5 = new javax.swing.JLabel();
-        lblNumPromedio = new javax.swing.JLabel();
+        lblDiaConcurrido = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblRanking = new javax.swing.JTable();
 
-        setBackground(new java.awt.Color(252, 242, 226));
-        setLayout(new java.awt.GridBagLayout());
+        setBackground(new java.awt.Color(255, 249, 236));
 
         jLabel17.setFont(new java.awt.Font("Forte", 0, 24)); // NOI18N
         jLabel17.setForeground(new java.awt.Color(80, 50, 22));
+        jLabel17.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/Estadisticas.png"))); // NOI18N
         jLabel17.setText("Estadísticas");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridheight = 2;
-        gridBagConstraints.ipadx = 126;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(25, 17, 0, 0);
-        add(jLabel17, gridBagConstraints);
+
+        lblMes.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
+        lblMes.setText("Fecha actual");
 
         jButton1.setBackground(new java.awt.Color(255, 189, 105));
         jButton1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("Actualizar");
+        jButton1.setText("Generar Reporte");
         jButton1.setBorderPainted(false);
         jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton1.addActionListener(this::jButton1ActionPerformed);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 3;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.ipadx = 45;
-        gridBagConstraints.ipady = 7;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(15, 251, 0, 32);
-        add(jButton1, gridBagConstraints);
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(245, 164, 61), 2));
+        jPanel1.setLayout(new java.awt.GridLayout(2, 1));
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(102, 102, 102));
-        jLabel1.setText("Total de pasajeros");
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setText("Ganancias del mes");
+        jPanel1.add(jLabel1);
 
-        lblNumTotal.setFont(new java.awt.Font("Forte", 0, 28)); // NOI18N
-        lblNumTotal.setForeground(new java.awt.Color(245, 164, 61));
-        lblNumTotal.setText("0");
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(80, 80, 80)
-                .addComponent(lblNumTotal)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(43, Short.MAX_VALUE)
-                .addComponent(jLabel1)
-                .addGap(37, 37, 37))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addGap(18, 18, 18)
-                .addComponent(lblNumTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(52, Short.MAX_VALUE))
-        );
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.ipadx = 37;
-        gridBagConstraints.ipady = 46;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(33, 119, 0, 0);
-        add(jPanel1, gridBagConstraints);
+        lblGanancias.setFont(new java.awt.Font("Forte", 0, 26)); // NOI18N
+        lblGanancias.setForeground(new java.awt.Color(245, 164, 61));
+        lblGanancias.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblGanancias.setText("S/ 0.00");
+        jPanel1.add(lblGanancias);
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(196, 164, 110), 2));
+        jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(245, 164, 61), 2));
+        jPanel2.setLayout(new java.awt.GridLayout(2, 1));
 
-        jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(102, 102, 102));
-        jLabel3.setText("Paquete más popular");
+        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel3.setText("Día más concurrido");
+        jPanel2.add(jLabel3);
 
-        lblNomPopular.setFont(new java.awt.Font("Forte", 0, 28)); // NOI18N
-        lblNomPopular.setForeground(new java.awt.Color(196, 164, 110));
-        lblNomPopular.setText("-");
+        lblDiaConcurrido.setFont(new java.awt.Font("Forte", 0, 26)); // NOI18N
+        lblDiaConcurrido.setForeground(new java.awt.Color(245, 164, 61));
+        lblDiaConcurrido.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblDiaConcurrido.setText("-");
+        jPanel2.add(lblDiaConcurrido);
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(57, Short.MAX_VALUE)
-                .addComponent(jLabel3)
-                .addGap(55, 55, 55))
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(102, 102, 102)
-                .addComponent(lblNomPopular)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        tblRanking.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        tblRanking.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Paquete", "Destino", "Reservas", "% Popularidad"
+            }
+        ));
+        tblRanking.setRowHeight(28);
+        tblRanking.setShowHorizontalLines(true);
+        tblRanking.setShowVerticalLines(true);
+        jScrollPane1.setViewportView(tblRanking);
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(21, 21, 21)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 327, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 439, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel17)
+                        .addGap(186, 186, 186)
+                        .addComponent(lblMes)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 261, Short.MAX_VALUE)
+                        .addComponent(jButton1)))
+                .addGap(14, 14, 14))
         );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(8, 8, 8)
-                .addComponent(jLabel3)
-                .addGap(18, 18, 18)
-                .addComponent(lblNomPopular, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(63, Short.MAX_VALUE))
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(19, 19, 19)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel17)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(7, 7, 7)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lblMes)
+                            .addComponent(jButton1))))
+                .addGap(24, 24, 24)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(24, 24, 24)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.gridwidth = 3;
-        gridBagConstraints.ipadx = 51;
-        gridBagConstraints.ipady = 57;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(39, 85, 76, 0);
-        add(jPanel2, gridBagConstraints);
-
-        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(144, 110, 88), 2));
-
-        jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
-        jLabel5.setForeground(new java.awt.Color(102, 102, 102));
-        jLabel5.setText("% Ocupado");
-
-        lblNumPromedio.setFont(new java.awt.Font("Forte", 0, 28)); // NOI18N
-        lblNumPromedio.setForeground(new java.awt.Color(144, 110, 88));
-        lblNumPromedio.setText("0%");
-
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(51, 51, 51)
-                        .addComponent(jLabel5))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(63, 63, 63)
-                        .addComponent(lblNumPromedio)))
-                .addContainerGap(57, Short.MAX_VALUE))
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel5)
-                .addGap(18, 18, 18)
-                .addComponent(lblNumPromedio, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(52, Short.MAX_VALUE))
-        );
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 3;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.ipadx = 51;
-        gridBagConstraints.ipady = 46;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(33, 107, 0, 0);
-        add(jPanel3, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
         cargarEstadisticas();
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -250,12 +212,12 @@ public class Estadisticas extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JLabel lblNomPopular;
-    private javax.swing.JLabel lblNumPromedio;
-    private javax.swing.JLabel lblNumTotal;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblDiaConcurrido;
+    private javax.swing.JLabel lblGanancias;
+    private javax.swing.JLabel lblMes;
+    private javax.swing.JTable tblRanking;
     // End of variables declaration//GEN-END:variables
 }

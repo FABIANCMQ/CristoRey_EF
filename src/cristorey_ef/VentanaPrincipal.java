@@ -24,13 +24,44 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     /**
      * Creates new form PantallaPrincipal
      */
-    UsuarioControlador usuarioControlador = UsuarioControlador.getInstancia();
-    Container contenidoOriginal = getContentPane();
-    VentanaPrincipalAdmin admin = new VentanaPrincipalAdmin();
-    VentanaPrincipalPlani plani = new VentanaPrincipalPlani();
-    public VentanaPrincipal() {
+    private final UsuarioControlador usuarioControlador;
+    private final PasajeroControlador pasajeroControlador;
+    private final ReservaControlador reservaControlador;
+    private final PaqueteTuristicoControlador paqueteTuristicoControlador;
+    
+    Container contenidoOriginal;
+    VentanaPrincipalAdmin admin;
+    VentanaPrincipalPlani plani;
+    public VentanaPrincipal(PasajeroControlador pasajeroControlador,
+        UsuarioControlador usuarioControlador,
+        ReservaControlador reservaControlador,
+        PaqueteTuristicoControlador paqueteTuristicoControlador) {
         initComponents();
-        
+        this.pasajeroControlador = pasajeroControlador;
+        this.usuarioControlador = usuarioControlador;
+        this.reservaControlador = reservaControlador;
+        this.paqueteTuristicoControlador = paqueteTuristicoControlador;
+        contenidoOriginal = getContentPane();
+        admin = new VentanaPrincipalAdmin(usuarioControlador, pasajeroControlador,
+                reservaControlador, paqueteTuristicoControlador);
+        plani = new VentanaPrincipalPlani(pasajeroControlador, usuarioControlador,
+                reservaControlador, paqueteTuristicoControlador);
+    }
+    
+    public UsuarioControlador getUsuarioControlador() {
+        return usuarioControlador;
+    }
+
+    public PasajeroControlador getPasajeroControlador() {
+        return pasajeroControlador;
+    }
+
+    public ReservaControlador getReservaControlador() {
+        return reservaControlador;
+    }
+    
+    public PaqueteTuristicoControlador getPaqueteTuristicoControlador() {
+        return paqueteTuristicoControlador;
     }
 
     public VentanaPrincipalAdmin getAdmin() {
@@ -142,9 +173,9 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         gridBagConstraints.insets = new java.awt.Insets(12, 318, 0, 0);
         panel.add(jLabel5, gridBagConstraints);
 
-        txtCorreo.setMaximumSize(new java.awt.Dimension(100, 25));
-        txtCorreo.setMinimumSize(new java.awt.Dimension(100, 25));
-        txtCorreo.setPreferredSize(new java.awt.Dimension(100, 25));
+        txtCorreo.setMaximumSize(new java.awt.Dimension(100, 30));
+        txtCorreo.setMinimumSize(new java.awt.Dimension(100, 30));
+        txtCorreo.setPreferredSize(new java.awt.Dimension(100, 30));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 3;
@@ -155,9 +186,9 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         panel.add(txtCorreo, gridBagConstraints);
 
         txtClave.setActionCommand("<Not Set>");
-        txtClave.setMaximumSize(new java.awt.Dimension(100, 25));
-        txtClave.setMinimumSize(new java.awt.Dimension(100, 25));
-        txtClave.setPreferredSize(new java.awt.Dimension(100, 25));
+        txtClave.setMaximumSize(new java.awt.Dimension(100, 30));
+        txtClave.setMinimumSize(new java.awt.Dimension(100, 30));
+        txtClave.setPreferredSize(new java.awt.Dimension(100, 30));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 4;
@@ -231,7 +262,13 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new VentanaPrincipal().setVisible(true));
+        PasajeroControlador pasajeroControlador = new PasajeroControlador();
+        UsuarioControlador usuarioControlador = new UsuarioControlador();
+        ReservaControlador reservaControlador = new ReservaControlador();
+        PaqueteTuristicoControlador paqueteTuristicoControlador = new PaqueteTuristicoControlador();
+
+        java.awt.EventQueue.invokeLater(() -> new VentanaPrincipal(pasajeroControlador,
+                usuarioControlador, reservaControlador, paqueteTuristicoControlador).setVisible(true));
     }
     
     

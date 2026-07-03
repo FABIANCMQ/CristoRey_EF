@@ -34,8 +34,8 @@ public class Planillero extends Usuario{
         }
     }
     
-    public boolean alertaReinscripcion(String nrodoc, PasajeroControlador controlador){
-        Pasajero psjr = controlador.buscarDocumento(nrodoc);
+    public boolean alertaReinscripcion(String dato, PasajeroControlador controlador){
+        Pasajero psjr = controlador.buscarPasajero(dato);
         if (psjr != null) {
             System.out.println("ALERTA: Pasajero ya registrado.");
             return true;

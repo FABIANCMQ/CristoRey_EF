@@ -80,7 +80,7 @@ public abstract class Usuario {
     
     
     
-    public void IniciarSesion(){
+    public void iniciarSesion(){
         System.out.println("Bienvenido " + nombre);
     }
     

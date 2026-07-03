@@ -31,13 +31,7 @@ public class Documento {
     }
 
     public void setTipo_doc(String tipo_doc) {
-        if(tipo_doc.equalsIgnoreCase("DNI")
-           ||tipo_doc.equalsIgnoreCase("CE")){
-            this.tipo_doc = tipo_doc;
-        }else{
-            System.out.println("Tipo de documento invalido.");
-        }
-        
+        this.tipo_doc = tipo_doc;
     }
 
     public String getNro_doc() {
@@ -45,13 +39,7 @@ public class Documento {
     }
 
     public void setNro_doc(String nro_doc) {
-        if(tipo_doc.equalsIgnoreCase("DNI") && nro_doc.length()==8){
-            this.nro_doc = nro_doc;
-        }else if (tipo_doc.equalsIgnoreCase("CE") && nro_doc.length()==9){
-            this.nro_doc = nro_doc;
-        }else{
-            System.out.println("Número de documento invalido para "+this.nro_doc);
-        }
+        this.nro_doc = nro_doc;
     }
 
     public LocalDate getFecha_emision() {
@@ -83,50 +71,38 @@ public class Documento {
     }
 
     public void setEdad(int edad) {
-        if(edad < 1 || edad > 100){
-            System.out.println("Edad invalida");
-        }else{
-            this.edad = edad;
-        }
+        this.edad = edad;
+    }
+    
+    public boolean validarVigencia() {
+        return tipo_doc.equalsIgnoreCase("DNI") && edad >= 60;
     }
 
-
-    public void validarVigencia(){
-        LocalDate fecha_actual = LocalDate.now();
-        
-        if(tipo_doc.equalsIgnoreCase("DNI") && edad >= 60){
-            System.out.println("Estado: VIGENTE - NO CADUCA");
-        }else if (fecha_actual.isBefore(fecha_vencimiento)) {
-            System.out.println("Estado: VIGENTE");
-        }else{
-            System.out.println("Estado: VENCIDO");
+    public boolean numDocValido() {
+        if (tipo_doc.equalsIgnoreCase("DNI")) {
+            return nro_doc.matches("\\d{8}");
         }
+
+        if (tipo_doc.equalsIgnoreCase("CE")) {
+            return nro_doc.matches("\\d{9}");
+        }
+
+        return false;
     }
+
+    public boolean edadValida() {
+        return edad >= 1 && edad <= 110;
+    }
+
     
     public boolean documentoVigente(){
-        LocalDate fecha_actual = LocalDate.now();
-        
-        if (tipo_doc.equalsIgnoreCase("DNI") && edad >= 60) {
+        if (validarVigencia()) {
             return true;
         }
-        if (fecha_vencimiento == null) {
-            return false;   
-        }
-        
-        return fecha_actual.isBefore(fecha_vencimiento);
+
+        return LocalDate.now().isBefore(fecha_vencimiento);
     }
     
-    public boolean documentacionCompleta(){
-        if (tipo_doc == null || tipo_doc.trim().isEmpty()) {
-            return false;
-        }
-        if (nro_doc == null || nro_doc.trim().isEmpty()) {
-            return false;
-        }
-        if (fecha_emision == null || fecha_vencimiento == null) {
-            return false;
-        }
-        return true;
-    }
+    
     
 }
