@@ -2,9 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
-package PanelesPlanillero;
+package PanelesAsesorVentas;
 
-import cristorey_ef.Planillero;
+import cristorey_ef.AsesorVentas;
 import cristorey_ef.Usuario;
 import cristorey_ef.UsuarioControlador;
 import cristorey_ef.VentanaPrincipal;
@@ -24,14 +24,14 @@ public class Perfil extends javax.swing.JPanel {
         initComponents();
         
         this.uc = uc;
-        Usuario plani = uc.buscarCargo("Planillero");
+        Usuario asesor = uc.buscarCargo("Asesor de ventas");
         
-        Planillero pl = (Planillero) plani;
-        txtCodigo.setText("Codigo: "+plani.getCodigo_usuario());
-        txtDocumento.setText("Nro Documento: "+plani.documento.getNro_doc());
-        txtNombre.setText("Nombre: "+plani.getNombre());
-        txtCorreo.setText("Correo: "+plani.getCorreo());
-        txtArea.setText("Area: "+pl.getArea_trabajo());
+        AsesorVentas av = (AsesorVentas) asesor;
+        txtCodigo.setText("Codigo: "+asesor.getCodigo_usuario());
+        txtDocumento.setText("Nro Documento: "+asesor.documento.getNro_doc());
+        txtNombre.setText("Nombre: "+asesor.getNombre());
+        txtCorreo.setText("Correo: "+asesor.getCorreo());
+        txtArea.setText("Sede: "+av.getSede());
     }
 
     /**
@@ -79,7 +79,7 @@ public class Perfil extends javax.swing.JPanel {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(btnSalir)
-                .addContainerGap(713, Short.MAX_VALUE))
+                .addContainerGap(689, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -94,10 +94,11 @@ public class Perfil extends javax.swing.JPanel {
 
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/PerfilPlani.png"))); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 0;
+        gridBagConstraints.ipady = 8;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(25, 77, 0, 0);
+        gridBagConstraints.insets = new java.awt.Insets(6, 67, 0, 0);
         jPanel1.add(jLabel3, gridBagConstraints);
 
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/usuario.png"))); // NOI18N
@@ -105,15 +106,16 @@ public class Perfil extends javax.swing.JPanel {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(18, 235, 0, 0);
+        gridBagConstraints.insets = new java.awt.Insets(6, 214, 0, 0);
         jPanel1.add(jLabel2, gridBagConstraints);
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/cerrar-sesion-alt.png"))); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(18, 227, 113, 0);
+        gridBagConstraints.insets = new java.awt.Insets(18, 214, 75, 0);
         jPanel1.add(jLabel1, gridBagConstraints);
 
         jPanel3.setBackground(new java.awt.Color(255, 204, 153));
@@ -140,7 +142,7 @@ public class Perfil extends javax.swing.JPanel {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtCodigo, javax.swing.GroupLayout.DEFAULT_SIZE, 249, Short.MAX_VALUE)
+                    .addComponent(txtCodigo, javax.swing.GroupLayout.DEFAULT_SIZE, 251, Short.MAX_VALUE)
                     .addComponent(txtDocumento)
                     .addComponent(txtNombre)
                     .addComponent(txtCorreo)
@@ -164,13 +166,13 @@ public class Perfil extends javax.swing.JPanel {
         );
 
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.gridheight = 2;
-        gridBagConstraints.ipadx = 185;
+        gridBagConstraints.ipadx = 187;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(18, 18, 0, 288);
+        gridBagConstraints.insets = new java.awt.Insets(6, 10, 0, 248);
         jPanel1.add(jPanel3, gridBagConstraints);
 
         btnCerrarSesion2.setBackground(new java.awt.Color(255, 153, 51));
@@ -178,13 +180,13 @@ public class Perfil extends javax.swing.JPanel {
         btnCerrarSesion2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnCerrarSesion2.addActionListener(this::btnCerrarSesion2ActionPerformed);
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 3;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.ipadx = 163;
         gridBagConstraints.ipady = 9;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(18, 18, 113, 288);
+        gridBagConstraints.insets = new java.awt.Insets(18, 12, 75, 248);
         jPanel1.add(btnCerrarSesion2, gridBagConstraints);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -192,21 +194,21 @@ public class Perfil extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 446, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
         // TODO add your handling code here:
         VentanaPrincipal ventana =(VentanaPrincipal) SwingUtilities.getWindowAncestor(this);
-        ventana.navegar(ventana.getPlani());
+        ventana.navegar(ventana.getAsesor());
     }//GEN-LAST:event_btnSalirActionPerformed
 
     private void btnCerrarSesion2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarSesion2ActionPerformed

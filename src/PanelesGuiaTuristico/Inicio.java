@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
-package PanelesAdministrador;
+package PanelesGuiaTuristico;
 
 import cristorey_ef.PaqueteTuristico;
 import cristorey_ef.PaqueteTuristicoControlador;
@@ -35,17 +35,10 @@ public class Inicio extends javax.swing.JPanel {
     private void cargarReporteGeneral() {
         
         ArrayList<PaqueteTuristico> paquetes = ptc.getPaquete();
-        String nombrePopular   = "–--";
-        int maxInscritos       = -1;
         int totalInscritos     = 0;
-        for (int i = 0; i < paquetes.size(); i++) {
-            PaqueteTuristico p = paquetes.get(i);
+        for (PaqueteTuristico p : paquetes) {
             int inscritos   = p.contarPasajeros();
             totalInscritos += inscritos;
-             if (inscritos > maxInscritos) {
-                maxInscritos   = inscritos;
-                nombrePopular  = p.getNombre_paquete();
-            }
         }
         lblNumPasajeros.setText(String.valueOf(totalInscritos));
         
@@ -54,6 +47,18 @@ public class Inicio extends javax.swing.JPanel {
         
         lblNumViajes.setText(String.valueOf(paquetes.size()));
         
+        String nombrePopular   = "–--";
+        int maxInscritos       = -1;
+        for (PaqueteTuristico p : paquetes) {
+            int inscritos   = p.contarPasajeros();
+
+            totalInscritos += inscritos;
+
+            if (inscritos > maxInscritos) {
+                maxInscritos   = inscritos;
+                nombrePopular  = p.getNombre_paquete();
+            }
+        }
         lblNomPopular.setText(nombrePopular);
     }
 
@@ -69,7 +74,7 @@ public class Inicio extends javax.swing.JPanel {
 
         jLabel15 = new javax.swing.JLabel();
         jLabel16 = new javax.swing.JLabel();
-        btnDatosAdmin = new javax.swing.JButton();
+        btnDatosGuia = new javax.swing.JButton();
         jLabel17 = new javax.swing.JLabel();
         jLabel18 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
@@ -96,19 +101,19 @@ public class Inicio extends javax.swing.JPanel {
         jLabel15.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/perfilAdmin1.png"))); // NOI18N
 
         jLabel16.setFont(new java.awt.Font("Microsoft PhagsPa", 0, 12)); // NOI18N
-        jLabel16.setText("Administradora");
+        jLabel16.setText("Guia Turistico");
 
-        btnDatosAdmin.setFont(new java.awt.Font("Rockwell", 0, 14)); // NOI18N
-        btnDatosAdmin.setText("Mariela Martines");
-        btnDatosAdmin.setBorderPainted(false);
-        btnDatosAdmin.setContentAreaFilled(false);
-        btnDatosAdmin.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnDatosAdmin.addActionListener(this::btnDatosAdminActionPerformed);
+        btnDatosGuia.setFont(new java.awt.Font("Rockwell", 0, 14)); // NOI18N
+        btnDatosGuia.setText("Lucía Robles");
+        btnDatosGuia.setBorderPainted(false);
+        btnDatosGuia.setContentAreaFilled(false);
+        btnDatosGuia.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnDatosGuia.addActionListener(this::btnDatosGuiaActionPerformed);
 
         jLabel17.setFont(new java.awt.Font("Forte", 0, 24)); // NOI18N
         jLabel17.setForeground(new java.awt.Color(80, 50, 22));
         jLabel17.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/Bienvenido.png"))); // NOI18N
-        jLabel17.setText("¡Hola, Mariela!");
+        jLabel17.setText("¡Hola, Lucía!");
 
         jLabel18.setFont(new java.awt.Font("Rockwell", 0, 14)); // NOI18N
         jLabel18.setText("Bienvenida al sistema de gestión de trabajo");
@@ -156,17 +161,16 @@ public class Inicio extends javax.swing.JPanel {
                 .addComponent(jLabel24)
                 .addGap(18, 18, 18)
                 .addComponent(lblNumViajes, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(41, Short.MAX_VALUE))
         );
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 4;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.ipadx = 51;
         gridBagConstraints.ipady = 35;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(0, 103, 0, 36);
+        gridBagConstraints.insets = new java.awt.Insets(17, 32, 0, 104);
         jPanel1.add(jPanel6, gridBagConstraints);
 
         jPanel4.setBackground(new java.awt.Color(255, 255, 255));
@@ -208,7 +212,7 @@ public class Inicio extends javax.swing.JPanel {
                 .addComponent(jLabel21)
                 .addGap(18, 18, 18)
                 .addComponent(lblGanancias, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(37, Short.MAX_VALUE))
         );
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -218,7 +222,7 @@ public class Inicio extends javax.swing.JPanel {
         gridBagConstraints.ipadx = 50;
         gridBagConstraints.ipady = 31;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(0, 95, 0, 0);
+        gridBagConstraints.insets = new java.awt.Insets(17, 35, 0, 0);
         jPanel1.add(jPanel4, gridBagConstraints);
 
         jPanel5.setBackground(new java.awt.Color(255, 255, 255));
@@ -270,7 +274,7 @@ public class Inicio extends javax.swing.JPanel {
         gridBagConstraints.ipadx = 80;
         gridBagConstraints.ipady = 41;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(37, 29, 6, 0);
+        gridBagConstraints.insets = new java.awt.Insets(26, 99, 46, 0);
         jPanel1.add(jPanel5, gridBagConstraints);
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
@@ -322,7 +326,7 @@ public class Inicio extends javax.swing.JPanel {
         gridBagConstraints.ipadx = 62;
         gridBagConstraints.ipady = 27;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(0, 29, 0, 0);
+        gridBagConstraints.insets = new java.awt.Insets(17, 99, 0, 0);
         jPanel1.add(jPanel3, gridBagConstraints);
 
         btnCargarReporte.setBackground(new java.awt.Color(255, 189, 105));
@@ -338,7 +342,7 @@ public class Inicio extends javax.swing.JPanel {
         gridBagConstraints.ipadx = 45;
         gridBagConstraints.ipady = 7;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(110, 17, 0, 0);
+        gridBagConstraints.insets = new java.awt.Insets(124, 70, 0, 104);
         jPanel1.add(btnCargarReporte, gridBagConstraints);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -350,14 +354,16 @@ public class Inicio extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel18))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 307, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 333, Short.MAX_VALUE)
                 .addComponent(jLabel15)
-                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnDatosAdmin)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(14, 14, 14)
-                        .addComponent(jLabel16))))
+                        .addGap(32, 32, 32)
+                        .addComponent(jLabel16))
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnDatosGuia)))
+                .addGap(12, 12, 12))
             .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
@@ -370,22 +376,21 @@ public class Inicio extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jLabel18))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnDatosAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnDatosGuia, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jLabel15))
                 .addGap(18, 18, 18)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 459, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnDatosAdminActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDatosAdminActionPerformed
+    private void btnDatosGuiaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDatosGuiaActionPerformed
         // TODO add your handling code here:
         VentanaPrincipal ventana =(VentanaPrincipal) SwingUtilities.getWindowAncestor(this);
 
         ventana.navegar(new Perfil(uc));
-    }//GEN-LAST:event_btnDatosAdminActionPerformed
+    }//GEN-LAST:event_btnDatosGuiaActionPerformed
 
     private void btnCargarReporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCargarReporteActionPerformed
         // TODO add your handling code here:
@@ -395,7 +400,7 @@ public class Inicio extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCargarReporte;
-    private javax.swing.JButton btnDatosAdmin;
+    private javax.swing.JButton btnDatosGuia;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;

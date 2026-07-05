@@ -20,6 +20,7 @@ public class PaqueteTuristico {
     private int cupos_maximos;
 
     private ArrayList<Pasajero> listaPasajeros;
+    private final ArrayList<Promocion> promociones = new ArrayList<>();
 
     public PaqueteTuristico(String nombre_paquete, String codigo_paquete, String destino, double costo, String horario, int cupos_disponibles, int cupos_maximos) {
         this.nombre_paquete = nombre_paquete;
@@ -97,6 +98,10 @@ public class PaqueteTuristico {
     public ArrayList<Pasajero> getListaPasajeros() {
         return listaPasajeros;
     }
+    
+    public ArrayList<Promocion> getPromociones() {
+        return promociones;
+    }
 
     public void setListaPasajeros(ArrayList<Pasajero> listaPasajeros) {
         this.listaPasajeros = listaPasajeros;
@@ -146,19 +151,7 @@ public class PaqueteTuristico {
         return true;
     }
 
-    public void mostrarInfo() {
-        System.out.println("INFORMACION DEL PAQUETE");
-        System.out.println("Codigo             : " + codigo_paquete);
-        System.out.println("Nombre             : " + nombre_paquete);
-        System.out.println("Destino            : " + destino);
-        System.out.println("Horario            : " + horario);
-        System.out.println("Costo              : S/. " + costo);
-        System.out.println("Cupos disponibles  : " + cupos_disponibles);
-        System.out.println("Cupos maximos      : " + cupos_maximos);
-    }
-
     public void listarPasajeros() {
-        System.out.println("\nLISTA DE PASAJEROS");
         for (int i = 0; i < listaPasajeros.size(); i++) {
             System.out.println(listaPasajeros.get(i).unificarDatos());
         }
@@ -170,5 +163,19 @@ public class PaqueteTuristico {
     public double porcentajeOcupacion() {
         int ocupados = cupos_maximos - cupos_disponibles;
         return (ocupados * 100.0) / cupos_maximos;
+    }
+    
+    public Promocion promocionVigenteAplicable(Pasajero pasajero) {
+        for (Promocion promocion : promociones) {
+            if (promocion.estaVigente() && promocion.aplicable(pasajero)) {
+                return promocion;
+            }
+        }
+        return null;
+    }
+    public void agregarPromocion(Promocion promocion) {
+        if (promocion != null) {
+            promociones.add(promocion);
+        }
     }
 }

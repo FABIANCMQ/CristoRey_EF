@@ -48,7 +48,8 @@ public class VentanaPrincipalAdmin extends javax.swing.JPanel {
         pnlMenu.revalidate();
         JPanel[] paneles = {i,p,cv,r,cm,g,e};
 
-        for(JPanel panel : paneles){
+        for(int j = 0; j < paneles.length; j++){
+            JPanel panel = paneles[j];
             lypPrincipal.add(panel);
         }
 
@@ -69,8 +70,8 @@ public class VentanaPrincipalAdmin extends javax.swing.JPanel {
             pnlEstadisticas
         };
 
-        for (JPanel p : paneles) {
-            p.setBackground(Color.WHITE);
+        for(int j = 0; j < paneles.length; j++){
+            panel.setBackground(Color.WHITE);
         }
 
         if (expandido && panelSeleccionado != null) {
@@ -81,7 +82,8 @@ public class VentanaPrincipalAdmin extends javax.swing.JPanel {
 
         JPanel[] paneles = {i, p, cv, r, cm, g, e};
 
-        for(JPanel panel : paneles){
+        for(int j = 0; j < paneles.length; j++){
+            JPanel panel = paneles[j];
             panel.setVisible(false);
         }
 

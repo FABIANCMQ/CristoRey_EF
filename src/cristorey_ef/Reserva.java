@@ -16,6 +16,7 @@ public class Reserva {
     private PaqueteTuristico paquete;
     private double precio_final;
     private String estado;
+    private String estado_aprobacion;
     private LocalDate fecha_reserva;
     private static int contador = 0;
 
@@ -25,6 +26,7 @@ public class Reserva {
         this.paquete = paquete;
         this.precio_final = precio_final;
         this.estado = "Activa";
+        this.estado_aprobacion = "Pendiente";
         this.fecha_reserva = LocalDate.now();
     }
 
@@ -66,6 +68,14 @@ public class Reserva {
 
     public void setEstado(String estado) {
         this.estado = estado;
+    }
+
+    public String getEstado_aprobacion() {
+        return estado_aprobacion;
+    }
+
+    public void setEstado_aprobacion(String estado_aprobacion) {
+        this.estado_aprobacion = estado_aprobacion;
     }
 
     public LocalDate getFecha_reserva() {

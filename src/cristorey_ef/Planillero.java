@@ -42,13 +42,6 @@ public class Planillero extends Usuario{
         }
         return false;
     }
-    public void verDatos(){
-        System.out.println("\n=== DATOS DEL PLANILLERO ===\nCódigo : " + this.codigo_usuario
-        +"\nNombre : " + this.nombre+"\nCorreo : " + this.correo+"Área   : " + this.area_trabajo);
-    }
-    public void consultarPaquetes(PaqueteTuristico paquete){
-        paquete.mostrarInfo();
-    }
     
     public void listarPasajerosPaquete(PaqueteTuristico paquete){
         paquete.listarPasajeros();

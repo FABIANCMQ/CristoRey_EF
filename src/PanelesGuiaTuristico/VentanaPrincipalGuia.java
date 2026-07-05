@@ -2,10 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
-package PanelesPlanillero;
+package PanelesGuiaTuristico;
 
-import PanelesGenerales.ControlViajes;
-import PanelesGenerales.Pasajeros;
+import cristorey_ef.GuiaTuristico;
 import cristorey_ef.PaqueteTuristicoControlador;
 import cristorey_ef.PasajeroControlador;
 import cristorey_ef.ReservaControlador;
@@ -20,34 +19,26 @@ import javax.swing.SwingUtilities;
  *
  * @author Usuario
  */
-public class VentanaPrincipalPlani extends javax.swing.JPanel {
+public class VentanaPrincipalGuia extends javax.swing.JPanel {
 
     /**
-     * Creates new form VentanaPrincipalPlani
+     * Creates new form PantallaAdministrador
      */
+    Inicio i;
+    RecorridoTuristico rt;
+    SolicitarRecorrido sr;
     
     private JPanel panelSeleccionado;
     private boolean expandido = false;
-    Inicio i;
-    Pasajeros p;
-    ControlViajes cv;
-    RegistroPasajero r;
-    public VentanaPrincipalPlani(UsuarioControlador uc,
-            PasajeroControlador pc,
-            ReservaControlador rc,
-            PaqueteTuristicoControlador ptc) {
-        
+    public VentanaPrincipalGuia(UsuarioControlador uc, PasajeroControlador pc,
+            ReservaControlador rc, PaqueteTuristicoControlador ptc) {
         initComponents();
-        
-        i = new Inicio(ptc, uc);
-        p = new Pasajeros(pc, rc);
-        cv = new ControlViajes(ptc);
-        r = new RegistroPasajero(pc, rc, ptc);
-        
+        i = new Inicio(rc, ptc, uc);
+        rt = new RecorridoTuristico(uc,ptc);
+        sr = new SolicitarRecorrido(uc,ptc);
         pnlMenu.setPreferredSize(new Dimension(50, pnlMenu.getHeight()));
         pnlMenu.revalidate();
-        
-        JPanel[] paneles = {i,p,cv,r};
+        JPanel[] paneles = {i,rt,sr};
 
         for(int j = 0; j < paneles.length; j++){
             JPanel panel = paneles[j];
@@ -58,14 +49,12 @@ public class VentanaPrincipalPlani extends javax.swing.JPanel {
         seleccionarMenu(pnlInicio);
     }
     
-    private void seleccionarMenu(JPanel panel) {
+    public void seleccionarMenu(JPanel panel) {
 
         panelSeleccionado = panel;
         JPanel[] paneles = {
             pnlInicio,
-            pnlPasajeros,
-            pnlTours,
-            pnlRegistroPasajero,
+            pnlTourAsignado,
         };
 
         for(int j = 0; j < paneles.length; j++){
@@ -73,12 +62,12 @@ public class VentanaPrincipalPlani extends javax.swing.JPanel {
         }
 
         if (expandido && panelSeleccionado != null) {
-            panelSeleccionado.setBackground(new Color(255,170,44));
+        panelSeleccionado.setBackground(new Color(255,170,44));
         }
     }
-    private void mostrarPanel(JPanel panelVisible){
+    void mostrarPanel(JPanel panelVisible){
 
-        JPanel[] paneles = {i, p, cv, r};
+        JPanel[] paneles = {i, rt, sr};
 
         for(int j = 0; j < paneles.length; j++){
             JPanel panel = paneles[j];
@@ -86,6 +75,11 @@ public class VentanaPrincipalPlani extends javax.swing.JPanel {
         }
 
         panelVisible.setVisible(true);
+    }
+    
+    public void setUsuarioActual(GuiaTuristico guia) {
+        sr.setGuiaActual(guia);
+        rt.setGuiaActual(guia);
     }
 
     /**
@@ -103,18 +97,15 @@ public class VentanaPrincipalPlani extends javax.swing.JPanel {
         pnlInicio = new javax.swing.JPanel();
         jLabel12 = new javax.swing.JLabel();
         btnInicio = new javax.swing.JButton();
-        pnlPasajeros = new javax.swing.JPanel();
-        jLabel13 = new javax.swing.JLabel();
-        btnPasajeros = new javax.swing.JButton();
-        pnlRegistroPasajero = new javax.swing.JPanel();
-        jLabel16 = new javax.swing.JLabel();
-        btnRegistroPasajero = new javax.swing.JButton();
         pnlCerrarSesion = new javax.swing.JPanel();
         jLabel11 = new javax.swing.JLabel();
         btnCerrarSesion = new javax.swing.JButton();
-        pnlTours = new javax.swing.JPanel();
+        pnlTourAsignado = new javax.swing.JPanel();
         jLabel17 = new javax.swing.JLabel();
-        btnTours = new javax.swing.JButton();
+        btnTourAsignado = new javax.swing.JButton();
+        pnlSolicitarTour = new javax.swing.JPanel();
+        jLabel18 = new javax.swing.JLabel();
+        btnTourAsignado1 = new javax.swing.JButton();
         lypPrincipal = new javax.swing.JLayeredPane();
 
         setLayout(new java.awt.BorderLayout());
@@ -165,73 +156,6 @@ public class VentanaPrincipalPlani extends javax.swing.JPanel {
                 .addContainerGap())
         );
 
-        pnlPasajeros.setBackground(new java.awt.Color(255, 255, 255));
-
-        jLabel13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/clientes.png"))); // NOI18N
-
-        btnPasajeros.setText(" Pasajeros");
-        btnPasajeros.setBorderPainted(false);
-        btnPasajeros.setContentAreaFilled(false);
-        btnPasajeros.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnPasajeros.setFocusPainted(false);
-        btnPasajeros.addActionListener(this::btnPasajerosActionPerformed);
-
-        javax.swing.GroupLayout pnlPasajerosLayout = new javax.swing.GroupLayout(pnlPasajeros);
-        pnlPasajeros.setLayout(pnlPasajerosLayout);
-        pnlPasajerosLayout.setHorizontalGroup(
-            pnlPasajerosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlPasajerosLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel13)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnPasajeros)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        pnlPasajerosLayout.setVerticalGroup(
-            pnlPasajerosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlPasajerosLayout.createSequentialGroup()
-                .addGap(9, 9, 9)
-                .addGroup(pnlPasajerosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel13)
-                    .addComponent(btnPasajeros))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        pnlRegistroPasajero.setBackground(new java.awt.Color(255, 255, 255));
-
-        jLabel16.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/registro.png"))); // NOI18N
-
-        btnRegistroPasajero.setText("Registro de pasajeros");
-        btnRegistroPasajero.setBorderPainted(false);
-        btnRegistroPasajero.setContentAreaFilled(false);
-        btnRegistroPasajero.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnRegistroPasajero.setFocusPainted(false);
-        btnRegistroPasajero.addActionListener(this::btnRegistroPasajeroActionPerformed);
-
-        javax.swing.GroupLayout pnlRegistroPasajeroLayout = new javax.swing.GroupLayout(pnlRegistroPasajero);
-        pnlRegistroPasajero.setLayout(pnlRegistroPasajeroLayout);
-        pnlRegistroPasajeroLayout.setHorizontalGroup(
-            pnlRegistroPasajeroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlRegistroPasajeroLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel16)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnRegistroPasajero)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        pnlRegistroPasajeroLayout.setVerticalGroup(
-            pnlRegistroPasajeroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlRegistroPasajeroLayout.createSequentialGroup()
-                .addGroup(pnlRegistroPasajeroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnlRegistroPasajeroLayout.createSequentialGroup()
-                        .addGap(8, 8, 8)
-                        .addComponent(jLabel16))
-                    .addGroup(pnlRegistroPasajeroLayout.createSequentialGroup()
-                        .addGap(9, 9, 9)
-                        .addComponent(btnRegistroPasajero)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
         pnlCerrarSesion.setBackground(new java.awt.Color(255, 255, 255));
 
         jLabel11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/salir.png"))); // NOI18N
@@ -264,35 +188,67 @@ public class VentanaPrincipalPlani extends javax.swing.JPanel {
                 .addGap(9, 9, 9))
         );
 
-        pnlTours.setBackground(new java.awt.Color(255, 255, 255));
+        pnlTourAsignado.setBackground(new java.awt.Color(255, 255, 255));
 
         jLabel17.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/viaje-en-coche.png"))); // NOI18N
 
-        btnTours.setText("Tours     ");
-        btnTours.setBorderPainted(false);
-        btnTours.setContentAreaFilled(false);
-        btnTours.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnTours.setFocusPainted(false);
-        btnTours.addActionListener(this::btnToursActionPerformed);
+        btnTourAsignado.setText("Tour asignado");
+        btnTourAsignado.setBorderPainted(false);
+        btnTourAsignado.setContentAreaFilled(false);
+        btnTourAsignado.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnTourAsignado.setFocusPainted(false);
+        btnTourAsignado.addActionListener(this::btnTourAsignadoActionPerformed);
 
-        javax.swing.GroupLayout pnlToursLayout = new javax.swing.GroupLayout(pnlTours);
-        pnlTours.setLayout(pnlToursLayout);
-        pnlToursLayout.setHorizontalGroup(
-            pnlToursLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlToursLayout.createSequentialGroup()
+        javax.swing.GroupLayout pnlTourAsignadoLayout = new javax.swing.GroupLayout(pnlTourAsignado);
+        pnlTourAsignado.setLayout(pnlTourAsignadoLayout);
+        pnlTourAsignadoLayout.setHorizontalGroup(
+            pnlTourAsignadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlTourAsignadoLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel17)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnTours)
+                .addComponent(btnTourAsignado)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-        pnlToursLayout.setVerticalGroup(
-            pnlToursLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlToursLayout.createSequentialGroup()
+        pnlTourAsignadoLayout.setVerticalGroup(
+            pnlTourAsignadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlTourAsignadoLayout.createSequentialGroup()
                 .addGap(8, 8, 8)
-                .addGroup(pnlToursLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnTours)
+                .addGroup(pnlTourAsignadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnTourAsignado)
                     .addComponent(jLabel17))
+                .addGap(8, 8, 8))
+        );
+
+        pnlSolicitarTour.setBackground(new java.awt.Color(255, 255, 255));
+
+        jLabel18.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/viaje-en-coche.png"))); // NOI18N
+
+        btnTourAsignado1.setText("Solicitar Tour");
+        btnTourAsignado1.setBorderPainted(false);
+        btnTourAsignado1.setContentAreaFilled(false);
+        btnTourAsignado1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnTourAsignado1.setFocusPainted(false);
+        btnTourAsignado1.addActionListener(this::btnTourAsignado1ActionPerformed);
+
+        javax.swing.GroupLayout pnlSolicitarTourLayout = new javax.swing.GroupLayout(pnlSolicitarTour);
+        pnlSolicitarTour.setLayout(pnlSolicitarTourLayout);
+        pnlSolicitarTourLayout.setHorizontalGroup(
+            pnlSolicitarTourLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlSolicitarTourLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnTourAsignado1)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        pnlSolicitarTourLayout.setVerticalGroup(
+            pnlSolicitarTourLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlSolicitarTourLayout.createSequentialGroup()
+                .addGap(8, 8, 8)
+                .addGroup(pnlSolicitarTourLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnTourAsignado1)
+                    .addComponent(jLabel18))
                 .addGap(8, 8, 8))
         );
 
@@ -300,17 +256,19 @@ public class VentanaPrincipalPlani extends javax.swing.JPanel {
         pnlMenu.setLayout(pnlMenuLayout);
         pnlMenuLayout.setHorizontalGroup(
             pnlMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(pnlInicio, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(pnlTourAsignado, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(pnlSolicitarTour, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(pnlMenuLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(btnMenu, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addComponent(pnlInicio, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(pnlPasajeros, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(pnlTours, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(pnlRegistroPasajero, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(pnlCerrarSesion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(pnlMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlMenuLayout.createSequentialGroup()
+                        .addComponent(btnMenu, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 5, Short.MAX_VALUE))
+                    .addComponent(pnlCerrarSesion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         pnlMenuLayout.setVerticalGroup(
             pnlMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -322,15 +280,13 @@ public class VentanaPrincipalPlani extends javax.swing.JPanel {
                         .addComponent(jLabel1)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(pnlInicio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(pnlTourAsignado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(pnlPasajeros, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(pnlTours, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(pnlRegistroPasajero, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 123, Short.MAX_VALUE)
+                .addComponent(pnlSolicitarTour, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 162, Short.MAX_VALUE)
                 .addComponent(pnlCerrarSesion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(22, 22, 22))
+                .addGap(28, 28, 28))
         );
 
         add(pnlMenu, java.awt.BorderLayout.LINE_START);
@@ -360,17 +316,11 @@ public class VentanaPrincipalPlani extends javax.swing.JPanel {
         mostrarPanel(i);
     }//GEN-LAST:event_btnInicioActionPerformed
 
-    private void btnPasajerosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPasajerosActionPerformed
+    private void btnTourAsignadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTourAsignadoActionPerformed
         // TODO add your handling code here:
-        seleccionarMenu(pnlPasajeros);
-        mostrarPanel(p);
-    }//GEN-LAST:event_btnPasajerosActionPerformed
-
-    private void btnRegistroPasajeroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistroPasajeroActionPerformed
-        // TODO add your handling code here:
-        seleccionarMenu(pnlRegistroPasajero);
-        mostrarPanel(r);
-    }//GEN-LAST:event_btnRegistroPasajeroActionPerformed
+        seleccionarMenu(pnlTourAsignado);
+        mostrarPanel(rt);
+    }//GEN-LAST:event_btnTourAsignadoActionPerformed
 
     private void btnCerrarSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarSesionActionPerformed
         // TODO add your handling code here:
@@ -378,32 +328,29 @@ public class VentanaPrincipalPlani extends javax.swing.JPanel {
         ventana.volverInicio();
     }//GEN-LAST:event_btnCerrarSesionActionPerformed
 
-    private void btnToursActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnToursActionPerformed
+    private void btnTourAsignado1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTourAsignado1ActionPerformed
         // TODO add your handling code here:
-        seleccionarMenu(pnlTours);
-        mostrarPanel(cv);
-    }//GEN-LAST:event_btnToursActionPerformed
+        seleccionarMenu(pnlSolicitarTour);
+        mostrarPanel(sr);
+    }//GEN-LAST:event_btnTourAsignado1ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCerrarSesion;
     private javax.swing.JButton btnInicio;
     private javax.swing.JButton btnMenu;
-    private javax.swing.JButton btnPasajeros;
-    private javax.swing.JButton btnRegistroPasajero;
-    private javax.swing.JButton btnTours;
+    private javax.swing.JButton btnTourAsignado;
+    private javax.swing.JButton btnTourAsignado1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
     private javax.swing.JLayeredPane lypPrincipal;
     private javax.swing.JPanel pnlCerrarSesion;
     private javax.swing.JPanel pnlInicio;
     private javax.swing.JPanel pnlMenu;
-    private javax.swing.JPanel pnlPasajeros;
-    private javax.swing.JPanel pnlRegistroPasajero;
-    private javax.swing.JPanel pnlTours;
+    private javax.swing.JPanel pnlSolicitarTour;
+    private javax.swing.JPanel pnlTourAsignado;
     // End of variables declaration//GEN-END:variables
 }

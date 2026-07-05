@@ -5,6 +5,8 @@
 package cristorey_ef;
 
 import PanelesAdministrador.VentanaPrincipalAdmin;
+import PanelesAsesorVentas.VentanaPrincipalAsesor;
+import PanelesGuiaTuristico.VentanaPrincipalGuia;
 import PanelesPlanillero.VentanaPrincipalPlani;
 import java.awt.Container;
 import java.awt.Graphics;
@@ -32,6 +34,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     Container contenidoOriginal;
     VentanaPrincipalAdmin admin;
     VentanaPrincipalPlani plani;
+    VentanaPrincipalGuia guia;
+    VentanaPrincipalAsesor asesor;
     public VentanaPrincipal(PasajeroControlador pasajeroControlador,
         UsuarioControlador usuarioControlador,
         ReservaControlador reservaControlador,
@@ -44,7 +48,11 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         contenidoOriginal = getContentPane();
         admin = new VentanaPrincipalAdmin(usuarioControlador, pasajeroControlador,
                 reservaControlador, paqueteTuristicoControlador);
-        plani = new VentanaPrincipalPlani(pasajeroControlador, usuarioControlador,
+        plani = new VentanaPrincipalPlani(usuarioControlador,pasajeroControlador, 
+                reservaControlador, paqueteTuristicoControlador);
+        guia = new VentanaPrincipalGuia (usuarioControlador, pasajeroControlador, 
+                reservaControlador, paqueteTuristicoControlador);
+        asesor = new VentanaPrincipalAsesor (usuarioControlador, pasajeroControlador, 
                 reservaControlador, paqueteTuristicoControlador);
     }
     
@@ -71,6 +79,16 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     public VentanaPrincipalPlani getPlani() {
         return plani;
     }
+
+    public VentanaPrincipalGuia getGuia() {
+        return guia;
+    }
+
+    public VentanaPrincipalAsesor getAsesor() {
+        return asesor;
+    }
+    
+    
     
     public void navegar(JPanel panel) {
 
@@ -235,6 +253,11 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             navegar(admin);
         } else if (encontrado instanceof Planillero) {
             navegar(plani);
+        } else if (encontrado instanceof AsesorVentas) {
+            navegar(asesor);
+        } else if (encontrado instanceof GuiaTuristico) {
+            guia.setUsuarioActual((GuiaTuristico) encontrado);
+            navegar(guia);
         }
         txtCorreo.setText("");
         txtClave.setText("");

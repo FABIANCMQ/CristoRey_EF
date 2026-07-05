@@ -11,6 +11,7 @@ package cristorey_ef;
 public class GuiaTuristico extends Usuario{
     
     private String recorrido_asignado;
+    private String recorrido_solicitado;
 
     public GuiaTuristico(String recorrido_asignado,String codigo_usuario, String cargo, String nombre, String correo, String clave_ingreso, Documento documento) {
         super(codigo_usuario, cargo, nombre, correo, clave_ingreso, documento);
@@ -24,73 +25,33 @@ public class GuiaTuristico extends Usuario{
     public void setRecorrido_asignado(String recorrido_asignado) {
         this.recorrido_asignado = recorrido_asignado;
     }
-    
-    public void verDatos(){
-        System.out.println("===DATOS GUÍA TURISTICO===\nCodigo usuario: "+this.codigo_usuario+"\nNombre: "+this.nombre+
-                "Correo: "+this.correo+"\nRecorrido Asignado: "+this.recorrido_asignado);
-    }
-    public void consultarListaParticipantes(PaqueteTuristico paquete){
-        try {
-            if (paquete==null) {
-                System.out.println("No se encontró el recorrido turístico");
-                return;
-            }
-            
-            System.out.println("\n===LISTA DE PARTICIPANTES DEL RECORRIDO===\nPaquete: "+paquete.getNombre_paquete()
-                    +"\nHorario: "+paquete.getHorario());
-            
-            if (paquete.getListaPasajeros().size()==0) {
-                System.out.println("No existen pasajeros asignados a este recorrido");
-                return;
-            }else{
-                paquete.listarPasajeros();
-            }
-        } catch (Exception e) {
-            System.out.println("Error al consultar lista de participantes: "+e.getMessage());
-        }
+
+    public String getRecorrido_solicitado() {
+        return recorrido_solicitado;
     }
     
-    public void verificarLista(PaqueteTuristico paquete){
-        try {
-            if (paquete==null) {
-                System.out.println("No se encontro el paquete turistico");
-                return;
-            }
-            
-            if (paquete.getListaPasajeros() == null) {
-                System.out.println("No existe lista de pasajeros");
-                return;
-            }
-            
-            System.out.println("===VERIFICACION DE LISTA===");
-            if (paquete.getListaPasajeros().size() == paquete.contarPasajeros()) {
-                System.out.println("Lista actualizada y funcionando correctamente");
-            }else{
-                System.out.println("Se detectaron inconsistencias en la lista.");
-            }
-        } catch (Exception e) {
-            System.out.println("Error al verificar la lista: "+e.getMessage());
-        }
+    public boolean tieneAsignacion() {
+        return recorrido_asignado != null && !recorrido_asignado.isEmpty();
+    }
+
+    public boolean tieneSolicitudPendiente() {
+        return recorrido_solicitado != null && !recorrido_solicitado.isEmpty();
     }
     
-    public void generarListaPreviaViaje(PaqueteTuristico paquete){
-        try {
-            if (paquete == null) {
-                System.out.println("No se encontró el paquete turistico");
-                return;
-            }
-            
-            System.out.println("===LISTA PREVIA AL VIAJE===\nRecorrido: "+paquete.getNombre_paquete()+
-                    "\nDestino: "+paquete.getDestino()+"\nHorario: "+paquete.getHorario()+
-                    "\nTotal Inscritos: "+paquete.contarPasajeros());
-            
-            if (paquete.getListaPasajeros().size()==0) {
-                System.out.println("No hay pasajeros registrados para este viaje");
-            }else{
-                paquete.listarPasajeros();
-            }
-        } catch (Exception e) {
-            System.out.println("Error al generar lista previa: "+e.getMessage());
+    public boolean solicitarAsignacion(String codigoPaquete) {
+        if (tieneAsignacion()) {
+            return false;
         }
+        if (tieneSolicitudPendiente()) {
+            return false;
+        }
+        
+        this.recorrido_solicitado = codigoPaquete;
+        
+        return true;
+    }
+    
+    public void limpiarSolicitud() {
+        this.recorrido_solicitado = null;
     }
 }

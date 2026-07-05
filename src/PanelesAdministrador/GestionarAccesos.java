@@ -5,9 +5,11 @@
 package PanelesAdministrador;
 
 import cristorey_ef.Administrador;
+import cristorey_ef.Gerente;
 import cristorey_ef.Usuario;
 import cristorey_ef.UsuarioControlador;
 import java.awt.Color;
+import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -26,7 +28,7 @@ public class GestionarAccesos extends javax.swing.JPanel {
         this.uc = uc;
         tblUsuarios.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
-                actualizarPanelAcciones();
+                seleccionUsuario();
             }
         });
         tblUsuarios.getTableHeader().setBackground(new java.awt.Color(255, 170, 44));
@@ -52,8 +54,15 @@ public class GestionarAccesos extends javax.swing.JPanel {
         DefaultTableModel modelo = (DefaultTableModel) tblUsuarios.getModel();
         modelo.setRowCount(0);
 
-        for (Usuario u : uc.getUsuario()) {
-            String estado = u.isBloqueado() ? "Bloqueado" : "Activo";
+        List<Usuario> lista = uc.getUsuario();
+        for (int i = 0; i < lista.size(); i++) {
+            Usuario u = lista.get(i);
+            String estado;
+            if (u.isBloqueado()) {
+                estado = "Bloqueado";
+            } else {
+                estado = "Activo";
+            }
 
             modelo.addRow(new Object[]{
                 u.getCodigo_usuario(),
@@ -64,9 +73,9 @@ public class GestionarAccesos extends javax.swing.JPanel {
             });
         }
     }
-    private void actualizarPanelAcciones() {
+    private void seleccionUsuario() {
         int fila = tblUsuarios.getSelectedRow();
-        if (fila == -1) {
+        if (fila < 0) {
             btnBloquear.setEnabled(false);
             return;
         }
@@ -77,6 +86,14 @@ public class GestionarAccesos extends javax.swing.JPanel {
         lblCargo.setText(u.getCargo());
         
         if (u instanceof Administrador) {
+            lblEstado.setText("Protegido");
+            lblEstado.setForeground(new Color(100, 100, 100));
+            btnBloquear.setText("No disponible");
+            btnBloquear.setEnabled(false);
+            return;
+        }
+        
+        if (u instanceof Gerente) {
             lblEstado.setText("Protegido");
             lblEstado.setForeground(new Color(100, 100, 100));
             btnBloquear.setText("No disponible");
@@ -263,7 +280,7 @@ public class GestionarAccesos extends javax.swing.JPanel {
         if (fila == -1) return;
 
         Usuario u = uc.getUsuario().get(fila);
-        Administrador admin = new Administrador("","","", "","", "", null);// instancia temporal solo para llamar el método
+        Administrador admin = new Administrador("","","", "","", "", null);
 
         if (u.isBloqueado()) {
             admin.desbloquearUsuario(u);
@@ -277,9 +294,9 @@ public class GestionarAccesos extends javax.swing.JPanel {
                 "Acceso bloqueado", JOptionPane.WARNING_MESSAGE);
         }
 
-        cargarTabla();                 // refresca la tabla
-        tblUsuarios.setRowSelectionInterval(fila, fila);  // mantiene la fila seleccionada
-        actualizarPanelAcciones();     // actualiza el panel inferior
+        cargarTabla();
+        tblUsuarios.setRowSelectionInterval(fila, fila);
+        seleccionUsuario();     
     }//GEN-LAST:event_btnBloquearActionPerformed
 
 

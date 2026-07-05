@@ -42,15 +42,28 @@ public class PaqueteTuristicoControlador {
     public ArrayList<PaqueteTuristico> getPaquete() {
         return paquete;
     }
-
-    public void mostrarPaquetes(){
+    
+    public PaqueteTuristico buscarNombre(String nombre){
         for (int i = 0; i < paquete.size(); i++) {
-            paquete.get(i).mostrarInfo();
+            if (paquete.get(i).getNombre_paquete().equalsIgnoreCase(nombre)) {
+                return paquete.get(i);
+            }   
         }
+        return null;
     }
-    public PaqueteTuristico buscarNombre(String Nombre){
+    
+    public PaqueteTuristico buscarDestino(String destino){
         for (int i = 0; i < paquete.size(); i++) {
-            if (paquete.get(i).getNombre_paquete().equalsIgnoreCase(Nombre)) {
+            if (paquete.get(i).getDestino().equalsIgnoreCase(destino)) {
+                return paquete.get(i);
+            }   
+        }
+        return null;
+    }
+    
+    public PaqueteTuristico buscarCodigo(String codigo){
+        for (int i = 0; i < paquete.size(); i++) {
+            if (paquete.get(i).getCodigo_paquete().equalsIgnoreCase(codigo)) {
                 return paquete.get(i);
             }   
         }

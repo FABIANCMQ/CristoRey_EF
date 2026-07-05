@@ -51,6 +51,9 @@ public class ControlMatutino extends javax.swing.JPanel {
         lblFecha = new javax.swing.JLabel();
         btnCargarReporte = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
+        lblAlerta = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        listDocsVencidos = new javax.swing.JList<>();
         jPanel5 = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
@@ -64,9 +67,6 @@ public class ControlMatutino extends javax.swing.JPanel {
         jLabel13 = new javax.swing.JLabel();
         lblNumViajes = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
-        lblAlerta = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        listDocsVencidos = new javax.swing.JList<>();
 
         setBackground(new java.awt.Color(252, 242, 226));
 
@@ -87,7 +87,42 @@ public class ControlMatutino extends javax.swing.JPanel {
         btnCargarReporte.addActionListener(this::btnCargarReporteActionPerformed);
 
         jPanel2.setOpaque(false);
-        jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        jPanel2.setLayout(new java.awt.GridBagLayout());
+
+        lblAlerta.setBackground(new java.awt.Color(255, 220, 220));
+        lblAlerta.setForeground(new java.awt.Color(180, 30, 30));
+        lblAlerta.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblAlerta.setText("⚠ Existen documentos vencidos. Revise los pasajeros afectados.");
+        lblAlerta.setOpaque(true);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(10, 250, 0, 0);
+        jPanel2.add(lblAlerta, gridBagConstraints);
+
+        listDocsVencidos.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
+        listDocsVencidos.setMaximumSize(new java.awt.Dimension(45, 50));
+        listDocsVencidos.setMinimumSize(new java.awt.Dimension(45, 50));
+        listDocsVencidos.setPreferredSize(new java.awt.Dimension(45, 50));
+        jScrollPane1.setViewportView(listDocsVencidos);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.ipadx = 545;
+        gridBagConstraints.ipady = 81;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(6, 147, 18, 164);
+        jPanel2.add(jScrollPane1, gridBagConstraints);
 
         jPanel5.setOpaque(false);
         jPanel5.setPreferredSize(new java.awt.Dimension(635, 150));
@@ -142,7 +177,7 @@ public class ControlMatutino extends javax.swing.JPanel {
         gridBagConstraints.ipadx = 51;
         gridBagConstraints.ipady = 43;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(6, 44, 0, 6);
+        gridBagConstraints.insets = new java.awt.Insets(0, 78, 1, 6);
         jPanel5.add(jPanel6, gridBagConstraints);
 
         pnlPasajeros.setBackground(new java.awt.Color(255, 255, 255));
@@ -195,7 +230,7 @@ public class ControlMatutino extends javax.swing.JPanel {
         gridBagConstraints.ipadx = 38;
         gridBagConstraints.ipady = 25;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 1, 0);
         jPanel5.add(pnlPasajeros, gridBagConstraints);
 
         jPanel8.setBackground(new java.awt.Color(255, 255, 255));
@@ -248,29 +283,8 @@ public class ControlMatutino extends javax.swing.JPanel {
         gridBagConstraints.ipadx = 50;
         gridBagConstraints.ipady = 28;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(6, 56, 0, 0);
+        gridBagConstraints.insets = new java.awt.Insets(0, 62, 1, 0);
         jPanel5.add(jPanel8, gridBagConstraints);
-
-        jPanel2.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 10, 770, 210));
-
-        lblAlerta.setBackground(new java.awt.Color(255, 220, 220));
-        lblAlerta.setForeground(new java.awt.Color(180, 30, 30));
-        lblAlerta.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblAlerta.setText("⚠ Existen documentos vencidos. Revise los pasajeros afectados.");
-        lblAlerta.setOpaque(true);
-        jPanel2.add(lblAlerta, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 220, -1, -1));
-
-        listDocsVencidos.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
-        listDocsVencidos.setMaximumSize(new java.awt.Dimension(45, 50));
-        listDocsVencidos.setMinimumSize(new java.awt.Dimension(45, 50));
-        listDocsVencidos.setPreferredSize(new java.awt.Dimension(45, 50));
-        jScrollPane1.setViewportView(listDocsVencidos);
-
-        jPanel2.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 250, 650, 97));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -284,7 +298,8 @@ public class ControlMatutino extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnCargarReporte, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(21, 21, 21))
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 861, Short.MAX_VALUE)
+            .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 872, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -294,8 +309,11 @@ public class ControlMatutino extends javax.swing.JPanel {
                     .addComponent(lblFecha)
                     .addComponent(jLabel17)
                     .addComponent(btnCargarReporte, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(35, 35, 35)
-                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 430, Short.MAX_VALUE))
+                .addGap(80, 80, 80)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(30, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -312,8 +330,8 @@ public class ControlMatutino extends javax.swing.JPanel {
         int totalPasajeros = 0;
         int docsVencidos   = 0;
 
-        for (PaqueteTuristico p : paquetes) {
-
+        for (int i = 0; i < paquetes.size(); i++) {
+            PaqueteTuristico p = paquetes.get(i);
             int inscritos = p.getCupos_maximos() - p.getCupos_disponibles();
             totalPasajeros += inscritos;
 

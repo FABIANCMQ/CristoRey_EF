@@ -11,6 +11,7 @@ import cristorey_ef.ReservaControlador;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -55,44 +56,33 @@ public class Pasajeros extends javax.swing.JPanel {
         DefaultTableModel modelo = (DefaultTableModel) tblPasajeros.getModel();
         modelo.setRowCount(0);
 
-        for (Pasajero p : pc.getPasajero()) {
+        List<Pasajero> listaPasajeros = pc.getPasajero();
+        for (int i = 0; i < listaPasajeros.size(); i++) {
+            Pasajero p = listaPasajeros.get(i);
             agregarFilaPasajero(modelo, p);
         }    
     }
     
     private void agregarFilaPasajero(DefaultTableModel modelo, Pasajero p) {
-        String fecha = "-";
-        String paquete = "Sin paquete asignado";
-
-        if (p.getDocumento() != null && p.getDocumento().getNro_doc() != null) {
-            ArrayList<Reserva> reservasActivas = rc.buscarReservasActivasPorDocumento(p.getDocumento().getNro_doc());
-            for (int i = 0; i < reservasActivas.size(); i++) {
-                Reserva r = reservasActivas.get(i);
-                
-                modelo.addRow(new Object[]{
-                    p.getNombre(),
-                    p.getAp_paterno(),
-                    p.getAp_materno(),
-                    p.getDocumento().getNro_doc(),
-                    p.getTelefono(),
-                    p.getCorreo(),
-                    r.getFecha_reserva().format(FORMATO_FECHA),
-                    r.getPaquete().getNombre_paquete()
-                });
+        ArrayList<Reserva> reservas = rc.buscarReservasActivasPorDocumento( p.getDocumento().getNro_doc());
+        for (int i = 0; i < reservas.size(); i++) { 
+            Reserva r = reservas.get(i);
+            
+            if (!r.getEstado_aprobacion().equalsIgnoreCase("Aprobada")) {
+                continue;
             }
-            return;
+            
+            modelo.addRow(new Object[]{
+                p.getNombre(),
+                p.getAp_paterno(),
+                p.getAp_materno(),
+                p.getDocumento().getNro_doc(),
+                p.getTelefono(),
+                p.getCorreo(),
+                r.getFecha_reserva().format(FORMATO_FECHA),
+                r.getPaquete().getNombre_paquete()
+            });
         }
-
-        modelo.addRow(new Object[]{
-            p.getNombre(),
-            p.getAp_paterno(),
-            p.getAp_materno(),
-            p.getDocumento().getNro_doc(),
-            p.getTelefono(),
-            p.getCorreo(),
-            fecha,
-            paquete
-        });
     }
     
     private void buscarPasajero() {
@@ -118,6 +108,8 @@ public class Pasajeros extends javax.swing.JPanel {
 
         agregarFilaPasajero(modelo, encontrado);
     }
+    
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -131,10 +123,10 @@ public class Pasajeros extends javax.swing.JPanel {
         jLabel17 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblPasajeros = new javax.swing.JTable();
-        txtDato = new javax.swing.JTextField();
         btnActualizar = new javax.swing.JButton();
         lblFecha = new javax.swing.JLabel();
-        btnBuscar1 = new javax.swing.JButton();
+        btnBuscar = new javax.swing.JButton();
+        txtDato = new javax.swing.JTextField();
 
         setBackground(new java.awt.Color(255, 249, 236));
 
@@ -160,9 +152,6 @@ public class Pasajeros extends javax.swing.JPanel {
         tblPasajeros.setShowVerticalLines(true);
         jScrollPane2.setViewportView(tblPasajeros);
 
-        txtDato.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
-        txtDato.addActionListener(this::txtDatoActionPerformed);
-
         btnActualizar.setBackground(new java.awt.Color(255, 189, 105));
         btnActualizar.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         btnActualizar.setForeground(new java.awt.Color(255, 255, 255));
@@ -173,34 +162,35 @@ public class Pasajeros extends javax.swing.JPanel {
         lblFecha.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
         lblFecha.setText("Fecha actual");
 
-        btnBuscar1.setBackground(new java.awt.Color(255, 189, 105));
-        btnBuscar1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        btnBuscar1.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscar1.setText("Buscar");
-        btnBuscar1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnBuscar1.addActionListener(this::btnBuscar1ActionPerformed);
+        btnBuscar.setBackground(new java.awt.Color(255, 189, 105));
+        btnBuscar.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnBuscar.setForeground(new java.awt.Color(255, 255, 255));
+        btnBuscar.setText("Buscar");
+        btnBuscar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnBuscar.addActionListener(this::btnBuscarActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(66, 66, 66)
-                .addComponent(txtDato, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(37, 37, 37)
-                .addComponent(btnBuscar1)
-                .addGap(0, 0, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(21, 21, 21)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane2)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 296, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(26, 26, 26)
-                        .addComponent(lblFecha)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 230, Short.MAX_VALUE)
-                        .addComponent(btnActualizar)))
-                .addGap(16, 16, 16))
+                        .addComponent(txtDato, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnBuscar)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jScrollPane2)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 296, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(26, 26, 26)
+                                .addComponent(lblFecha)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 300, Short.MAX_VALUE)
+                                .addComponent(btnActualizar)))
+                        .addGap(16, 16, 16))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -214,12 +204,12 @@ public class Pasajeros extends javax.swing.JPanel {
                             .addComponent(btnActualizar)
                             .addComponent(lblFecha))))
                 .addGap(21, 21, 21)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtDato, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnBuscar1))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnBuscar)
+                    .addComponent(txtDato, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(85, Short.MAX_VALUE))
+                .addContainerGap(100, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -228,19 +218,15 @@ public class Pasajeros extends javax.swing.JPanel {
         cargarTabla();
     }//GEN-LAST:event_btnActualizarActionPerformed
 
-    private void txtDatoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDatoActionPerformed
+    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
         // TODO add your handling code here:
         buscarPasajero();
-    }//GEN-LAST:event_txtDatoActionPerformed
-
-    private void btnBuscar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscar1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnBuscar1ActionPerformed
+    }//GEN-LAST:event_btnBuscarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnActualizar;
-    private javax.swing.JButton btnBuscar1;
+    private javax.swing.JButton btnBuscar;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel lblFecha;

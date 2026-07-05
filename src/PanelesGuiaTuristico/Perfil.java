@@ -2,9 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
-package PanelesPlanillero;
+package PanelesGuiaTuristico;
 
-import cristorey_ef.Planillero;
+import cristorey_ef.GuiaTuristico;
 import cristorey_ef.Usuario;
 import cristorey_ef.UsuarioControlador;
 import cristorey_ef.VentanaPrincipal;
@@ -22,16 +22,12 @@ public class Perfil extends javax.swing.JPanel {
     private UsuarioControlador uc;
     public Perfil(UsuarioControlador uc) {
         initComponents();
-        
         this.uc = uc;
-        Usuario plani = uc.buscarCargo("Planillero");
-        
-        Planillero pl = (Planillero) plani;
-        txtCodigo.setText("Codigo: "+plani.getCodigo_usuario());
-        txtDocumento.setText("Nro Documento: "+plani.documento.getNro_doc());
-        txtNombre.setText("Nombre: "+plani.getNombre());
-        txtCorreo.setText("Correo: "+plani.getCorreo());
-        txtArea.setText("Area: "+pl.getArea_trabajo());
+        Usuario guia = uc.buscarCargo("Guía turistico");
+        txtCodigo.setText("Codigo: "+guia.getCodigo_usuario());
+        txtDocumento.setText("Nro Documento: "+guia.documento.getNro_doc());
+        txtNombre.setText("Nombre: "+guia.getNombre());
+        txtCorreo.setText("Correo: "+guia.getCorreo());
     }
 
     /**
@@ -48,15 +44,14 @@ public class Perfil extends javax.swing.JPanel {
         btnSalir = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         txtCodigo = new javax.swing.JTextField();
         txtDocumento = new javax.swing.JTextField();
         txtNombre = new javax.swing.JTextField();
         txtCorreo = new javax.swing.JTextField();
-        txtArea = new javax.swing.JTextField();
-        btnCerrarSesion2 = new javax.swing.JButton();
+        btnCerrarSesion = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(255, 249, 236));
 
@@ -79,7 +74,7 @@ public class Perfil extends javax.swing.JPanel {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(btnSalir)
-                .addContainerGap(713, Short.MAX_VALUE))
+                .addContainerGap(690, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -92,29 +87,13 @@ public class Perfil extends javax.swing.JPanel {
         jPanel1.setOpaque(false);
         jPanel1.setLayout(new java.awt.GridBagLayout());
 
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/PerfilPlani.png"))); // NOI18N
+        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/perfilAdmin.png"))); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(25, 77, 0, 0);
+        gridBagConstraints.insets = new java.awt.Insets(47, 60, 0, 0);
         jPanel1.add(jLabel3, gridBagConstraints);
-
-        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/usuario.png"))); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(18, 235, 0, 0);
-        jPanel1.add(jLabel2, gridBagConstraints);
-
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/cerrar-sesion-alt.png"))); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(18, 227, 113, 0);
-        jPanel1.add(jLabel1, gridBagConstraints);
 
         jPanel3.setBackground(new java.awt.Color(255, 204, 153));
 
@@ -130,9 +109,6 @@ public class Perfil extends javax.swing.JPanel {
         txtCorreo.setBackground(new java.awt.Color(255, 204, 153));
         txtCorreo.setBorder(null);
 
-        txtArea.setBackground(new java.awt.Color(255, 204, 153));
-        txtArea.setBorder(null);
-
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -143,8 +119,7 @@ public class Perfil extends javax.swing.JPanel {
                     .addComponent(txtCodigo, javax.swing.GroupLayout.DEFAULT_SIZE, 249, Short.MAX_VALUE)
                     .addComponent(txtDocumento)
                     .addComponent(txtNombre)
-                    .addComponent(txtCorreo)
-                    .addComponent(txtArea))
+                    .addComponent(txtCorreo))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -158,34 +133,50 @@ public class Perfil extends javax.swing.JPanel {
                 .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(txtCorreo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(12, 12, 12)
-                .addComponent(txtArea, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(18, Short.MAX_VALUE))
         );
 
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.gridheight = 2;
         gridBagConstraints.ipadx = 185;
+        gridBagConstraints.ipady = 12;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(18, 18, 0, 288);
+        gridBagConstraints.insets = new java.awt.Insets(12, 18, 0, 277);
         jPanel1.add(jPanel3, gridBagConstraints);
 
-        btnCerrarSesion2.setBackground(new java.awt.Color(255, 153, 51));
-        btnCerrarSesion2.setText("Cerrar sesión");
-        btnCerrarSesion2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnCerrarSesion2.addActionListener(this::btnCerrarSesion2ActionPerformed);
+        btnCerrarSesion.setBackground(new java.awt.Color(255, 153, 51));
+        btnCerrarSesion.setText("Cerrar sesión");
+        btnCerrarSesion.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnCerrarSesion.addActionListener(this::btnCerrarSesionActionPerformed);
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 3;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.ipadx = 163;
         gridBagConstraints.ipady = 9;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(18, 18, 113, 288);
-        jPanel1.add(btnCerrarSesion2, gridBagConstraints);
+        gridBagConstraints.insets = new java.awt.Insets(18, 18, 79, 277);
+        jPanel1.add(btnCerrarSesion, gridBagConstraints);
+
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/cerrar-sesion-alt.png"))); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(18, 223, 79, 0);
+        jPanel1.add(jLabel1, gridBagConstraints);
+
+        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/usuario.png"))); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(18, 223, 0, 0);
+        jPanel1.add(jLabel2, gridBagConstraints);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -198,26 +189,26 @@ public class Perfil extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 465, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
         // TODO add your handling code here:
         VentanaPrincipal ventana =(VentanaPrincipal) SwingUtilities.getWindowAncestor(this);
-        ventana.navegar(ventana.getPlani());
+        ventana.navegar(ventana.getGuia());
     }//GEN-LAST:event_btnSalirActionPerformed
 
-    private void btnCerrarSesion2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarSesion2ActionPerformed
+    private void btnCerrarSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarSesionActionPerformed
         // TODO add your handling code here:
         VentanaPrincipal ventana =(VentanaPrincipal) SwingUtilities.getWindowAncestor(this);
         ventana.volverInicio();
-    }//GEN-LAST:event_btnCerrarSesion2ActionPerformed
+    }//GEN-LAST:event_btnCerrarSesionActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnCerrarSesion2;
+    private javax.swing.JButton btnCerrarSesion;
     private javax.swing.JButton btnSalir;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -225,10 +216,10 @@ public class Perfil extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JTextField txtArea;
     private javax.swing.JTextField txtCodigo;
     private javax.swing.JTextField txtCorreo;
     private javax.swing.JTextField txtDocumento;
     private javax.swing.JTextField txtNombre;
     // End of variables declaration//GEN-END:variables
+
 }

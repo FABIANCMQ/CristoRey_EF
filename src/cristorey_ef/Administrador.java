@@ -41,10 +41,6 @@ public class Administrador extends Usuario {
         controlador.listarPasajero();
     }
     
-    public void generarReportesPaquetes(PaqueteTuristicoControlador PaqControlador){
-        System.out.println("\n===== REPORTE DE PAQUETES =====");
-        PaqControlador.mostrarPaquetes();
-    }
     public void verEstadisticas(PaqueteTuristicoControlador PaqControlador){
         int totalPasajeros = 0;
         for (int i = 0; i < PaqControlador.paquete.size(); i++) {

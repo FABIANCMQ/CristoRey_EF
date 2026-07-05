@@ -11,9 +11,12 @@ import cristorey_ef.Pasajero;
 import cristorey_ef.PasajeroControlador;
 import cristorey_ef.ReservaControlador;
 import java.awt.Color;
+import java.awt.Component;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 
 /**
@@ -34,6 +37,7 @@ public class RegistroPasajero extends javax.swing.JPanel {
         this.pc = pc;
         this.rc = rc;
         this.ptc = ptc;
+        cargarPaquetes();
         actualizarInfoCupos();
     }
 
@@ -47,6 +51,7 @@ public class RegistroPasajero extends javax.swing.JPanel {
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
+        jPanel4 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         txtNombre = new javax.swing.JTextField();
@@ -68,26 +73,28 @@ public class RegistroPasajero extends javax.swing.JPanel {
         jLabel10 = new javax.swing.JLabel();
         txtNumDoc = new javax.swing.JTextField();
         jLabel11 = new javax.swing.JLabel();
-        txtFechaEmision = new javax.swing.JTextField();
         jLabel12 = new javax.swing.JLabel();
         txtFechaVencimiento = new javax.swing.JTextField();
         jLabel13 = new javax.swing.JLabel();
         txtEdad = new javax.swing.JTextField();
         btnValidarDocumento = new javax.swing.JButton();
         lblVigencia = new javax.swing.JLabel();
-        btnLimpiar = new javax.swing.JButton();
-        jLabel17 = new javax.swing.JLabel();
+        txtFechaEmision = new javax.swing.JTextField();
+        btnRegistrar = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jLabel18 = new javax.swing.JLabel();
         jLabel19 = new javax.swing.JLabel();
         jLabel20 = new javax.swing.JLabel();
         lblCupos = new javax.swing.JLabel();
         btnAsignarPaquete = new javax.swing.JButton();
-        btnCancelarInscripcion = new javax.swing.JButton();
         cbxPaquete = new javax.swing.JComboBox<>();
-        btnRegistrar = new javax.swing.JButton();
+        jLabel17 = new javax.swing.JLabel();
+        btnLimpiar = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 249, 236));
+
+        jPanel4.setOpaque(false);
+        jPanel4.setLayout(new java.awt.GridBagLayout());
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(245, 164, 61), 2));
@@ -161,8 +168,17 @@ public class RegistroPasajero extends javax.swing.JPanel {
                 .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtCorreo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(49, Short.MAX_VALUE))
         );
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.ipadx = 18;
+        gridBagConstraints.ipady = 43;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(24, 43, 0, 0);
+        jPanel4.add(jPanel1, gridBagConstraints);
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
         jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(245, 164, 61), 2));
@@ -270,20 +286,34 @@ public class RegistroPasajero extends javax.swing.JPanel {
                 .addComponent(btnValidarDocumento, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(lblVigencia, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(38, 38, 38))
+                .addGap(16, 16, 16))
         );
 
-        btnLimpiar.setBackground(new java.awt.Color(255, 189, 105));
-        btnLimpiar.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        btnLimpiar.setForeground(new java.awt.Color(255, 255, 255));
-        btnLimpiar.setText("Limpiar");
-        btnLimpiar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnLimpiar.addActionListener(this::btnLimpiarActionPerformed);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 4;
+        gridBagConstraints.ipadx = 21;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(24, 41, 0, 48);
+        jPanel4.add(jPanel2, gridBagConstraints);
 
-        jLabel17.setFont(new java.awt.Font("Forte", 0, 24)); // NOI18N
-        jLabel17.setForeground(new java.awt.Color(80, 50, 22));
-        jLabel17.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/ControlMatutino.png"))); // NOI18N
-        jLabel17.setText("Registro de pasajeros");
+        btnRegistrar.setBackground(new java.awt.Color(255, 189, 105));
+        btnRegistrar.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnRegistrar.setForeground(new java.awt.Color(255, 255, 255));
+        btnRegistrar.setText("Registrar pasajero");
+        btnRegistrar.setBorder(null);
+        btnRegistrar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnRegistrar.addActionListener(this::btnRegistrarActionPerformed);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.ipadx = 109;
+        gridBagConstraints.ipady = 14;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(18, 279, 0, 0);
+        jPanel4.add(btnRegistrar, gridBagConstraints);
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
         jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 170, 44), 2));
@@ -297,7 +327,7 @@ public class RegistroPasajero extends javax.swing.JPanel {
         gridBagConstraints.gridy = 0;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(18, 20, 0, 0);
+        gridBagConstraints.insets = new java.awt.Insets(22, 20, 0, 0);
         jPanel3.add(jLabel18, gridBagConstraints);
 
         jLabel19.setForeground(new java.awt.Color(102, 102, 102));
@@ -306,27 +336,28 @@ public class RegistroPasajero extends javax.swing.JPanel {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(15, 20, 0, 0);
+        gridBagConstraints.insets = new java.awt.Insets(21, 20, 0, 0);
         jPanel3.add(jLabel19, gridBagConstraints);
 
         jLabel20.setForeground(new java.awt.Color(102, 102, 102));
         jLabel20.setText("Cupos disponibles");
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 5;
+        gridBagConstraints.gridx = 4;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(15, 8, 0, 0);
+        gridBagConstraints.insets = new java.awt.Insets(21, 44, 0, 0);
         jPanel3.add(jLabel20, gridBagConstraints);
 
         lblCupos.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         lblCupos.setForeground(new java.awt.Color(80, 50, 22));
         lblCupos.setText("-- / --");
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 6;
+        gridBagConstraints.gridx = 5;
         gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 7;
         gridBagConstraints.gridheight = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(14, 8, 0, 0);
+        gridBagConstraints.insets = new java.awt.Insets(20, 18, 0, 71);
         jPanel3.add(lblCupos, gridBagConstraints);
 
         btnAsignarPaquete.setBackground(new java.awt.Color(255, 189, 105));
@@ -338,27 +369,13 @@ public class RegistroPasajero extends javax.swing.JPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 4;
-        gridBagConstraints.gridwidth = 5;
+        gridBagConstraints.gridwidth = 6;
         gridBagConstraints.ipadx = 323;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(10, 20, 2, 0);
+        gridBagConstraints.insets = new java.awt.Insets(6, 97, 13, 0);
         jPanel3.add(btnAsignarPaquete, gridBagConstraints);
 
-        btnCancelarInscripcion.setBackground(new java.awt.Color(196, 90, 60));
-        btnCancelarInscripcion.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
-        btnCancelarInscripcion.setForeground(new java.awt.Color(255, 255, 255));
-        btnCancelarInscripcion.setText("Cancelar inscripción");
-        btnCancelarInscripcion.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnCancelarInscripcion.addActionListener(this::btnCancelarInscripcionActionPerformed);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 5;
-        gridBagConstraints.gridy = 4;
-        gridBagConstraints.gridwidth = 3;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(10, 16, 2, 2);
-        jPanel3.add(btnCancelarInscripcion, gridBagConstraints);
-
-        cbxPaquete.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Granja Porcon", "Namora", "Cumbe Mayo", "Castillo de Yanamarca", "Colpa", "Otuzco" }));
+        cbxPaquete.addActionListener(this::cbxPaqueteActionPerformed);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
@@ -366,58 +383,50 @@ public class RegistroPasajero extends javax.swing.JPanel {
         gridBagConstraints.gridheight = 3;
         gridBagConstraints.ipadx = 200;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(12, 12, 0, 0);
+        gridBagConstraints.insets = new java.awt.Insets(18, 12, 0, 0);
         jPanel3.add(cbxPaquete, gridBagConstraints);
 
-        btnRegistrar.setBackground(new java.awt.Color(255, 189, 105));
-        btnRegistrar.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        btnRegistrar.setForeground(new java.awt.Color(255, 255, 255));
-        btnRegistrar.setText("Registrar pasajero");
-        btnRegistrar.setBorder(null);
-        btnRegistrar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnRegistrar.addActionListener(this::btnRegistrarActionPerformed);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(18, 56, 29, 0);
+        jPanel4.add(jPanel3, gridBagConstraints);
+
+        jLabel17.setFont(new java.awt.Font("Forte", 0, 24)); // NOI18N
+        jLabel17.setForeground(new java.awt.Color(80, 50, 22));
+        jLabel17.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/ControlMatutino.png"))); // NOI18N
+        jLabel17.setText("Registro de pasajeros");
+
+        btnLimpiar.setBackground(new java.awt.Color(255, 189, 105));
+        btnLimpiar.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnLimpiar.setForeground(new java.awt.Color(255, 255, 255));
+        btnLimpiar.setText("Limpiar");
+        btnLimpiar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnLimpiar.addActionListener(this::btnLimpiarActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(26, 26, 26)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnLimpiar))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 674, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 19, Short.MAX_VALUE)))
-                .addGap(40, 40, 40))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(235, 235, 235)
-                .addComponent(btnRegistrar, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(15, 15, 15)
+                .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnLimpiar)
+                .addGap(17, 17, 17))
+            .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 809, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(16, 16, 16)
+                .addGap(15, 15, 15)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnLimpiar)
-                    .addComponent(jLabel17))
-                .addGap(33, 33, 33)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 410, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnRegistrar, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(12, 12, 12)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(28, Short.MAX_VALUE))
+                    .addComponent(jLabel17)
+                    .addComponent(btnLimpiar))
+                .addGap(26, 26, 26)
+                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 677, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -513,6 +522,29 @@ public class RegistroPasajero extends javax.swing.JPanel {
         return true;
     }
     
+    private void cargarPaquetes() {
+        javax.swing.DefaultComboBoxModel<PaqueteTuristico> modelo = new javax.swing.DefaultComboBoxModel<>();
+        for (PaqueteTuristico paq : ptc.getPaquete()) {
+            modelo.addElement(paq);
+        }
+        cbxPaquete.setModel(modelo);
+        cbxPaquete.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index,
+                    boolean isSelected, boolean cellHasFocus) {
+                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (value instanceof PaqueteTuristico) {
+                    PaqueteTuristico paq = (PaqueteTuristico) value;
+                    setText(paq.getCodigo_paquete() + " - " + paq.getNombre_paquete()
+                            + " (" + paq.getHorario() + ")");
+                }
+                return this;
+            }
+        });
+    }
+    
+    
+    
     private void btnValidarDocumentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnValidarDocumentoActionPerformed
         // TODO add your handling code here:
         if (!camposDocumentoCompletos()) {
@@ -542,6 +574,8 @@ public class RegistroPasajero extends javax.swing.JPanel {
             return;
         }
         
+        lblVigencia.setOpaque(true);
+        
         if (doc.validarVigencia()) {
             lblVigencia.setText("No caduca");
             lblVigencia.setForeground(new Color(69, 39, 160));
@@ -558,6 +592,9 @@ public class RegistroPasajero extends javax.swing.JPanel {
             lblVigencia.setBackground(new Color(255, 235, 238));
             btnRegistrar.setEnabled(false);
         }
+        
+        lblVigencia.revalidate();
+        lblVigencia.repaint();
     }//GEN-LAST:event_btnValidarDocumentoActionPerformed
 
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
@@ -621,9 +658,8 @@ public class RegistroPasajero extends javax.swing.JPanel {
             return;
         }
 
-        String nombreSeleccionado = cbxPaquete.getSelectedItem().toString().trim();
-        PaqueteTuristico paquete = ptc.buscarNombre(nombreSeleccionado);
-
+        PaqueteTuristico paquete = (PaqueteTuristico) cbxPaquete.getSelectedItem();
+        
         if (rc.buscarReservaActiva(nroDoc, paquete.getCodigo_paquete()) != null) {
             mostrarError( "El pasajero ya está registrado en el paquete " + paquete.getNombre_paquete() +
                     "Reinscripción no permitida");
@@ -639,8 +675,8 @@ public class RegistroPasajero extends javax.swing.JPanel {
 
         if (asignado) {
             JOptionPane.showMessageDialog(this,
-                    "Pasajero " + pasajero.unificarDatos() + " asignado correctamente al paquete "
-                    + paquete.getNombre_paquete() + ".");
+                    "Solicitud registrada para " + pasajero.unificarDatos() + " en el paquete "
+                    + paquete.getNombre_paquete() + ". Queda pendiente de aprobación por el asesor de ventas.");
             actualizarInfoCupos();
             cbxPaquete.repaint();
         } else {
@@ -649,60 +685,18 @@ public class RegistroPasajero extends javax.swing.JPanel {
         
     }//GEN-LAST:event_btnAsignarPaqueteActionPerformed
 
-    private void btnCancelarInscripcionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarInscripcionActionPerformed
+    private void cbxPaqueteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxPaqueteActionPerformed
         // TODO add your handling code here:
-        String nroDoc = txtNumDoc.getText().trim();
-
-        if (nroDoc.isEmpty()) {
-            mostrarError("Ingrese el N° de documento del pasajero");
-            txtNumDoc.requestFocus();
-            return;
-        }
-
-        Pasajero pasajero = pc.buscarDocumento(nroDoc);
-        if (pasajero == null) {
-            mostrarError("No existe un pasajero registrado con el N° de documento " + nroDoc +"Pasajero no encontrado");
-            return;
-        }
-
-        String nombreSeleccionado = cbxPaquete.getSelectedItem().toString().trim();
-        PaqueteTuristico paquete = ptc.buscarNombre(nombreSeleccionado); 
-        
-        if (paquete == null) {
-            mostrarError("Seleccione un paquete turístico");
-            return;
-        }
-
-        cristorey_ef.Reserva reservaActiva = rc.buscarReservaActiva(nroDoc, paquete.getCodigo_paquete());
-        if (reservaActiva == null) {
-            mostrarError("El pasajero no tiene una inscripción activa en el paquete " + paquete.getNombre_paquete() +
-                    "Sin inscripción activa");
-            return;
-        }
-
-        int confirmacion = JOptionPane.showConfirmDialog(this,
-                "¿Confirma cancelar la inscripción de " + pasajero.unificarDatos()
-                + " al paquete " + paquete.getNombre_paquete() + "?",
-                "Confirmar cancelación", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-
-        if (confirmacion != JOptionPane.YES_OPTION) {
-            return;
-        }
-
-        boolean cancelado = rc.cancelarReserva(reservaActiva.getCodigo_reserva());
-
-        if (cancelado) {
-            JOptionPane.showMessageDialog(this, "Inscripción cancelada correctamente. El cupo quedó liberado.");
-            actualizarInfoCupos();
-            cbxPaquete.repaint();
-        } else {
-            mostrarError("No se pudo cancelar la inscripción. Intente nuevamente.");
-        }
-    }//GEN-LAST:event_btnCancelarInscripcionActionPerformed
+        actualizarInfoCupos();
+    }//GEN-LAST:event_cbxPaqueteActionPerformed
 
     private void actualizarInfoCupos() {
-        String nombreSeleccionado = cbxPaquete.getSelectedItem().toString().trim();
-        PaqueteTuristico paquete = ptc.buscarNombre(nombreSeleccionado); 
+        PaqueteTuristico paquete = (PaqueteTuristico) cbxPaquete.getSelectedItem(); 
+        
+         if (paquete == null) {
+            lblCupos.setText("-- / --");
+            return;
+        }
         
         lblCupos.setText(paquete.getCupos_disponibles() + " / " + paquete.getCupos_maximos());
         
@@ -720,7 +714,9 @@ public class RegistroPasajero extends javax.swing.JPanel {
         txtEdad.setText("");
         cbxTipoDoc.setSelectedIndex(0);
         cbxResidencia.setSelectedIndex(0);
-        lblVigencia.setVisible(false);
+        lblVigencia.setText("");
+        lblVigencia.setOpaque(false);
+        lblVigencia.repaint();
         btnRegistrar.setEnabled(false);
     }
 
@@ -730,11 +726,10 @@ public class RegistroPasajero extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAsignarPaquete;
-    private javax.swing.JButton btnCancelarInscripcion;
     private javax.swing.JButton btnLimpiar;
     private javax.swing.JButton btnRegistrar;
     private javax.swing.JButton btnValidarDocumento;
-    private javax.swing.JComboBox<String> cbxPaquete;
+    private javax.swing.JComboBox<PaqueteTuristico> cbxPaquete;
     private javax.swing.JComboBox<String> cbxResidencia;
     private javax.swing.JComboBox<String> cbxTipoDoc;
     private javax.swing.JLabel jLabel1;
@@ -757,6 +752,7 @@ public class RegistroPasajero extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JLabel lblCupos;
     private javax.swing.JLabel lblVigencia;
     private javax.swing.JTextField txtApMaterno;

@@ -121,6 +121,63 @@ public class ReservaControlador {
         
     }
     
+    public ArrayList<Reserva> reservasPendientesAprobacion(){
+        ArrayList<Reserva> pendientes = new ArrayList<>();
+        for (Reserva r : reserva) {
+            if (r.getEstado().equalsIgnoreCase("Activa")
+                    && r.getEstado_aprobacion().equalsIgnoreCase("Pendiente")) {
+                pendientes.add(r);
+            }
+        }
+        return pendientes;
+    }
+    
+    public boolean aprobarReserva(String codigo_reserva){
+        try {
+            Reserva reservas = buscarReserva(codigo_reserva);
+            if (reservas == null) {
+                return false;
+            }
+            if (!reservas.getEstado().equalsIgnoreCase("Activa")) {;
+                return false;
+            }
+            if (reservas.getEstado_aprobacion().equalsIgnoreCase("Aprobada")) {
+                return false;
+            }
+
+            Promocion promocion = reservas.getPaquete().promocionVigenteAplicable(reservas.getPasajero());
+            double descuento;
+            if (promocion != null) {
+                descuento = promocion.getPorcentaje_descuento();
+            } else {
+                descuento = 0;
+            }
+            double precio_final = calcularPrecioFinal(reservas.getPaquete().getCosto(), descuento);
+
+            reservas.setPrecio_final(precio_final);
+            reservas.setEstado_aprobacion("Aprobada");
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+    
+    public boolean rechazarReserva(String codigo_reserva){
+        Reserva reservas = buscarReserva(codigo_reserva);
+        if (reservas == null) {
+            return false;
+        }
+        if (!reservas.getEstado_aprobacion().equalsIgnoreCase("Pendiente")) {;
+            return false;
+        }
+
+        boolean cancelada = cancelarReserva(codigo_reserva);
+        if (cancelada) {
+            reservas.setEstado_aprobacion("Rechazada");
+        }
+        return cancelada;
+    }
+    
     public boolean cancelarReserva(String codigo_reserva){
         try {
             Reserva reservas = buscarReserva(codigo_reserva);
@@ -260,6 +317,15 @@ public class ReservaControlador {
         ranking.sort((a, b) -> Integer.compare(b.getCantidadReservas(), a.getCantidadReservas()));
 
         return ranking;
+    }
+    public ArrayList<Reserva> reservasActivas(){
+        ArrayList<Reserva> activas = new ArrayList<>();
+        for (Reserva r : reserva) {
+            if (r.getEstado().equalsIgnoreCase("Activa")) {
+                activas.add(r);
+            }
+        }
+        return activas;
     }
     
 }

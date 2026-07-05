@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
-package PanelesPlanillero;
+package PanelesAsesorVentas;
 
 import cristorey_ef.PaqueteTuristico;
 import cristorey_ef.PaqueteTuristicoControlador;
@@ -60,10 +60,10 @@ public class Inicio extends javax.swing.JPanel {
         jLabel15.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/PerfilPlani1.png"))); // NOI18N
 
         jLabel16.setFont(new java.awt.Font("Microsoft PhagsPa", 0, 12)); // NOI18N
-        jLabel16.setText("Planillero");
+        jLabel16.setText("Asesor de ventas");
 
         btnDatosAdmin.setFont(new java.awt.Font("Rockwell", 0, 14)); // NOI18N
-        btnDatosAdmin.setText("Diego Torres");
+        btnDatosAdmin.setText("Carlos Rojas");
         btnDatosAdmin.setBorderPainted(false);
         btnDatosAdmin.setContentAreaFilled(false);
         btnDatosAdmin.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -72,7 +72,7 @@ public class Inicio extends javax.swing.JPanel {
         jLabel17.setFont(new java.awt.Font("Forte", 0, 24)); // NOI18N
         jLabel17.setForeground(new java.awt.Color(80, 50, 22));
         jLabel17.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/Bienvenido.png"))); // NOI18N
-        jLabel17.setText("¡Hola, Diego!");
+        jLabel17.setText("¡Hola, Carlos!");
 
         jLabel18.setFont(new java.awt.Font("Rockwell", 0, 14)); // NOI18N
         jLabel18.setText("Bienvenido al sistema de gestión de trabajo");
@@ -129,7 +129,7 @@ public class Inicio extends javax.swing.JPanel {
         gridBagConstraints.ipadx = 73;
         gridBagConstraints.ipady = 18;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(61, 42, 229, 0);
+        gridBagConstraints.insets = new java.awt.Insets(19, 48, 242, 0);
         jPanel1.add(jPanel3, gridBagConstraints);
 
         jPanel6.setBackground(new java.awt.Color(255, 255, 255));
@@ -182,7 +182,7 @@ public class Inicio extends javax.swing.JPanel {
         gridBagConstraints.ipadx = 51;
         gridBagConstraints.ipady = 19;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(61, 67, 229, 0);
+        gridBagConstraints.insets = new java.awt.Insets(19, 44, 242, 0);
         jPanel1.add(jPanel6, gridBagConstraints);
 
         btnCargarReporte.setBackground(new java.awt.Color(255, 189, 105));
@@ -198,7 +198,7 @@ public class Inicio extends javax.swing.JPanel {
         gridBagConstraints.ipadx = 45;
         gridBagConstraints.ipady = 7;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(117, 117, 0, 40);
+        gridBagConstraints.insets = new java.awt.Insets(85, 42, 0, 78);
         jPanel1.add(btnCargarReporte, gridBagConstraints);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -213,7 +213,7 @@ public class Inicio extends javax.swing.JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(17, 17, 17)
                         .addComponent(jLabel18)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 302, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 222, Short.MAX_VALUE)
                 .addComponent(jLabel15)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -223,7 +223,7 @@ public class Inicio extends javax.swing.JPanel {
                         .addGap(7, 7, 7)
                         .addComponent(btnDatosAdmin)))
                 .addGap(29, 29, 29))
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 715, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -240,8 +240,8 @@ public class Inicio extends javax.swing.JPanel {
                         .addComponent(jLabel17)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel18)))
-                .addGap(26, 26, 26)
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 448, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 419, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 

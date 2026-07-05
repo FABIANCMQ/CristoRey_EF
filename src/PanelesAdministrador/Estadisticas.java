@@ -65,7 +65,8 @@ public class Estadisticas extends javax.swing.JPanel {
             return;
         }
 
-        for (ReservaControlador.RankingPaquete item : ranking) {
+        for (int i = 0; i < ranking.size(); i++) {
+            ReservaControlador.RankingPaquete item = ranking.get(i);
             PaqueteTuristico p = item.getPaquete();
             modelo.addRow(new Object[]{
                 p.getNombre_paquete(),
@@ -178,7 +179,7 @@ public class Estadisticas extends javax.swing.JPanel {
                         .addComponent(jLabel17)
                         .addGap(186, 186, 186)
                         .addComponent(lblMes)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 261, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 240, Short.MAX_VALUE)
                         .addComponent(jButton1)))
                 .addGap(14, 14, 14))
         );

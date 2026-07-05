@@ -25,24 +25,10 @@ public class AsesorVentas extends Usuario{
         this.sede = sede;
     }
     
-    public void consultarCatalogo(PaqueteTuristicoControlador controlador){
-        System.out.println("=== CATALOGO DE PAQUETES TURISTICOS ===");
-        controlador.mostrarPaquetes();
-    }
-    
-    public void verPaqueteSeleccionado(PaqueteTuristico paquete){
-        if (paquete == null) {
-            System.out.println("No se encontro el paquete seleccionado");
-        }else{
-            paquete.mostrarInfo();
-        }
-    }
-    
     public void buscarViajePorDestino(PaqueteTuristicoControlador controlador, String destino){
         boolean encontrado = false;
         
         if (destino == null || destino.trim().isEmpty()) {
-            System.out.println("Debe ingresar un destino para realizarla busqueda");
             return;
         }
         
@@ -51,12 +37,8 @@ public class AsesorVentas extends Usuario{
             
             if (p.getDestino().toLowerCase().contains(destino.toLowerCase()) || 
                     p.getNombre_paquete().toLowerCase().contains(destino.toLowerCase())) {
-                p.mostrarInfo();
                 encontrado = true;
             }
-        }
-        if (!encontrado) {
-            System.out.println("No se encontraron viajes relacionados  con el destino ingresado.");
         }
     }
     
