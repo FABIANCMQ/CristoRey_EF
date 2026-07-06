@@ -31,6 +31,7 @@ public class UsuarioControlador {
                 "Mariela Medina",
                 "admin@cristorey.com",
                 "admin123",
+                3500.0,
                 doc1));
         
         //Creamos un planillero 
@@ -44,6 +45,7 @@ public class UsuarioControlador {
                 "Diego Torres",
                 "planillero@cristorey.com",
                 "plan123",
+                1800.0,
                 doc2));
         
         //Crearemos un Guia Turistico
@@ -51,12 +53,13 @@ public class UsuarioControlador {
                 LocalDate.of(2023, 3, 10),
                 LocalDate.of(2031, 3, 10),
                 "Nacional", 32);
-        usuario.add(new GuiaTuristico("Recorridos Cajamarca",
+        usuario.add(new GuiaTuristico(null,
                 "U" + String.format("%05d", ++contador),
                 "Guía turistico" ,
                 "Lucía Robles",
                 "guia@cristorey.com",
                 "guia123",
+                1600.0,
                 doc3));
         
         //Crearemos un Gerente
@@ -70,6 +73,8 @@ public class UsuarioControlador {
                 "Mike Ramirez",
                 "gerente@cristorey.com", 
                 "gerente123", 
+                5500.0,
+                0,
                 doc4));
         
         //Crearemos un asesor de ventas
@@ -82,7 +87,8 @@ public class UsuarioControlador {
                 "Asesor de ventas",
                 "Carlos Rojas",
                 "asesor@cristorey.com", 
-                "asesor123", 
+                "asesor123",
+                2200.0,
                 doc5));
     }
     
@@ -126,38 +132,6 @@ public class UsuarioControlador {
         }
     }
     
-    public Usuario inicioSesion(String correo, String clave){
-        try {
-            if (correo == null || correo.trim().isEmpty()) {
-                System.out.println("Ingrese correo.");
-                return null;
-            }
-
-            if (clave == null || clave.trim().isEmpty()) {
-                System.out.println("Ingrese clave.");
-                return null;
-            }
-
-            for (int i = 0; i < usuario.size(); i++) {
-                Usuario user = usuario.get(i);
-
-                if (user.validarAcceso(correo, clave)) {
-                    System.out.println("Inicio de sesion correcto.");
-                    System.out.println("Bienvenido: " + user.getNombre());
-                    System.out.println("Rol: " + obtenerRol(user));
-                    return user;
-                }
-            }
-
-            System.out.println("Correo o clave incorrectos.");
-            return null;
-
-        } catch (Exception e) {
-            System.out.println("Error al iniciar sesion: " + e.getMessage());
-            return null;
-        }
-    }
-    
     public Usuario buscarCorreo(String correo){
         for (int i = 0; i < usuario.size(); i++) {
             if (usuario.get(i).getCorreo().equalsIgnoreCase(correo)) {
@@ -185,6 +159,24 @@ public class UsuarioControlador {
         return null;
     }
     
+    public Usuario buscarCodigo(String codigo) {
+        for (int i = 0; i < usuario.size(); i++) {
+            if (usuario.get(i).getCodigo_usuario().equalsIgnoreCase(codigo)) {
+                return usuario.get(i);
+            }
+        }
+        return null;
+    }
+    
+    public boolean asignarSueldo(String codigo, double nuevoSueldo) {
+        Usuario user = buscarCodigo(codigo);
+        if (user != null) {
+            user.setSueldo(nuevoSueldo);
+            return true;
+        }
+        return false;
+    }
+    
     public String obtenerRol(Usuario user){
         if (user instanceof Administrador) {
             return "Administrador";
@@ -201,15 +193,4 @@ public class UsuarioControlador {
         }
     }
     
-    public void listarUsuarios(){
-        for (int i = 0; i < usuario.size(); i++) {
-            Usuario user = usuario.get(i);
-
-            System.out.println("\nCodigo: " + user.getCodigo_usuario());
-            System.out.println("Nombre: " + user.getNombre());
-            System.out.println("Correo: " + user.getCorreo());
-            System.out.println("Rol: " + obtenerRol(user));
-            System.out.println("Estado: " + (user.isBloqueado() ? "Bloqueado" : "Activo"));
-        }
-    }
 }

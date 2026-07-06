@@ -18,13 +18,13 @@ public class ControlViajes extends javax.swing.JPanel {
     /**
      * Creates new form Tours
      */
-    private PaqueteTuristicoControlador pc;
+    private PaqueteTuristicoControlador ptc;
     private ArrayList<PaqueteTuristico> paquetes;
     
-    public ControlViajes(PaqueteTuristicoControlador pc) {
+    public ControlViajes(PaqueteTuristicoControlador ptc) {
         initComponents();
-        this.pc = pc;
-        this.paquetes = pc.getPaquete();
+        this.ptc = ptc;
+        this.paquetes = ptc.getPaquete();
         
         tblPaquetes.getTableHeader().setBackground(new java.awt.Color(255, 170, 44));
         tblPaquetes.getTableHeader().setForeground(java.awt.Color.WHITE);
@@ -60,7 +60,8 @@ public class ControlViajes extends javax.swing.JPanel {
                 inscritos,
                 p.getCupos_maximos(),
                 p.getCupos_disponibles(),
-                String.format("%.1f %%", p.porcentajeOcupacion())
+                String.format("%.1f %%", p.porcentajeOcupacion()),
+                p.getCosto()
             });    
         }
     }
@@ -73,11 +74,14 @@ public class ControlViajes extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
         jLabel17 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblPaquetes = new javax.swing.JTable();
-        jButton4 = new javax.swing.JButton();
+        btnActualizar = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(255, 249, 236));
 
@@ -89,13 +93,13 @@ public class ControlViajes extends javax.swing.JPanel {
         tblPaquetes.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         tblPaquetes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
             },
             new String [] {
-                "Paquete Turístico", "Horario", "Inscritos", "Cupos Máx.", "Disponibles", "%  Ocupado"
+                "Paquete Turístico", "Horario", "Inscritos", "Cupos Máx.", "Disponibles", "%  Ocupado", "Precio"
             }
         ));
         tblPaquetes.setMaximumSize(new java.awt.Dimension(30, 112));
@@ -106,13 +110,24 @@ public class ControlViajes extends javax.swing.JPanel {
         tblPaquetes.setShowVerticalLines(true);
         jScrollPane2.setViewportView(tblPaquetes);
 
-        jButton4.setBackground(new java.awt.Color(255, 189, 105));
-        jButton4.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jButton4.setForeground(new java.awt.Color(255, 255, 255));
-        jButton4.setText("Actualizar");
-        jButton4.setBorderPainted(false);
-        jButton4.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton4.addActionListener(this::jButton4ActionPerformed);
+        btnActualizar.setBackground(new java.awt.Color(255, 189, 105));
+        btnActualizar.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnActualizar.setForeground(new java.awt.Color(255, 255, 255));
+        btnActualizar.setText("Actualizar");
+        btnActualizar.setBorderPainted(false);
+        btnActualizar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnActualizar.addActionListener(this::btnActualizarActionPerformed);
+
+        jPanel1.setOpaque(false);
+        jPanel1.setLayout(new java.awt.GridBagLayout());
+
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/paisaje 7.png"))); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(30, 254, 22, 257);
+        jPanel1.add(jLabel1, gridBagConstraints);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -121,12 +136,13 @@ public class ControlViajes extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 750, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel17)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btnActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(14, 14, 14))
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -134,22 +150,25 @@ public class ControlViajes extends javax.swing.JPanel {
                 .addGap(17, 17, 17)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel17)
-                    .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(43, 43, 43)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(208, Short.MAX_VALUE))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 289, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+    private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
         // TODO add your handling code here:
         cargarTabla();
-    }//GEN-LAST:event_jButton4ActionPerformed
+    }//GEN-LAST:event_btnActualizarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton4;
+    private javax.swing.JButton btnActualizar;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel17;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable tblPaquetes;
     // End of variables declaration//GEN-END:variables

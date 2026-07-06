@@ -43,6 +43,7 @@ public class PaqueteTuristicoControlador {
         return paquete;
     }
     
+    
     public PaqueteTuristico buscarNombre(String nombre){
         for (int i = 0; i < paquete.size(); i++) {
             if (paquete.get(i).getNombre_paquete().equalsIgnoreCase(nombre)) {
@@ -52,13 +53,17 @@ public class PaqueteTuristicoControlador {
         return null;
     }
     
-    public PaqueteTuristico buscarDestino(String destino){
+    public ArrayList<PaqueteTuristico> buscarDestino(String destino){
+        ArrayList<PaqueteTuristico> resultado = new ArrayList<>();
+        String texto = destino.toLowerCase();
         for (int i = 0; i < paquete.size(); i++) {
-            if (paquete.get(i).getDestino().equalsIgnoreCase(destino)) {
-                return paquete.get(i);
-            }   
+            PaqueteTuristico p = paquete.get(i);
+            if (p.getNombre_paquete().toLowerCase().contains(texto)
+                    || p.getDestino().toLowerCase().contains(texto)) {
+                resultado.add(p);
+            }
         }
-        return null;
+        return resultado;
     }
     
     public PaqueteTuristico buscarCodigo(String codigo){
@@ -68,5 +73,15 @@ public class PaqueteTuristicoControlador {
             }   
         }
         return null;
+    }
+    
+    public boolean actualizarTarifa(String codigoPaquete, double nuevoPrecio) {
+        PaqueteTuristico p = buscarCodigo(codigoPaquete);
+        if (p == null) {
+            return false;
+        }
+        double nuevoCosto = nuevoPrecio;
+        p.setCosto(nuevoCosto);
+        return true;
     }
 }

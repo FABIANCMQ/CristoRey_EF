@@ -250,7 +250,7 @@
             <Component class="javax.swing.JLabel" name="jLabel17">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/Iconos/viaje-en-coche.png"/>
+                  <Image iconType="3" name="/Iconos/comprobacion-del-circulo-de-notas.png"/>
                 </Property>
               </Properties>
             </Component>
@@ -306,7 +306,7 @@
             <Component class="javax.swing.JLabel" name="jLabel18">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/Iconos/viaje-en-coche.png"/>
+                  <Image iconType="3" name="/Iconos/asignar.png"/>
                 </Property>
               </Properties>
             </Component>
@@ -362,7 +362,7 @@
             <Component class="javax.swing.JLabel" name="jLabel19">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/Iconos/viaje-en-coche.png"/>
+                  <Image iconType="3" name="/Iconos/catalogar.png"/>
                 </Property>
               </Properties>
             </Component>

@@ -1,0 +1,325 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
+ */
+package PanelesGerente;
+
+import cristorey_ef.PaqueteTuristico;
+import cristorey_ef.Reserva;
+import cristorey_ef.ReservaControlador;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
+/**
+ *
+ * @author coolg
+ */
+public class ReporteFinanciero extends javax.swing.JPanel {
+
+    private static final DateTimeFormatter FORMATO = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+    private final ReservaControlador rc;
+
+    /**
+     * Creates new form ReportesFinancieros
+     */
+    public ReporteFinanciero(ReservaControlador rc) {
+        this.rc = rc;
+        initComponents();
+        
+        tblIngresoTour.getTableHeader().setBackground(new java.awt.Color(255, 170, 44));
+        tblIngresoTour.getTableHeader().setForeground(java.awt.Color.WHITE);
+        tblIngresoTour.getTableHeader().setDefaultRenderer(new javax.swing.table.DefaultTableCellRenderer(){
+            @Override
+            public java.awt.Component getTableCellRendererComponent(javax.swing.JTable table, Object value,
+                    boolean isSelected, boolean hasFocus, int row, int column) {
+                javax.swing.JLabel c = (javax.swing.JLabel) super.getTableCellRendererComponent(
+                        table, value, isSelected, hasFocus, row, column);
+                c.setBackground(table.getTableHeader().getBackground());
+                c.setForeground(table.getTableHeader().getForeground());
+                c.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+                c.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 1, java.awt.Color.LIGHT_GRAY));
+
+                return c;
+            }
+        });
+        txtDesde.setText(LocalDate.now().format(FORMATO));
+        txtHasta.setText(LocalDate.now().format(FORMATO));
+    }
+    
+    private void generarReporte() {
+        LocalDate desde;
+        LocalDate hasta;
+        try {
+            desde = LocalDate.parse(txtDesde.getText().trim(), FORMATO);
+            hasta = LocalDate.parse(txtHasta.getText().trim(), FORMATO);
+        } catch (DateTimeParseException ex) {
+            JOptionPane.showMessageDialog(this, "Ingrese fechas válidas con formato dd/MM/aaaa.",
+                    "Fecha inválida", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (hasta.isBefore(desde)) {
+            JOptionPane.showMessageDialog(this, "La fecha 'Hasta' no puede ser anterior a 'Desde'.",
+                    "Rango inválido", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        ArrayList<Reserva> reservas = rc.reservasEnRango(desde, hasta);
+        ArrayList<ReporteLinea> listaReporte = new ArrayList<>();
+        double totalIngresos = 0;
+
+        for (int i = 0; i < reservas.size(); i++) {
+        Reserva r = reservas.get(i);
+        if (!r.getEstado_aprobacion().equalsIgnoreCase("Aprobada")) {
+            continue;
+        }
+
+        String codigo = r.getPaquete().getCodigo_paquete();
+        double precio = r.getPrecio_final();
+        totalIngresos += precio;
+
+        ReporteLinea lineaEncontrada = null;
+        for (int j = 0; j < listaReporte.size(); j++) {
+            ReporteLinea linea = listaReporte.get(j);
+            if (linea.paquete.getCodigo_paquete().equals(codigo)) {
+                lineaEncontrada = linea;
+                break; 
+            }
+        }
+
+        if (lineaEncontrada == null) {
+            lineaEncontrada = new ReporteLinea(r.getPaquete());
+            listaReporte.add(lineaEncontrada);
+        }
+
+        lineaEncontrada.cantidad = lineaEncontrada.cantidad + 1;
+        lineaEncontrada.ingresos = lineaEncontrada.ingresos + precio;
+    }
+
+    DefaultTableModel modelo = (DefaultTableModel) tblIngresoTour.getModel();
+    modelo.setRowCount(0);
+
+    for (int i = 0; i < listaReporte.size(); i++) {
+        ReporteLinea linea = listaReporte.get(i);
+
+        modelo.addRow(new Object[]{
+            linea.paquete.getNombre_paquete(),
+            linea.cantidad,
+            String.format("%.2f", linea.ingresos)
+        });
+    }
+
+
+        lblTotal.setText("Ingresos totales: S/" + totalIngresos);
+    }
+    
+    class ReporteLinea {
+        PaqueteTuristico paquete;
+        int cantidad = 0;
+        double ingresos = 0.0;
+
+        public ReporteLinea(PaqueteTuristico paquete) {
+            this.paquete = paquete;
+        }
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the
+     * form. WARNING: Do NOT modify this code. The content of this method is
+     * always regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
+
+        lblDesde = new javax.swing.JLabel();
+        txtDesde = new javax.swing.JTextField();
+        lblHasta = new javax.swing.JLabel();
+        txtHasta = new javax.swing.JTextField();
+        jLabel17 = new javax.swing.JLabel();
+        btnLimpiar = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblIngresoTour = new javax.swing.JTable();
+        lblTotal = new javax.swing.JLabel();
+        btnGenerarReporte = new javax.swing.JButton();
+        jPanel2 = new javax.swing.JPanel();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        lblGanancias = new javax.swing.JLabel();
+
+        setBackground(new java.awt.Color(252, 242, 226));
+        setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        setPreferredSize(new java.awt.Dimension(600, 400));
+
+        lblDesde.setText("Desde (dd/MM/aaaa):");
+
+        lblHasta.setText("Hasta (dd/MM/aaaa):");
+
+        jLabel17.setFont(new java.awt.Font("Forte", 0, 24)); // NOI18N
+        jLabel17.setForeground(new java.awt.Color(80, 50, 22));
+        jLabel17.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/reporteVentas.png"))); // NOI18N
+        jLabel17.setText("Reportes financieros");
+
+        btnLimpiar.setBackground(new java.awt.Color(255, 189, 105));
+        btnLimpiar.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnLimpiar.setForeground(new java.awt.Color(255, 255, 255));
+        btnLimpiar.setText("Limpiar");
+        btnLimpiar.setBorderPainted(false);
+        btnLimpiar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnLimpiar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLimpiarActionPerformed(evt);
+            }
+        });
+
+        tblIngresoTour.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Código", "Paquete", "Reservas aprobadas", "Ingresos (S/)"
+            }
+        ));
+        tblIngresoTour.setRowHeight(28);
+        tblIngresoTour.setShowHorizontalLines(true);
+        tblIngresoTour.setShowVerticalLines(true);
+        jScrollPane1.setViewportView(tblIngresoTour);
+
+        lblTotal.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        lblTotal.setForeground(new java.awt.Color(80, 50, 22));
+        lblTotal.setText("Total");
+
+        btnGenerarReporte.setBackground(new java.awt.Color(255, 189, 105));
+        btnGenerarReporte.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnGenerarReporte.setForeground(new java.awt.Color(255, 255, 255));
+        btnGenerarReporte.setText("Generar reporte");
+        btnGenerarReporte.setEnabled(false);
+        btnGenerarReporte.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGenerarReporteActionPerformed(evt);
+            }
+        });
+
+        jPanel2.setOpaque(false);
+        jPanel2.setLayout(new java.awt.GridBagLayout());
+
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(245, 164, 61), 2));
+        jPanel1.setLayout(new java.awt.GridLayout(2, 1));
+
+        jLabel1.setForeground(new java.awt.Color(102, 102, 102));
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setText("Ingresos totales");
+        jPanel1.add(jLabel1);
+
+        lblGanancias.setFont(new java.awt.Font("Forte", 0, 26)); // NOI18N
+        lblGanancias.setForeground(new java.awt.Color(245, 164, 61));
+        lblGanancias.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblGanancias.setText("S/ 0.00");
+        jPanel1.add(lblGanancias);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.ipadx = 208;
+        gridBagConstraints.ipady = 42;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 271, 6, 254);
+        jPanel2.add(jPanel1, gridBagConstraints);
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane1)
+                        .addGap(17, 17, 17))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnLimpiar)
+                        .addGap(22, 22, 22))))
+            .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 915, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(54, 54, 54)
+                        .addComponent(lblDesde)
+                        .addGap(18, 18, 18)
+                        .addComponent(txtDesde, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(67, 67, 67)
+                        .addComponent(lblHasta)
+                        .addGap(18, 18, 18)
+                        .addComponent(txtHasta, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(64, 64, 64)
+                        .addComponent(btnGenerarReporte))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(390, 390, 390)
+                        .addComponent(lblTotal)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel17)
+                    .addComponent(btnLimpiar))
+                .addGap(24, 24, 24)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblDesde)
+                    .addComponent(txtDesde, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblHasta)
+                    .addComponent(txtHasta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnGenerarReporte))
+                .addGap(33, 33, 33)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 224, Short.MAX_VALUE)
+                .addGap(37, 37, 37)
+                .addComponent(lblTotal)
+                .addGap(26, 26, 26))
+        );
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
+        generarReporte();
+    }//GEN-LAST:event_btnLimpiarActionPerformed
+
+    private void btnGenerarReporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarReporteActionPerformed
+        // TODO add your handling code here:
+        generarReporte();
+    }//GEN-LAST:event_btnGenerarReporteActionPerformed
+
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnGenerarReporte;
+    private javax.swing.JButton btnLimpiar;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblDesde;
+    private javax.swing.JLabel lblGanancias;
+    private javax.swing.JLabel lblHasta;
+    private javax.swing.JLabel lblTotal;
+    private javax.swing.JTable tblIngresoTour;
+    private javax.swing.JTextField txtDesde;
+    private javax.swing.JTextField txtHasta;
+    // End of variables declaration//GEN-END:variables
+
+}

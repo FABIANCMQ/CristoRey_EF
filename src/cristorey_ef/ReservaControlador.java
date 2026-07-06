@@ -5,6 +5,7 @@
 package cristorey_ef;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -49,6 +50,24 @@ public class ReservaControlador {
         }catch(Exception e){
             return false;
         }
+    }
+
+    public ArrayList<Reserva> getReserva() {
+        return reserva;
+    }
+    
+    public ArrayList<Reserva> reservasEnRango(LocalDate desde, LocalDate hasta){
+        ArrayList<Reserva> resultado = new ArrayList<>();
+        for (int i = 0; i < reserva.size(); i++) {
+        Reserva r = reserva.get(i);
+        
+        if (r.getEstado().equalsIgnoreCase("Activa")
+                && !r.getFecha_reserva().isBefore(desde)
+                && !r.getFecha_reserva().isAfter(hasta)) {
+            resultado.add(r);
+        }
+    }
+        return resultado;
     }
     
     public double calcularPrecioFinal(double precio, double descuento){
@@ -96,30 +115,8 @@ public class ReservaControlador {
         }
     }
     return activas;
-}
-    
-    public void listarReserva(){
-        if (!reserva.isEmpty()) {
-            for (int i = 0; i < reserva.size(); i++) {
-                reserva.get(i).mostrarReserva();
-            }
-        }
     }
     
-    public void historialCliente(String nro_doc){
-        boolean cliente_encontrado = false;
-        
-        for (int i = 0; i < reserva.size(); i++) {
-            Reserva reservas = reserva.get(i);
-            
-            if (reservas.getPasajero().getDocumento().getNro_doc().equalsIgnoreCase(nro_doc)) {
-                reservas.mostrarReserva();
-                
-                cliente_encontrado = true;
-            }
-        }
-        
-    }
     
     public ArrayList<Reserva> reservasPendientesAprobacion(){
         ArrayList<Reserva> pendientes = new ArrayList<>();
@@ -194,6 +191,7 @@ public class ReservaControlador {
             }
 
             reservas.setEstado("Cancelada");
+            reservas.setFecha_cancelacion(LocalDate.now());
 
             return true;
         } catch (Exception e) {
@@ -309,7 +307,12 @@ public class ReservaControlador {
         for (Map.Entry<String, Integer> entry : conteoPorCodigo.entrySet()) {
             PaqueteTuristico p = paquetesPorCodigo.get(entry.getKey());
             int cantidad = entry.getValue();
-            double porcentaje = totalReservas == 0 ? 0 : (cantidad * 100.0) / totalReservas;
+            double porcentaje;
+            if (totalReservas == 0) {
+                porcentaje = 0; 
+            } else {
+                porcentaje = (cantidad * 100.0) / totalReservas;
+            }
 
             ranking.add(new RankingPaquete(p, cantidad, porcentaje));
         }

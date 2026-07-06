@@ -85,18 +85,20 @@ public class Estadisticas extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
         jLabel17 = new javax.swing.JLabel();
         lblMes = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        btnGenerarReporte = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblRanking = new javax.swing.JTable();
+        jPanel3 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         lblGanancias = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         lblDiaConcurrido = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        tblRanking = new javax.swing.JTable();
 
         setBackground(new java.awt.Color(255, 249, 236));
 
@@ -108,43 +110,13 @@ public class Estadisticas extends javax.swing.JPanel {
         lblMes.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
         lblMes.setText("Fecha actual");
 
-        jButton1.setBackground(new java.awt.Color(255, 189, 105));
-        jButton1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("Generar Reporte");
-        jButton1.setBorderPainted(false);
-        jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton1.addActionListener(this::jButton1ActionPerformed);
-
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(245, 164, 61), 2));
-        jPanel1.setLayout(new java.awt.GridLayout(2, 1));
-
-        jLabel1.setForeground(new java.awt.Color(102, 102, 102));
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Ganancias del mes");
-        jPanel1.add(jLabel1);
-
-        lblGanancias.setFont(new java.awt.Font("Forte", 0, 26)); // NOI18N
-        lblGanancias.setForeground(new java.awt.Color(245, 164, 61));
-        lblGanancias.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblGanancias.setText("S/ 0.00");
-        jPanel1.add(lblGanancias);
-
-        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(245, 164, 61), 2));
-        jPanel2.setLayout(new java.awt.GridLayout(2, 1));
-
-        jLabel3.setForeground(new java.awt.Color(102, 102, 102));
-        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel3.setText("Día más concurrido");
-        jPanel2.add(jLabel3);
-
-        lblDiaConcurrido.setFont(new java.awt.Font("Forte", 0, 26)); // NOI18N
-        lblDiaConcurrido.setForeground(new java.awt.Color(245, 164, 61));
-        lblDiaConcurrido.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblDiaConcurrido.setText("-");
-        jPanel2.add(lblDiaConcurrido);
+        btnGenerarReporte.setBackground(new java.awt.Color(255, 189, 105));
+        btnGenerarReporte.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnGenerarReporte.setForeground(new java.awt.Color(255, 255, 255));
+        btnGenerarReporte.setText("Generar Reporte");
+        btnGenerarReporte.setBorderPainted(false);
+        btnGenerarReporte.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnGenerarReporte.addActionListener(this::btnGenerarReporteActionPerformed);
 
         tblRanking.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         tblRanking.setModel(new javax.swing.table.DefaultTableModel(
@@ -163,58 +135,106 @@ public class Estadisticas extends javax.swing.JPanel {
         tblRanking.setShowVerticalLines(true);
         jScrollPane1.setViewportView(tblRanking);
 
+        jPanel3.setOpaque(false);
+        jPanel3.setLayout(new java.awt.GridBagLayout());
+
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(245, 164, 61), 2));
+        jPanel1.setLayout(new java.awt.GridLayout(2, 1));
+
+        jLabel1.setForeground(new java.awt.Color(102, 102, 102));
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setText("Ganancias del mes");
+        jPanel1.add(jLabel1);
+
+        lblGanancias.setFont(new java.awt.Font("Forte", 0, 26)); // NOI18N
+        lblGanancias.setForeground(new java.awt.Color(245, 164, 61));
+        lblGanancias.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblGanancias.setText("S/ 0.00");
+        jPanel1.add(lblGanancias);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.ipadx = 223;
+        gridBagConstraints.ipady = 60;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(29, 36, 37, 0);
+        jPanel3.add(jPanel1, gridBagConstraints);
+
+        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(245, 164, 61), 2));
+        jPanel2.setLayout(new java.awt.GridLayout(2, 1));
+
+        jLabel3.setForeground(new java.awt.Color(102, 102, 102));
+        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel3.setText("Día más concurrido");
+        jPanel2.add(jLabel3);
+
+        lblDiaConcurrido.setFont(new java.awt.Font("Forte", 0, 26)); // NOI18N
+        lblDiaConcurrido.setForeground(new java.awt.Color(245, 164, 61));
+        lblDiaConcurrido.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblDiaConcurrido.setText("-");
+        jPanel2.add(lblDiaConcurrido);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.ipadx = 332;
+        gridBagConstraints.ipady = 60;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(29, 18, 37, 31);
+        jPanel3.add(jPanel2, gridBagConstraints);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(21, 21, 21)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 327, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 439, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jScrollPane1)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel17)
-                        .addGap(186, 186, 186)
+                        .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(156, 156, 156)
                         .addComponent(lblMes)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 240, Short.MAX_VALUE)
-                        .addComponent(jButton1)))
-                .addGap(14, 14, 14))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnGenerarReporte)))
+                .addContainerGap())
+            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(19, 19, 19)
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel17)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(7, 7, 7)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lblMes)
-                            .addComponent(jButton1))))
-                .addGap(24, 24, 24)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(24, 24, 24)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(btnGenerarReporte))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 235, Short.MAX_VALUE)
+                .addGap(31, 31, 31))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btnGenerarReporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarReporteActionPerformed
         cargarEstadisticas();
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_btnGenerarReporteActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton btnGenerarReporte;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblDiaConcurrido;
     private javax.swing.JLabel lblGanancias;

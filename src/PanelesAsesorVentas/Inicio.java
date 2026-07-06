@@ -4,8 +4,11 @@
  */
 package PanelesAsesorVentas;
 
+import cristorey_ef.GuiaTuristico;
 import cristorey_ef.PaqueteTuristico;
 import cristorey_ef.PaqueteTuristicoControlador;
+import cristorey_ef.ReservaControlador;
+import cristorey_ef.Usuario;
 import cristorey_ef.UsuarioControlador;
 import cristorey_ef.VentanaPrincipal;
 import java.util.ArrayList;
@@ -22,10 +25,12 @@ public class Inicio extends javax.swing.JPanel {
      */
     private PaqueteTuristicoControlador ptc;
     private UsuarioControlador uc;
-    public Inicio(PaqueteTuristicoControlador ptc, UsuarioControlador uc) {
+    private ReservaControlador rc;
+    public Inicio(PaqueteTuristicoControlador ptc, UsuarioControlador uc, ReservaControlador rc) {
         initComponents();
         this.ptc = ptc;
         this.uc = uc;
+        this.rc = rc;
         cargarReporteGeneral();
     }
 
@@ -52,8 +57,13 @@ public class Inicio extends javax.swing.JPanel {
         jPanel6 = new javax.swing.JPanel();
         jLabel23 = new javax.swing.JLabel();
         jLabel24 = new javax.swing.JLabel();
-        lblNumViajes = new javax.swing.JLabel();
+        lblReservasAprobar = new javax.swing.JLabel();
         btnCargarReporte = new javax.swing.JButton();
+        jPanel4 = new javax.swing.JPanel();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel20 = new javax.swing.JLabel();
+        lblGuiaAsigndos = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(252, 242, 226));
 
@@ -71,7 +81,7 @@ public class Inicio extends javax.swing.JPanel {
 
         jLabel17.setFont(new java.awt.Font("Forte", 0, 24)); // NOI18N
         jLabel17.setForeground(new java.awt.Color(80, 50, 22));
-        jLabel17.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/Bienvenido.png"))); // NOI18N
+        jLabel17.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/bienbenido.png"))); // NOI18N
         jLabel17.setText("¡Hola, Carlos!");
 
         jLabel18.setFont(new java.awt.Font("Rockwell", 0, 14)); // NOI18N
@@ -82,107 +92,87 @@ public class Inicio extends javax.swing.JPanel {
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
         jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(245, 164, 61), 2));
+        jPanel3.setLayout(new java.awt.GridBagLayout());
 
         jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/usuarios-alt.png"))); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(26, 75, 0, 0);
+        jPanel3.add(jLabel6, gridBagConstraints);
 
         jLabel19.setFont(new java.awt.Font("Microsoft PhagsPa", 0, 14)); // NOI18N
         jLabel19.setText("Pasajeros");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(12, 61, 0, 63);
+        jPanel3.add(jLabel19, gridBagConstraints);
 
         lblNumPasajeros.setFont(new java.awt.Font("Forte", 0, 28)); // NOI18N
         lblNumPasajeros.setForeground(new java.awt.Color(245, 164, 61));
         lblNumPasajeros.setText("0");
-
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(77, 77, 77)
-                        .addComponent(lblNumPasajeros))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(19, 19, 19)
-                        .addComponent(jLabel19)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addGap(0, 73, Short.MAX_VALUE)
-                .addComponent(jLabel6)
-                .addGap(72, 72, 72))
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap(24, Short.MAX_VALUE)
-                .addComponent(jLabel6)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel19)
-                .addGap(12, 12, 12)
-                .addComponent(lblNumPasajeros, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(31, 31, 31))
-        );
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.ipady = -15;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(12, 79, 33, 0);
+        jPanel3.add(lblNumPasajeros, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridheight = 2;
-        gridBagConstraints.ipadx = 73;
-        gridBagConstraints.ipady = 18;
+        gridBagConstraints.ipady = 6;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(19, 48, 242, 0);
+        gridBagConstraints.insets = new java.awt.Insets(40, 79, 0, 0);
         jPanel1.add(jPanel3, gridBagConstraints);
 
         jPanel6.setBackground(new java.awt.Color(255, 255, 255));
         jPanel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(245, 164, 61), 2));
         jPanel6.setPreferredSize(new java.awt.Dimension(180, 160));
+        jPanel6.setLayout(new java.awt.GridBagLayout());
 
-        jLabel23.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/lado-del-coche.png"))); // NOI18N
+        jLabel23.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/comprobacion-del-circulo-de-notas.png"))); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(29, 77, 0, 0);
+        jPanel6.add(jLabel23, gridBagConstraints);
 
         jLabel24.setFont(new java.awt.Font("Microsoft PhagsPa", 0, 14)); // NOI18N
-        jLabel24.setText("Viajes del día");
+        jLabel24.setText("Reservas por aprobar");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(12, 27, 0, 23);
+        jPanel6.add(jLabel24, gridBagConstraints);
 
-        lblNumViajes.setFont(new java.awt.Font("Forte", 0, 28)); // NOI18N
-        lblNumViajes.setForeground(new java.awt.Color(245, 164, 61));
-        lblNumViajes.setText("0");
-
-        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
-        jPanel6.setLayout(jPanel6Layout);
-        jPanel6Layout.setHorizontalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addGap(74, 74, 74)
-                        .addComponent(jLabel23))
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addGap(79, 79, 79)
-                        .addComponent(lblNumViajes)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                .addGap(0, 51, Short.MAX_VALUE)
-                .addComponent(jLabel24)
-                .addGap(46, 46, 46))
-        );
-        jPanel6Layout.setVerticalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addGap(21, 21, 21)
-                .addComponent(jLabel23)
-                .addGap(15, 15, 15)
-                .addComponent(jLabel24)
-                .addGap(18, 18, 18)
-                .addComponent(lblNumViajes, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+        lblReservasAprobar.setFont(new java.awt.Font("Forte", 0, 28)); // NOI18N
+        lblReservasAprobar.setForeground(new java.awt.Color(245, 164, 61));
+        lblReservasAprobar.setText("0");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.ipady = -15;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(18, 85, 30, 0);
+        jPanel6.add(lblReservasAprobar, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridheight = 2;
-        gridBagConstraints.ipadx = 51;
-        gridBagConstraints.ipady = 19;
+        gridBagConstraints.ipady = 8;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(19, 44, 242, 0);
+        gridBagConstraints.insets = new java.awt.Insets(40, 76, 0, 0);
         jPanel1.add(jPanel6, gridBagConstraints);
 
         btnCargarReporte.setBackground(new java.awt.Color(255, 189, 105));
@@ -193,27 +183,78 @@ public class Inicio extends javax.swing.JPanel {
         btnCargarReporte.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnCargarReporte.addActionListener(this::btnCargarReporteActionPerformed);
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.ipadx = 45;
         gridBagConstraints.ipady = 7;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(85, 42, 0, 78);
+        gridBagConstraints.insets = new java.awt.Insets(159, 196, 0, 0);
         jPanel1.add(btnCargarReporte, gridBagConstraints);
+
+        jPanel4.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(245, 164, 61), 2));
+        jPanel4.setLayout(new java.awt.GridBagLayout());
+
+        jLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/usuarios-alt.png"))); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(28, 77, 0, 0);
+        jPanel4.add(jLabel7, gridBagConstraints);
+
+        jLabel20.setFont(new java.awt.Font("Microsoft PhagsPa", 0, 14)); // NOI18N
+        jLabel20.setText("Guias asignados");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(12, 43, 0, 35);
+        jPanel4.add(jLabel20, gridBagConstraints);
+
+        lblGuiaAsigndos.setFont(new java.awt.Font("Forte", 0, 28)); // NOI18N
+        lblGuiaAsigndos.setForeground(new java.awt.Color(245, 164, 61));
+        lblGuiaAsigndos.setText("0");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.ipady = -15;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(12, 89, 35, 0);
+        jPanel4.add(lblGuiaAsigndos, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.ipady = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(40, 148, 0, 57);
+        jPanel1.add(jPanel4, gridBagConstraints);
+
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/paisaje 2.png"))); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.gridheight = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(67, 221, 75, 0);
+        jPanel1.add(jLabel1, gridBagConstraints);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(17, 17, 17)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(25, 25, 25)
-                        .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(17, 17, 17)
-                        .addComponent(jLabel18)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 222, Short.MAX_VALUE)
+                    .addComponent(jLabel18)
+                    .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel15)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -223,7 +264,7 @@ public class Inicio extends javax.swing.JPanel {
                         .addGap(7, 7, 7)
                         .addComponent(btnDatosAdmin)))
                 .addGap(29, 29, 29))
-            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 715, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -240,23 +281,37 @@ public class Inicio extends javax.swing.JPanel {
                         .addComponent(jLabel17)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel18)))
-                .addGap(18, 18, 18)
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 419, Short.MAX_VALUE))
+                .addGap(28, 28, 28)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void cargarReporteGeneral() {
         
         ArrayList<PaqueteTuristico> paquetes = ptc.getPaquete();
-        int totalInscritos     = 0;
+        int totalInscritos = 0;
         for (int i = 0; i < paquetes.size(); i++) {
             PaqueteTuristico p = paquetes.get(i);
-            int inscritos   = p.contarPasajeros();
-            totalInscritos += inscritos;
+            totalInscritos += p.contarPasajeros();
         }
         lblNumPasajeros.setText(String.valueOf(totalInscritos));
+
+        int reservasPendientes = rc.reservasPendientesAprobacion().size();
+        lblReservasAprobar.setText(String.valueOf(reservasPendientes));
+
+        int totalGuias = 0;
+        int guiasAsignados = 0;
+        for (Usuario u : uc.getUsuario()) {
+            if (u instanceof GuiaTuristico) {
+                totalGuias++;
+                if (((GuiaTuristico) u).tieneAsignacion()) {
+                    guiasAsignados++;
+                }
+            }
+        }
+        lblGuiaAsigndos.setText(guiasAsignados + "/" + totalGuias);
         
-        lblNumViajes.setText(String.valueOf(paquetes.size()));
+        
     }
     private void btnDatosAdminActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDatosAdminActionPerformed
         // TODO add your handling code here:
@@ -274,18 +329,23 @@ public class Inicio extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCargarReporte;
     private javax.swing.JButton btnDatosAdmin;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel19;
+    private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel6;
+    private javax.swing.JLabel lblGuiaAsigndos;
     private javax.swing.JLabel lblNumPasajeros;
-    private javax.swing.JLabel lblNumViajes;
+    private javax.swing.JLabel lblReservasAprobar;
     // End of variables declaration//GEN-END:variables
 }

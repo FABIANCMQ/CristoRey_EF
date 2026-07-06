@@ -36,7 +36,7 @@ public class VentanaPrincipalAsesor extends javax.swing.JPanel {
             ReservaControlador rc, PaqueteTuristicoControlador ptc) {
         initComponents();
         
-        i = new Inicio(ptc, uc);
+        i = new Inicio(ptc, uc, rc);
         ag = new AsignarGuia(uc, ptc);
         ar = new AprobarReservas(rc);
         cd = new CatalogoDestino(uc,ptc);
@@ -68,7 +68,7 @@ public class VentanaPrincipalAsesor extends javax.swing.JPanel {
         };
 
          for(int j = 0; j < paneles.length; j++){
-            panel.setBackground(Color.WHITE);
+            paneles[j].setBackground(Color.WHITE);
         }
 
         if (expandido && panelSeleccionado != null) {
@@ -201,7 +201,7 @@ public class VentanaPrincipalAsesor extends javax.swing.JPanel {
 
         pnlAprobarReservas.setBackground(new java.awt.Color(255, 255, 255));
 
-        jLabel17.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/viaje-en-coche.png"))); // NOI18N
+        jLabel17.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/comprobacion-del-circulo-de-notas.png"))); // NOI18N
 
         btnAprobarReservas.setText("Aprobar reservas");
         btnAprobarReservas.setBorderPainted(false);
@@ -233,7 +233,7 @@ public class VentanaPrincipalAsesor extends javax.swing.JPanel {
 
         pnlAsignarGuias.setBackground(new java.awt.Color(255, 255, 255));
 
-        jLabel18.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/viaje-en-coche.png"))); // NOI18N
+        jLabel18.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/asignar.png"))); // NOI18N
 
         btnAsignarGuias.setText("Asignar guias");
         btnAsignarGuias.setBorderPainted(false);
@@ -265,7 +265,7 @@ public class VentanaPrincipalAsesor extends javax.swing.JPanel {
 
         pnlCatalogoDestino.setBackground(new java.awt.Color(255, 255, 255));
 
-        jLabel19.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/viaje-en-coche.png"))); // NOI18N
+        jLabel19.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/catalogar.png"))); // NOI18N
 
         btnCatalogoDestino.setText("Catalogo de destinos");
         btnCatalogoDestino.setBorderPainted(false);

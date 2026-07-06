@@ -95,6 +95,7 @@ public class PaqueteTuristico {
         this.cupos_maximos = cupos_maximos;
     }
 
+    
     public ArrayList<Pasajero> getListaPasajeros() {
         return listaPasajeros;
     }
@@ -107,6 +108,8 @@ public class PaqueteTuristico {
         this.listaPasajeros = listaPasajeros;
     }
 
+    
+    
     public boolean reservarCupos(){
         if(cupos_disponibles <= 0){
             return false;
@@ -172,10 +175,5 @@ public class PaqueteTuristico {
             }
         }
         return null;
-    }
-    public void agregarPromocion(Promocion promocion) {
-        if (promocion != null) {
-            promociones.add(promocion);
-        }
     }
 }

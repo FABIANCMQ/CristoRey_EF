@@ -34,7 +34,7 @@ public class VentanaPrincipalGuia extends javax.swing.JPanel {
             ReservaControlador rc, PaqueteTuristicoControlador ptc) {
         initComponents();
         i = new Inicio(rc, ptc, uc);
-        rt = new RecorridoTuristico(uc,ptc);
+        rt = new RecorridoTuristico(uc,ptc, rc);
         sr = new SolicitarRecorrido(uc,ptc);
         pnlMenu.setPreferredSize(new Dimension(50, pnlMenu.getHeight()));
         pnlMenu.revalidate();
@@ -55,10 +55,11 @@ public class VentanaPrincipalGuia extends javax.swing.JPanel {
         JPanel[] paneles = {
             pnlInicio,
             pnlTourAsignado,
+            pnlSolicitarTour
         };
 
         for(int j = 0; j < paneles.length; j++){
-            panel.setBackground(Color.WHITE);
+            paneles[j].setBackground(Color.WHITE);
         }
 
         if (expandido && panelSeleccionado != null) {
@@ -76,8 +77,9 @@ public class VentanaPrincipalGuia extends javax.swing.JPanel {
 
         panelVisible.setVisible(true);
     }
-    
+    GuiaTuristico guiaActual;
     public void setUsuarioActual(GuiaTuristico guia) {
+        this.guiaActual = guia;
         sr.setGuiaActual(guia);
         rt.setGuiaActual(guia);
     }
@@ -105,7 +107,7 @@ public class VentanaPrincipalGuia extends javax.swing.JPanel {
         btnTourAsignado = new javax.swing.JButton();
         pnlSolicitarTour = new javax.swing.JPanel();
         jLabel18 = new javax.swing.JLabel();
-        btnTourAsignado1 = new javax.swing.JButton();
+        btnSolicitarTour = new javax.swing.JButton();
         lypPrincipal = new javax.swing.JLayeredPane();
 
         setLayout(new java.awt.BorderLayout());
@@ -190,7 +192,7 @@ public class VentanaPrincipalGuia extends javax.swing.JPanel {
 
         pnlTourAsignado.setBackground(new java.awt.Color(255, 255, 255));
 
-        jLabel17.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/viaje-en-coche.png"))); // NOI18N
+        jLabel17.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/mapa.png"))); // NOI18N
 
         btnTourAsignado.setText("Tour asignado");
         btnTourAsignado.setBorderPainted(false);
@@ -222,14 +224,14 @@ public class VentanaPrincipalGuia extends javax.swing.JPanel {
 
         pnlSolicitarTour.setBackground(new java.awt.Color(255, 255, 255));
 
-        jLabel18.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/viaje-en-coche.png"))); // NOI18N
+        jLabel18.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/elegir.png"))); // NOI18N
 
-        btnTourAsignado1.setText("Solicitar Tour");
-        btnTourAsignado1.setBorderPainted(false);
-        btnTourAsignado1.setContentAreaFilled(false);
-        btnTourAsignado1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnTourAsignado1.setFocusPainted(false);
-        btnTourAsignado1.addActionListener(this::btnTourAsignado1ActionPerformed);
+        btnSolicitarTour.setText("Solicitar Tour");
+        btnSolicitarTour.setBorderPainted(false);
+        btnSolicitarTour.setContentAreaFilled(false);
+        btnSolicitarTour.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnSolicitarTour.setFocusPainted(false);
+        btnSolicitarTour.addActionListener(this::btnSolicitarTourActionPerformed);
 
         javax.swing.GroupLayout pnlSolicitarTourLayout = new javax.swing.GroupLayout(pnlSolicitarTour);
         pnlSolicitarTour.setLayout(pnlSolicitarTourLayout);
@@ -239,7 +241,7 @@ public class VentanaPrincipalGuia extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(jLabel18)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnTourAsignado1)
+                .addComponent(btnSolicitarTour)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         pnlSolicitarTourLayout.setVerticalGroup(
@@ -247,7 +249,7 @@ public class VentanaPrincipalGuia extends javax.swing.JPanel {
             .addGroup(pnlSolicitarTourLayout.createSequentialGroup()
                 .addGap(8, 8, 8)
                 .addGroup(pnlSolicitarTourLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnTourAsignado1)
+                    .addComponent(btnSolicitarTour)
                     .addComponent(jLabel18))
                 .addGap(8, 8, 8))
         );
@@ -319,6 +321,7 @@ public class VentanaPrincipalGuia extends javax.swing.JPanel {
     private void btnTourAsignadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTourAsignadoActionPerformed
         // TODO add your handling code here:
         seleccionarMenu(pnlTourAsignado);
+        rt.setGuiaActual(guiaActual);
         mostrarPanel(rt);
     }//GEN-LAST:event_btnTourAsignadoActionPerformed
 
@@ -328,19 +331,20 @@ public class VentanaPrincipalGuia extends javax.swing.JPanel {
         ventana.volverInicio();
     }//GEN-LAST:event_btnCerrarSesionActionPerformed
 
-    private void btnTourAsignado1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTourAsignado1ActionPerformed
+    private void btnSolicitarTourActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSolicitarTourActionPerformed
         // TODO add your handling code here:
         seleccionarMenu(pnlSolicitarTour);
+        sr.actualizarEstado();
         mostrarPanel(sr);
-    }//GEN-LAST:event_btnTourAsignado1ActionPerformed
+    }//GEN-LAST:event_btnSolicitarTourActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCerrarSesion;
     private javax.swing.JButton btnInicio;
     private javax.swing.JButton btnMenu;
+    private javax.swing.JButton btnSolicitarTour;
     private javax.swing.JButton btnTourAsignado;
-    private javax.swing.JButton btnTourAsignado1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;

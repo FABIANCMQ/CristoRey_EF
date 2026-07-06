@@ -13,8 +13,8 @@ public class GuiaTuristico extends Usuario{
     private String recorrido_asignado;
     private String recorrido_solicitado;
 
-    public GuiaTuristico(String recorrido_asignado,String codigo_usuario, String cargo, String nombre, String correo, String clave_ingreso, Documento documento) {
-        super(codigo_usuario, cargo, nombre, correo, clave_ingreso, documento);
+    public GuiaTuristico(String recorrido_asignado,String codigo_usuario, String cargo, String nombre, String correo, String clave_ingreso, double sueldo, Documento documento) {
+        super(codigo_usuario, cargo, nombre, correo, clave_ingreso, sueldo, documento);
         this.recorrido_asignado = recorrido_asignado;
     }
 
@@ -29,6 +29,8 @@ public class GuiaTuristico extends Usuario{
     public String getRecorrido_solicitado() {
         return recorrido_solicitado;
     }
+    
+    
     
     public boolean tieneAsignacion() {
         return recorrido_asignado != null && !recorrido_asignado.isEmpty();

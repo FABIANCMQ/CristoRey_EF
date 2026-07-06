@@ -21,7 +21,7 @@ public class CatalogoDestino extends javax.swing.JPanel {
 
     private UsuarioControlador uc;    
     private final PaqueteTuristicoControlador ptc;
-    AsesorVentas asesor = new AsesorVentas("","","", "","", "", null);
+    AsesorVentas asesor = new AsesorVentas("","","", "","", "",0, null);
     
     public CatalogoDestino(UsuarioControlador uc, PaqueteTuristicoControlador ptc) {
         initComponents();
@@ -55,27 +55,31 @@ public class CatalogoDestino extends javax.swing.JPanel {
     }
     
     private void buscarTour() {
-        String destino = txtDestino.getText();
+        String destino = txtDestino.getText().trim();
 
         if (destino.isEmpty()) {
             cargarTabla();
             return;
         }
 
-        PaqueteTuristico encontrado = ptc.buscarNombre(destino);
+        ArrayList<PaqueteTuristico> encontrados = ptc.buscarDestino(destino);
 
         DefaultTableModel modelo = (DefaultTableModel) tblCatalogo.getModel();
         modelo.setRowCount(0);
 
-        if (encontrado == null) {
+        if (encontrados.isEmpty()) {
             JOptionPane.showMessageDialog(this,
-                    "No se encontró ningún pasajero con el nombre o documento ingresado.",
-                    "Pasajero no encontrado",
+                    "No se encontró ningún destino con el nombre ingresado",
+                    "Destino no encontrado",
                     JOptionPane.WARNING_MESSAGE);
+            lblResultados.setText("0 tour(s) encontrado(s)");
             return;
         }
 
-        agregarFilaCatalogo(modelo, encontrado);
+        for (int i = 0; i < encontrados.size(); i++) {
+            agregarFilaCatalogo(modelo, encontrados.get(i));
+        }
+        lblResultados.setText(encontrados.size() + " tour(s) encontrado(s)");
     }
 
     private void cargarTabla() {
@@ -92,16 +96,12 @@ public class CatalogoDestino extends javax.swing.JPanel {
     }
     
     private void agregarFilaCatalogo(DefaultTableModel modelo, PaqueteTuristico pt) {
-        ArrayList<PaqueteTuristico> paquetes = ptc.getPaquete();
-        for (int i = 0; i < paquetes.size(); i++) {
-            pt = paquetes.get(i);    
-            modelo.addRow(new Object[]{
-                pt.getCodigo_paquete(),
-                pt.getNombre_paquete(),
-                pt.getDestino(),
-                "S/", pt.getCosto()
-            });
-        }  
+        modelo.addRow(new Object[]{
+            pt.getCodigo_paquete(),
+            pt.getNombre_paquete(),
+            pt.getDestino(),
+            "S/ " + pt.getCosto()
+        });
     }
 
     private void seleccionPaquete() {
@@ -157,7 +157,7 @@ public class CatalogoDestino extends javax.swing.JPanel {
 
         jLabelHeader.setFont(new java.awt.Font("Forte", 0, 24)); // NOI18N
         jLabelHeader.setForeground(new java.awt.Color(80, 50, 22));
-        jLabelHeader.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/ControlViajes.png"))); // NOI18N
+        jLabelHeader.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/catalogoDestino.png"))); // NOI18N
         jLabelHeader.setText("Catálogo de destinos");
 
         jLabelBuscar.setForeground(new java.awt.Color(102, 102, 102));
@@ -197,7 +197,7 @@ public class CatalogoDestino extends javax.swing.JPanel {
         btnBuscar.addActionListener(this::btnBuscarActionPerformed);
 
         btnActualizar.setBackground(new java.awt.Color(255, 189, 105));
-        btnActualizar.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnActualizar.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnActualizar.setForeground(new java.awt.Color(255, 255, 255));
         btnActualizar.setText("Actualizar");
         btnActualizar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -223,7 +223,7 @@ public class CatalogoDestino extends javax.swing.JPanel {
                             .addComponent(lblDisponibilidad)
                             .addComponent(lblResultados)))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(30, 677, Short.MAX_VALUE)
+                        .addGap(30, 669, Short.MAX_VALUE)
                         .addComponent(btnActualizar)))
                 .addGap(16, 16, 16))
         );
@@ -246,7 +246,7 @@ public class CatalogoDestino extends javax.swing.JPanel {
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(lblDisponibilidad)
-                .addContainerGap(57, Short.MAX_VALUE))
+                .addContainerGap(58, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 

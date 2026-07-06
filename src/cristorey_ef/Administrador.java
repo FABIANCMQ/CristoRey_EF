@@ -11,8 +11,8 @@ package cristorey_ef;
 public class Administrador extends Usuario {
     private String nivel_acceso;
 
-    public Administrador(String nivel_acceso, String codigo_usuario, String cargo, String nombre, String correo, String clave_ingreso, Documento documento) {
-        super(codigo_usuario, cargo, nombre, correo, clave_ingreso, documento);
+    public Administrador(String nivel_acceso, String codigo_usuario, String cargo, String nombre, String correo, String clave_ingreso, double sueldo, Documento documento) {
+        super(codigo_usuario, cargo, nombre, correo, clave_ingreso, sueldo, documento);
         this.nivel_acceso = nivel_acceso;
     }
     
@@ -24,58 +24,15 @@ public class Administrador extends Usuario {
         this.nivel_acceso = nivel_acceso;
     }
     
+    
+    
     public void bloquearUsuario(Usuario usuario){
         if (usuario instanceof Administrador) {
-            System.out.println("No se puede bloquear a un Administrador.");
             return;
         }
         usuario.setBloqueado(true);
-        System.out.println("Usuario Bloqueado Exitosamente.");
     }
     public void desbloquearUsuario(Usuario usuario){
         usuario.setBloqueado(false);
-        System.out.println("Usuario Desbloqueado Exitosamente.");
-    }
-    public void generarReportePasajero(PasajeroControlador controlador){
-        System.out.println("\n===== REPORTE DE PASAJEROS =====");
-        controlador.listarPasajero();
-    }
-    
-    public void verEstadisticas(PaqueteTuristicoControlador PaqControlador){
-        int totalPasajeros = 0;
-        for (int i = 0; i < PaqControlador.paquete.size(); i++) {
-            PaqueteTuristico p = PaqControlador.paquete.get(i);
-            totalPasajeros += p.contarPasajeros();
-        }
-        System.out.println("Total de pasajeros registrados: "+totalPasajeros);
-    }
-    public void controlViajesDiarios(PaqueteTuristicoControlador PaqControlador){
-        for (int i = 0; i < PaqControlador.paquete.size(); i++) {
-            PaqueteTuristico p = PaqControlador.paquete.get(i);
-            
-            System.out.println("\nPaquete: "+p.getNombre_paquete()+
-                    "\nOcupación: "+p.porcentajeOcupacion());
-        }
-    }
-    public void validarDatos(PasajeroControlador controlador){
-        if (controlador.pasajero.size()==0){
-            System.out.println("No existen pasajeros registrados.");
-        }
-        else{
-            System.out.println("Validacion Completada.");
-        }
-    }
-    public void reporteControlMatutino(PaqueteTuristicoControlador PaqControlador){
-        System.out.println("\n=====CONTROL MATUTINO=====");
-        for (int i = 0; i < PaqControlador.paquete.size(); i++) {
-            PaqueteTuristico p = PaqControlador.paquete.get(i);
-            System.out.println(p.getNombre_paquete()+" -> "+p.getCupos_disponibles()+" cupos disponibles.");
-        }
-    }
-    
-    public void verDatos(){
-        System.out.println("===DATOS ADMINISTRADOR===\nCodigo: "+this.codigo_usuario+
-                "\nNombre: "+this.nombre+"\nCorreo: "+this.correo+"\nNivel de acceso: "+this.nivel_acceso+
-                "\nDocumento: "+this.documento.getNro_doc());
     }
 }

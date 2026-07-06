@@ -16,11 +16,6 @@ public class PasajeroControlador {
     public void registrarPasajero(Pasajero nuevo_pasajero){
         pasajero.add(nuevo_pasajero);
     }
-    public void listarPasajero(){
-        for(int i=0; i<pasajero.size();i++){
-            pasajero.get(i).verDatos();
-        }
-    }
     
     public ArrayList<Pasajero> getPasajero() {
         return pasajero;

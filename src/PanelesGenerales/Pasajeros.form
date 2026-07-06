@@ -37,7 +37,7 @@
                               <Component id="jLabel17" min="-2" pref="296" max="-2" attributes="0"/>
                               <EmptySpace min="26" pref="26" max="-2" attributes="0"/>
                               <Component id="lblFecha" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace pref="300" max="32767" attributes="0"/>
+                              <EmptySpace pref="313" max="32767" attributes="0"/>
                               <Component id="btnActualizar" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
@@ -67,8 +67,8 @@
                   <Component id="txtDato" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
-              <Component id="jScrollPane2" min="-2" pref="280" max="-2" attributes="0"/>
-              <EmptySpace pref="100" max="32767" attributes="0"/>
+              <Component id="jScrollPane2" min="-2" pref="359" max="-2" attributes="0"/>
+              <EmptySpace pref="30" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>

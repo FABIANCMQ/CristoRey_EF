@@ -9,6 +9,7 @@ import cristorey_ef.Promocion;
 import cristorey_ef.Reserva;
 import cristorey_ef.ReservaControlador;
 import java.awt.Color;
+import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -49,12 +50,14 @@ public class AprobarReservas extends javax.swing.JPanel {
         DefaultTableModel modelo = (DefaultTableModel) tblPendientes.getModel();
         modelo.setRowCount(0);
 
-        for (Reserva r : rc.reservasActivas()) {
+        ArrayList<Reserva> listaActivas = rc.reservasActivas();
+        for (int i = 0; i < listaActivas.size(); i++) {
+            Reserva r = listaActivas.get(i);
             modelo.addRow(new Object[]{
                 r.getCodigo_reserva(),
                 r.getPasajero().unificarDatos(),
                 r.getPaquete().getNombre_paquete(),
-                "S/"+r.getPrecio_final(),
+                "S/" + r.getPrecio_final(),
                 r.getEstado_aprobacion()
             });
         }
@@ -143,7 +146,7 @@ public class AprobarReservas extends javax.swing.JPanel {
 
         jLabelHeader.setFont(new java.awt.Font("Forte", 0, 24)); // NOI18N
         jLabelHeader.setForeground(new java.awt.Color(80, 50, 22));
-        jLabelHeader.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/control-de-acceso.png"))); // NOI18N
+        jLabelHeader.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/aprobarReserva.png"))); // NOI18N
         jLabelHeader.setText("Reservas por aprobar");
 
         lblPendientes.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -265,32 +268,30 @@ public class AprobarReservas extends javax.swing.JPanel {
                         .addGap(17, 17, 17)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane2)
-                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 758, Short.MAX_VALUE)))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addGap(22, 22, 22)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(lblPendientes)
-                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(lblPendientes)
                             .addComponent(jLabelHeader))
-                        .addGap(432, 432, 432)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnActualizar2)))
                 .addGap(16, 16, 16))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(20, 20, 20)
+                .addGap(11, 11, 11)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabelHeader)
                     .addComponent(btnActualizar2, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblPendientes)
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(40, Short.MAX_VALUE))
+                .addGap(16, 16, 16))
         );
     }// </editor-fold>//GEN-END:initComponents
 

@@ -69,7 +69,7 @@ public class VentanaPrincipalPlani extends javax.swing.JPanel {
         };
 
         for(int j = 0; j < paneles.length; j++){
-            panel.setBackground(Color.WHITE);
+            paneles[j].setBackground(Color.WHITE);
         }
 
         if (expandido && panelSeleccionado != null) {

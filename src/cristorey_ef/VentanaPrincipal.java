@@ -6,6 +6,7 @@ package cristorey_ef;
 
 import PanelesAdministrador.VentanaPrincipalAdmin;
 import PanelesAsesorVentas.VentanaPrincipalAsesor;
+import PanelesGerente.VentanaPrincipalGerente;
 import PanelesGuiaTuristico.VentanaPrincipalGuia;
 import PanelesPlanillero.VentanaPrincipalPlani;
 import java.awt.Container;
@@ -26,16 +27,17 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     /**
      * Creates new form PantallaPrincipal
      */
-    private final UsuarioControlador usuarioControlador;
-    private final PasajeroControlador pasajeroControlador;
-    private final ReservaControlador reservaControlador;
-    private final PaqueteTuristicoControlador paqueteTuristicoControlador;
+    private UsuarioControlador usuarioControlador;
+    private PasajeroControlador pasajeroControlador;
+    private ReservaControlador reservaControlador;
+    private PaqueteTuristicoControlador paqueteTuristicoControlador;
     
     Container contenidoOriginal;
     VentanaPrincipalAdmin admin;
     VentanaPrincipalPlani plani;
     VentanaPrincipalGuia guia;
     VentanaPrincipalAsesor asesor;
+    VentanaPrincipalGerente gerente;
     public VentanaPrincipal(PasajeroControlador pasajeroControlador,
         UsuarioControlador usuarioControlador,
         ReservaControlador reservaControlador,
@@ -54,6 +56,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 reservaControlador, paqueteTuristicoControlador);
         asesor = new VentanaPrincipalAsesor (usuarioControlador, pasajeroControlador, 
                 reservaControlador, paqueteTuristicoControlador);
+        gerente = new VentanaPrincipalGerente (usuarioControlador, reservaControlador,
+                paqueteTuristicoControlador);
     }
     
     public UsuarioControlador getUsuarioControlador() {
@@ -88,7 +92,9 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         return asesor;
     }
     
-    
+    public VentanaPrincipalGerente getGerenteVentana() {
+        return gerente;
+    }
     
     public void navegar(JPanel panel) {
 
@@ -258,6 +264,9 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         } else if (encontrado instanceof GuiaTuristico) {
             guia.setUsuarioActual((GuiaTuristico) encontrado);
             navegar(guia);
+        } else if (encontrado instanceof Gerente) {
+            gerente.setUsuarioActual((Gerente) encontrado);
+            navegar(gerente);
         }
         txtCorreo.setText("");
         txtClave.setText("");

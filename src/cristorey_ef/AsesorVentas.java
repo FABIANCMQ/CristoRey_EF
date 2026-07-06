@@ -12,8 +12,8 @@ public class AsesorVentas extends Usuario{
     
     private String sede;    
 
-    public AsesorVentas(String sede,String codigo_usuario, String cargo, String nombre, String correo, String clave_ingreso, Documento documento) {
-        super(codigo_usuario, cargo, nombre, correo, clave_ingreso, documento);
+    public AsesorVentas(String sede,String codigo_usuario, String cargo, String nombre, String correo, String clave_ingreso,double sueldo, Documento documento) {
+        super(codigo_usuario, cargo, nombre, correo, clave_ingreso, sueldo, documento);
         this.sede = sede;
     }
 
@@ -24,49 +24,4 @@ public class AsesorVentas extends Usuario{
     public void setSede(String sede) {
         this.sede = sede;
     }
-    
-    public void buscarViajePorDestino(PaqueteTuristicoControlador controlador, String destino){
-        boolean encontrado = false;
-        
-        if (destino == null || destino.trim().isEmpty()) {
-            return;
-        }
-        
-        for (int i = 0; i < controlador.paquete.size(); i++) {
-            PaqueteTuristico p = controlador.paquete.get(i);
-            
-            if (p.getDestino().toLowerCase().contains(destino.toLowerCase()) || 
-                    p.getNombre_paquete().toLowerCase().contains(destino.toLowerCase())) {
-                encontrado = true;
-            }
-        }
-    }
-    
-    public void procesarVenta(Pasajero pasajero, PaqueteTuristico paquete, ReservaControlador controlador_reserva, double descuento){
-        controlador_reserva.registrarReserva(pasajero, paquete, descuento);
-    }
-    
-    public void consultarHistoriaCliente(ReservaControlador controlador_resreva, String nro_doc){
-        if (nro_doc == null || nro_doc.trim().isEmpty()) {
-            System.out.println("Debe ingresar un numero de documento.");
-            return;
-        }
-        
-        controlador_resreva.historialCliente(nro_doc);
-    }
-    
-    public void cancelarReserva(ReservaControlador controlador_reserva, String codigo_reserva){
-        if (codigo_reserva == null || codigo_reserva.trim().isEmpty()) {
-            System.out.println("Debe ingresar el codigo de reserva");
-            return;
-        }
-        
-        controlador_reserva.cancelarReserva(codigo_reserva);
-    }
-    
-    public void verDatos(){
-        System.out.println("===DATOS DEL ASESOR DE VENTAS===\nCodigo: "+this.codigo_usuario+
-                "\nNombre: "+this.nombre+"\nCorreo: "+this.correo+"\nSede: "+this.sede);
-    }
-    
 }

@@ -18,6 +18,7 @@ public class Reserva {
     private String estado;
     private String estado_aprobacion;
     private LocalDate fecha_reserva;
+    private LocalDate fecha_cancelacion;
     private static int contador = 0;
 
     public Reserva(Pasajero pasajero, PaqueteTuristico paquete, double precio_final) {
@@ -86,18 +87,19 @@ public class Reserva {
         this.fecha_reserva = fecha_reserva;
     }
 
+    public LocalDate getFecha_cancelacion() {
+        return fecha_cancelacion;
+    }
+
+    public void setFecha_cancelacion(LocalDate fecha_cancelacion) {
+        this.fecha_cancelacion = fecha_cancelacion;
+    }
+
     public static int getContador() {
         return contador;
     }
 
     public static void setContador(int contador) {
         Reserva.contador = contador;
-    }
-    
-    public void mostrarReserva(){
-        System.out.println("===DATOS RESERVA===\n"
-                + "Codigo Reserva: "+this.codigo_reserva+"\nPasajero: "+this.pasajero.unificarDatos()+
-                "\nPaquete: "+this.paquete.getNombre_paquete()+"\nDestino: "+this.paquete.getDestino()+
-                "\nPrecio Final: S/ "+this.precio_final+"\nEstado: "+this.estado);
     }
 }

@@ -10,10 +10,13 @@ import cristorey_ef.GuiaTuristico;
 import cristorey_ef.Pasajero;
 import cristorey_ef.PaqueteTuristico;
 import cristorey_ef.PaqueteTuristicoControlador;
+import cristorey_ef.Reserva;
+import cristorey_ef.ReservaControlador;
 import cristorey_ef.UsuarioControlador;
 import java.awt.Color;
 import java.awt.Component;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.swing.JList;
@@ -26,14 +29,16 @@ import javax.swing.table.DefaultTableModel;
 public class RecorridoTuristico extends javax.swing.JPanel {
 
     private UsuarioControlador uc;
+    private final ReservaControlador rc;
     private final PaqueteTuristicoControlador ptc;
     private final SimpleDateFormat formatoHora = new SimpleDateFormat("HH:mm:ss");
     private GuiaTuristico guia;
 
-    public RecorridoTuristico(UsuarioControlador uc, PaqueteTuristicoControlador ptc) {
+    public RecorridoTuristico(UsuarioControlador uc, PaqueteTuristicoControlador ptc, ReservaControlador rc) {
         initComponents();
         this.uc = uc;
         this.ptc = ptc;
+        this.rc = rc;
         tblPasajeros.getTableHeader().setBackground(new java.awt.Color(255, 170, 44));
         tblPasajeros.getTableHeader().setForeground(java.awt.Color.WHITE);
         tblPasajeros.getTableHeader().setDefaultRenderer(new javax.swing.table.DefaultTableCellRenderer(){
@@ -53,26 +58,27 @@ public class RecorridoTuristico extends javax.swing.JPanel {
         
         cargarComboPaquetes();
 
+        lblTourAsignado.setText("Tour asignado: --");
+        cargarTabla(null);
+        cbxPaqueteGuia.addActionListener(e ->cargarTabla((PaqueteTuristico) cbxPaqueteGuia.getSelectedItem()));
+    }
+    
+    public void setGuiaActual(GuiaTuristico guia) {
+        this.guia = guia;
+
         PaqueteTuristico paqueteAsignado = buscarPaqueteAsignado();
 
         if (paqueteAsignado != null) {
             cbxPaqueteGuia.setSelectedItem(paqueteAsignado);
             lblTourAsignado.setText("Tour asignado: " + paqueteAsignado.getNombre_paquete()
                     + " (" + paqueteAsignado.getHorario() + ")");
+            lblTourAsignado.setForeground(new Color(27, 94, 32));
             registrarNotificacion("Panel iniciado");
         } else {
-            lblTourAsignado.setText("Tour asignado: no se encontró \"" + guia.getRecorrido_asignado() + "\"");
+            lblTourAsignado.setText("Tour no asignado");
             lblTourAsignado.setForeground(new Color(127, 16, 16));
-            if (cbxPaqueteGuia.getItemCount() > 0) {
-                cbxPaqueteGuia.setSelectedIndex(0);
-            }
         }
 
-        cargarTabla((PaqueteTuristico) cbxPaqueteGuia.getSelectedItem());
-    }
-    
-    public void setGuiaActual(GuiaTuristico guia) {
-        this.guia = guia;
         cargarTabla((PaqueteTuristico) cbxPaqueteGuia.getSelectedItem());
     }
     
@@ -86,8 +92,11 @@ public class RecorridoTuristico extends javax.swing.JPanel {
     }
 
     private PaqueteTuristico buscarPaqueteAsignado() {
+        if (guia == null) {
+        return null;
+        }
         String recorrido = guia.getRecorrido_asignado();
-        if (recorrido.isEmpty()) {
+        if (recorrido == null || recorrido.isEmpty()) {
             return null;
         }
         for (PaqueteTuristico paquete : ptc.getPaquete()) {
@@ -97,6 +106,22 @@ public class RecorridoTuristico extends javax.swing.JPanel {
             }
         }
         return null;
+    }
+    
+    private List<Pasajero> pasajerosAprobados(PaqueteTuristico paquete) {
+        List<Pasajero> aprobados = new ArrayList<>();
+        if (paquete == null) {
+            return aprobados;
+        }
+        List<Pasajero> listaPasajeros = paquete.getListaPasajeros();
+        for (int i = 0; i < listaPasajeros.size(); i++) {
+            Pasajero p = listaPasajeros.get(i);
+            Reserva reserva = rc.buscarReservaActiva(p.getDocumento().getNro_doc(), paquete.getCodigo_paquete());
+            if (reserva != null && reserva.getEstado_aprobacion().equalsIgnoreCase("Aprobada")) {
+                aprobados.add(p);
+            }
+        }
+        return aprobados;
     }
 
     private void cargarComboPaquetes() {
@@ -118,7 +143,7 @@ public class RecorridoTuristico extends javax.swing.JPanel {
                 if (value instanceof PaqueteTuristico) {
                     PaqueteTuristico paq = (PaqueteTuristico) value;
                     setText(paq.getCodigo_paquete() + " - " + paq.getNombre_paquete()
-                            + " (" + paq.contarPasajeros() + " inscritos)");
+                        + " (" + pasajerosAprobados(paq).size() + " inscritos)");
                 }
                 return this;
             }
@@ -134,7 +159,7 @@ public class RecorridoTuristico extends javax.swing.JPanel {
             return;
         }
 
-        List<Pasajero> lista = paquete.getListaPasajeros();
+        List<Pasajero> lista = pasajerosAprobados(paquete);
 
         for (int i = 0; i < lista.size(); i++) {
             Pasajero p = lista.get(i);
@@ -144,8 +169,8 @@ public class RecorridoTuristico extends javax.swing.JPanel {
                 p.getTelefono()
             });
         }
-        lblTotalInscritos.setText("Total inscritos: " + paquete.contarPasajeros()
-                + " / " + paquete.getCupos_maximos());
+        lblTotalInscritos.setText("Total inscritos: " + lista.size()
+            + " / " + paquete.getCupos_maximos());
     }
 
     private void registrarNotificacion(String mensaje) {
@@ -181,14 +206,14 @@ public class RecorridoTuristico extends javax.swing.JPanel {
 
         jLabelHeader.setFont(new java.awt.Font("Forte", 0, 24)); // NOI18N
         jLabelHeader.setForeground(new java.awt.Color(80, 50, 22));
-        jLabelHeader.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/Pasajeros.png"))); // NOI18N
+        jLabelHeader.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/recorridoAsignado.png"))); // NOI18N
         jLabelHeader.setText("Recorrido turistico asignado");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridwidth = 4;
+        gridBagConstraints.gridwidth = 3;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(20, 30, 0, 0);
+        gridBagConstraints.insets = new java.awt.Insets(8, 23, 0, 0);
         add(jLabelHeader, gridBagConstraints);
 
         lblTourAsignado.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
@@ -197,8 +222,10 @@ public class RecorridoTuristico extends javax.swing.JPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 5;
+        gridBagConstraints.ipadx = 400;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(0, 32, 0, 0);
+        gridBagConstraints.insets = new java.awt.Insets(12, 32, 0, 0);
         add(lblTourAsignado, gridBagConstraints);
 
         jLabel1.setForeground(new java.awt.Color(102, 102, 102));
@@ -206,14 +233,13 @@ public class RecorridoTuristico extends javax.swing.JPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
-        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.insets = new java.awt.Insets(17, 32, 0, 0);
         add(jLabel1, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 2;
-        gridBagConstraints.gridwidth = 5;
+        gridBagConstraints.gridwidth = 6;
         gridBagConstraints.gridheight = 3;
         gridBagConstraints.ipadx = 327;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
@@ -228,7 +254,7 @@ public class RecorridoTuristico extends javax.swing.JPanel {
         gridBagConstraints.gridy = 2;
         gridBagConstraints.gridheight = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(16, 8, 0, 30);
+        gridBagConstraints.insets = new java.awt.Insets(16, 8, 0, 0);
         add(lblTotalInscritos, gridBagConstraints);
 
         lblNotificacion.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
@@ -237,7 +263,7 @@ public class RecorridoTuristico extends javax.swing.JPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 6;
-        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.insets = new java.awt.Insets(18, 32, 0, 0);
         add(lblNotificacion, gridBagConstraints);
@@ -253,10 +279,10 @@ public class RecorridoTuristico extends javax.swing.JPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 7;
-        gridBagConstraints.gridwidth = 9;
+        gridBagConstraints.gridwidth = 10;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.ipadx = 676;
-        gridBagConstraints.ipady = 130;
+        gridBagConstraints.ipadx = 709;
+        gridBagConstraints.ipady = 122;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
@@ -282,10 +308,10 @@ public class RecorridoTuristico extends javax.swing.JPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 5;
-        gridBagConstraints.gridwidth = 9;
+        gridBagConstraints.gridwidth = 10;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.ipadx = 676;
-        gridBagConstraints.ipady = 190;
+        gridBagConstraints.ipadx = 709;
+        gridBagConstraints.ipady = 182;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;

@@ -74,6 +74,8 @@ public class Documento {
         this.edad = edad;
     }
     
+    
+    
     public boolean validarVigencia() {
         return tipo_doc.equalsIgnoreCase("DNI") && edad >= 60;
     }
@@ -94,7 +96,6 @@ public class Documento {
         return edad >= 1 && edad <= 110;
     }
 
-    
     public boolean documentoVigente(){
         if (validarVigencia()) {
             return true;
@@ -102,7 +103,4 @@ public class Documento {
 
         return LocalDate.now().isBefore(fecha_vencimiento);
     }
-    
-    
-    
 }

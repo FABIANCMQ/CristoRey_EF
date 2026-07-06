@@ -4,6 +4,7 @@
  */
 package PanelesGuiaTuristico;
 
+import cristorey_ef.GuiaTuristico;
 import cristorey_ef.PaqueteTuristico;
 import cristorey_ef.PaqueteTuristicoControlador;
 import cristorey_ef.ReservaControlador;
@@ -24,6 +25,7 @@ public class Inicio extends javax.swing.JPanel {
     private ReservaControlador rc;
     private PaqueteTuristicoControlador ptc;
     private UsuarioControlador uc;
+    private GuiaTuristico guia;
     public Inicio(ReservaControlador rc, PaqueteTuristicoControlador ptc, UsuarioControlador uc) {
         initComponents();
         this.rc = rc;
@@ -32,34 +34,44 @@ public class Inicio extends javax.swing.JPanel {
         cargarReporteGeneral();
     }
     
-    private void cargarReporteGeneral() {
-        
-        ArrayList<PaqueteTuristico> paquetes = ptc.getPaquete();
-        int totalInscritos     = 0;
-        for (PaqueteTuristico p : paquetes) {
-            int inscritos   = p.contarPasajeros();
-            totalInscritos += inscritos;
+    public void setGuiaActual(GuiaTuristico guia) {
+        this.guia = guia;
+        cargarReporteGeneral();
+    }
+    
+    private PaqueteTuristico buscarPaqueteAsignado() {
+        if (guia == null || !guia.tieneAsignacion()) {
+            return null;
         }
-        lblNumPasajeros.setText(String.valueOf(totalInscritos));
-        
-        double ganancias = rc.gananciasUltimoMes();
-        lblGanancias.setText(String.valueOf("S/"+ ganancias));
-        
-        lblNumViajes.setText(String.valueOf(paquetes.size()));
-        
-        String nombrePopular   = "–--";
-        int maxInscritos       = -1;
-        for (PaqueteTuristico p : paquetes) {
-            int inscritos   = p.contarPasajeros();
-
-            totalInscritos += inscritos;
-
-            if (inscritos > maxInscritos) {
-                maxInscritos   = inscritos;
-                nombrePopular  = p.getNombre_paquete();
+        String codigo = guia.getRecorrido_asignado();
+        for (PaqueteTuristico p : ptc.getPaquete()) {
+            if (p.getCodigo_paquete().equalsIgnoreCase(codigo)
+                    || p.getNombre_paquete().equalsIgnoreCase(codigo)) {
+                return p;
             }
         }
-        lblNomPopular.setText(nombrePopular);
+        return null;
+    }
+
+    private void cargarReporteGeneral() {
+
+        PaqueteTuristico paqueteAsignado = buscarPaqueteAsignado();
+
+        lblAsignacion.setFont(new java.awt.Font("Rockwell", 0, 18));
+
+        if (paqueteAsignado != null) {
+            lblCuposTotales.setText(String.valueOf(paqueteAsignado.getCupos_maximos()));
+            lblNumPasajeros.setText(String.valueOf(paqueteAsignado.contarPasajeros()));
+            lblAsignacion.setText(paqueteAsignado.getCodigo_paquete());
+        } else {
+            lblCuposTotales.setText("0");
+            lblNumPasajeros.setText("0");
+            if (guia != null && guia.tieneSolicitudPendiente()) {
+                lblAsignacion.setText("Pendiente");
+            } else {
+                lblAsignacion.setText("Sin asignar");
+            }
+        }
     }
 
     /**
@@ -81,20 +93,17 @@ public class Inicio extends javax.swing.JPanel {
         jPanel6 = new javax.swing.JPanel();
         jLabel23 = new javax.swing.JLabel();
         jLabel24 = new javax.swing.JLabel();
-        lblNumViajes = new javax.swing.JLabel();
+        lblCuposTotales = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         jLabel20 = new javax.swing.JLabel();
         jLabel21 = new javax.swing.JLabel();
-        lblGanancias = new javax.swing.JLabel();
-        jPanel5 = new javax.swing.JPanel();
-        jLabel22 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
-        lblNomPopular = new javax.swing.JLabel();
+        lblAsignacion = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         jLabel19 = new javax.swing.JLabel();
         lblNumPasajeros = new javax.swing.JLabel();
         btnCargarReporte = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(252, 242, 226));
 
@@ -112,7 +121,7 @@ public class Inicio extends javax.swing.JPanel {
 
         jLabel17.setFont(new java.awt.Font("Forte", 0, 24)); // NOI18N
         jLabel17.setForeground(new java.awt.Color(80, 50, 22));
-        jLabel17.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/Bienvenido.png"))); // NOI18N
+        jLabel17.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/bienbenido.png"))); // NOI18N
         jLabel17.setText("¡Hola, Lucía!");
 
         jLabel18.setFont(new java.awt.Font("Rockwell", 0, 14)); // NOI18N
@@ -124,209 +133,129 @@ public class Inicio extends javax.swing.JPanel {
         jPanel6.setBackground(new java.awt.Color(255, 255, 255));
         jPanel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(245, 164, 61), 2));
         jPanel6.setPreferredSize(new java.awt.Dimension(180, 160));
+        jPanel6.setLayout(new java.awt.GridBagLayout());
 
-        jLabel23.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/lado-del-coche.png"))); // NOI18N
+        jLabel23.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/porcentaje-de-insignias.png"))); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(29, 71, 0, 0);
+        jPanel6.add(jLabel23, gridBagConstraints);
 
         jLabel24.setFont(new java.awt.Font("Microsoft PhagsPa", 0, 14)); // NOI18N
-        jLabel24.setText("Viajes del día");
+        jLabel24.setText("Cupos Totales");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(18, 59, 0, 57);
+        jPanel6.add(jLabel24, gridBagConstraints);
 
-        lblNumViajes.setFont(new java.awt.Font("Forte", 0, 28)); // NOI18N
-        lblNumViajes.setForeground(new java.awt.Color(245, 164, 61));
-        lblNumViajes.setText("0");
-
-        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
-        jPanel6.setLayout(jPanel6Layout);
-        jPanel6Layout.setHorizontalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addGap(74, 74, 74)
-                        .addComponent(jLabel23))
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addGap(79, 79, 79)
-                        .addComponent(lblNumViajes)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                .addGap(0, 51, Short.MAX_VALUE)
-                .addComponent(jLabel24)
-                .addGap(46, 46, 46))
-        );
-        jPanel6Layout.setVerticalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addGap(21, 21, 21)
-                .addComponent(jLabel23)
-                .addGap(15, 15, 15)
-                .addComponent(jLabel24)
-                .addGap(18, 18, 18)
-                .addComponent(lblNumViajes, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(41, Short.MAX_VALUE))
-        );
+        lblCuposTotales.setFont(new java.awt.Font("Forte", 0, 28)); // NOI18N
+        lblCuposTotales.setForeground(new java.awt.Color(245, 164, 61));
+        lblCuposTotales.setText("0");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.ipady = -15;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(12, 83, 26, 0);
+        jPanel6.add(lblCuposTotales, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.ipadx = 51;
-        gridBagConstraints.ipady = 35;
+        gridBagConstraints.gridwidth = 3;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(17, 32, 0, 104);
+        gridBagConstraints.insets = new java.awt.Insets(30, 126, 0, 58);
         jPanel1.add(jPanel6, gridBagConstraints);
 
         jPanel4.setBackground(new java.awt.Color(255, 255, 255));
         jPanel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(245, 164, 61), 2));
         jPanel4.setPreferredSize(new java.awt.Dimension(180, 160));
+        jPanel4.setLayout(new java.awt.GridBagLayout());
 
-        jLabel20.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/grafico-histograma.png"))); // NOI18N
+        jLabel20.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/mapa.png"))); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(33, 77, 0, 0);
+        jPanel4.add(jLabel20, gridBagConstraints);
 
         jLabel21.setFont(new java.awt.Font("Microsoft PhagsPa", 0, 14)); // NOI18N
-        jLabel21.setText("Estadisticas");
-
-        lblGanancias.setFont(new java.awt.Font("Forte", 0, 28)); // NOI18N
-        lblGanancias.setForeground(new java.awt.Color(245, 164, 61));
-        lblGanancias.setText("0");
-
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(lblGanancias)
-                .addGap(76, 76, 76))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addContainerGap(56, Short.MAX_VALUE)
-                .addComponent(jLabel21)
-                .addGap(51, 51, 51))
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(71, 71, 71)
-                .addComponent(jLabel20)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(22, 22, 22)
-                .addComponent(jLabel20)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel21)
-                .addGap(18, 18, 18)
-                .addComponent(lblGanancias, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(37, Short.MAX_VALUE))
-        );
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridwidth = 3;
-        gridBagConstraints.ipadx = 50;
-        gridBagConstraints.ipady = 31;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(17, 35, 0, 0);
-        jPanel1.add(jPanel4, gridBagConstraints);
-
-        jPanel5.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(245, 164, 61), 2));
-
-        jLabel22.setFont(new java.awt.Font("Microsoft PhagsPa", 0, 14)); // NOI18N
-        jLabel22.setText("Paquete más popular");
-
-        jLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/tendencia-de-flecha-hacia-arriba_1.png"))); // NOI18N
-
-        lblNomPopular.setFont(new java.awt.Font("Forte", 0, 24)); // NOI18N
-        lblNomPopular.setForeground(new java.awt.Color(245, 164, 61));
-        lblNomPopular.setText("---");
-
-        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGap(59, 59, 59)
-                        .addComponent(lblNomPopular))
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGap(120, 120, 120)
-                        .addComponent(jLabel7))
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGap(71, 71, 71)
-                        .addComponent(jLabel22)))
-                .addContainerGap(86, Short.MAX_VALUE))
-        );
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGap(26, 26, 26)
-                .addComponent(jLabel7)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel22)
-                .addGap(26, 26, 26)
-                .addComponent(lblNomPopular, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(47, Short.MAX_VALUE))
-        );
-
+        jLabel21.setText("Asignación");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.gridheight = 2;
-        gridBagConstraints.ipadx = 80;
-        gridBagConstraints.ipady = 41;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(26, 99, 46, 0);
-        jPanel1.add(jPanel5, gridBagConstraints);
+        gridBagConstraints.insets = new java.awt.Insets(18, 55, 0, 0);
+        jPanel4.add(jLabel21, gridBagConstraints);
+
+        lblAsignacion.setFont(new java.awt.Font("Forte", 0, 28)); // NOI18N
+        lblAsignacion.setForeground(new java.awt.Color(245, 164, 61));
+        lblAsignacion.setText("---");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.ipadx = 88;
+        gridBagConstraints.ipady = -15;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(12, 34, 30, 37);
+        jPanel4.add(lblAsignacion, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(30, 59, 0, 0);
+        jPanel1.add(jPanel4, gridBagConstraints);
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
         jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(245, 164, 61), 2));
         jPanel3.setPreferredSize(new java.awt.Dimension(180, 160));
+        jPanel3.setLayout(new java.awt.GridBagLayout());
 
         jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/usuarios-alt.png"))); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(35, 72, 0, 0);
+        jPanel3.add(jLabel6, gridBagConstraints);
 
         jLabel19.setFont(new java.awt.Font("Microsoft PhagsPa", 0, 14)); // NOI18N
         jLabel19.setText("Pasajeros");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(12, 64, 0, 59);
+        jPanel3.add(jLabel19, gridBagConstraints);
 
         lblNumPasajeros.setFont(new java.awt.Font("Forte", 0, 28)); // NOI18N
         lblNumPasajeros.setForeground(new java.awt.Color(245, 164, 61));
         lblNumPasajeros.setText("0");
-
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(70, 70, 70)
-                        .addComponent(jLabel6))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(77, 77, 77)
-                        .addComponent(lblNumPasajeros)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addGap(0, 62, Short.MAX_VALUE)
-                .addComponent(jLabel19)
-                .addGap(57, 57, 57))
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap(33, Short.MAX_VALUE)
-                .addComponent(jLabel6)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel19)
-                .addGap(24, 24, 24)
-                .addComponent(lblNumPasajeros, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(26, 26, 26))
-        );
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.ipady = -15;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(24, 79, 28, 0);
+        jPanel3.add(lblNumPasajeros, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.ipadx = 62;
-        gridBagConstraints.ipady = 27;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(17, 99, 0, 0);
+        gridBagConstraints.insets = new java.awt.Insets(30, 45, 0, 0);
         jPanel1.add(jPanel3, gridBagConstraints);
 
         btnCargarReporte.setBackground(new java.awt.Color(255, 189, 105));
@@ -337,13 +266,24 @@ public class Inicio extends javax.swing.JPanel {
         btnCargarReporte.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnCargarReporte.addActionListener(this::btnCargarReporteActionPerformed);
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.ipadx = 45;
         gridBagConstraints.ipady = 7;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(124, 70, 0, 104);
+        gridBagConstraints.insets = new java.awt.Insets(145, 143, 0, 0);
         jPanel1.add(btnCargarReporte, gridBagConstraints);
+
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/paisaje 4.png"))); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.gridheight = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(65, 133, 86, 0);
+        jPanel1.add(jLabel1, gridBagConstraints);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -354,7 +294,7 @@ public class Inicio extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel18))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 333, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel15)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -364,7 +304,7 @@ public class Inicio extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnDatosGuia)))
                 .addGap(12, 12, 12))
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -381,7 +321,7 @@ public class Inicio extends javax.swing.JPanel {
                         .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jLabel15))
                 .addGap(18, 18, 18)
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 459, Short.MAX_VALUE))
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -401,6 +341,7 @@ public class Inicio extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCargarReporte;
     private javax.swing.JButton btnDatosGuia;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
@@ -408,19 +349,15 @@ public class Inicio extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
-    private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
-    private javax.swing.JLabel lblGanancias;
-    private javax.swing.JLabel lblNomPopular;
+    private javax.swing.JLabel lblAsignacion;
+    private javax.swing.JLabel lblCuposTotales;
     private javax.swing.JLabel lblNumPasajeros;
-    private javax.swing.JLabel lblNumViajes;
     // End of variables declaration//GEN-END:variables
 }

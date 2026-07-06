@@ -177,7 +177,7 @@ public class RegistroPasajero extends javax.swing.JPanel {
         gridBagConstraints.ipadx = 18;
         gridBagConstraints.ipady = 43;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(24, 43, 0, 0);
+        gridBagConstraints.insets = new java.awt.Insets(14, 53, 0, 0);
         jPanel4.add(jPanel1, gridBagConstraints);
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
@@ -292,10 +292,10 @@ public class RegistroPasajero extends javax.swing.JPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridwidth = 4;
+        gridBagConstraints.gridwidth = 3;
         gridBagConstraints.ipadx = 21;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(24, 41, 0, 48);
+        gridBagConstraints.insets = new java.awt.Insets(14, 41, 0, 0);
         jPanel4.add(jPanel2, gridBagConstraints);
 
         btnRegistrar.setBackground(new java.awt.Color(255, 189, 105));
@@ -312,7 +312,7 @@ public class RegistroPasajero extends javax.swing.JPanel {
         gridBagConstraints.ipadx = 109;
         gridBagConstraints.ipady = 14;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(18, 279, 0, 0);
+        gridBagConstraints.insets = new java.awt.Insets(6, 289, 0, 0);
         jPanel4.add(btnRegistrar, gridBagConstraints);
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
@@ -389,14 +389,15 @@ public class RegistroPasajero extends javax.swing.JPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
-        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.gridwidth = 5;
+        gridBagConstraints.ipadx = 114;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(18, 56, 29, 0);
+        gridBagConstraints.insets = new java.awt.Insets(6, 21, 0, 42);
         jPanel4.add(jPanel3, gridBagConstraints);
 
         jLabel17.setFont(new java.awt.Font("Forte", 0, 24)); // NOI18N
         jLabel17.setForeground(new java.awt.Color(80, 50, 22));
-        jLabel17.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/ControlMatutino.png"))); // NOI18N
+        jLabel17.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/registroPasajero.png"))); // NOI18N
         jLabel17.setText("Registro de pasajeros");
 
         btnLimpiar.setBackground(new java.awt.Color(255, 189, 105));
@@ -412,21 +413,21 @@ public class RegistroPasajero extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(15, 15, 15)
-                .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 323, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnLimpiar)
                 .addGap(17, 17, 17))
-            .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 809, Short.MAX_VALUE)
+            .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(15, 15, 15)
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel17)
                     .addComponent(btnLimpiar))
-                .addGap(26, 26, 26)
-                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 677, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 582, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -535,15 +536,46 @@ public class RegistroPasajero extends javax.swing.JPanel {
                 super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
                 if (value instanceof PaqueteTuristico) {
                     PaqueteTuristico paq = (PaqueteTuristico) value;
-                    setText(paq.getCodigo_paquete() + " - " + paq.getNombre_paquete()
-                            + " (" + paq.getHorario() + ")");
+                    setText(paq.getNombre_paquete());
                 }
                 return this;
             }
         });
     }
     
+    private void actualizarInfoCupos() {
+        PaqueteTuristico paquete = (PaqueteTuristico) cbxPaquete.getSelectedItem(); 
+        
+         if (paquete == null) {
+            lblCupos.setText("-- / --");
+            return;
+        }
+        
+        lblCupos.setText(paquete.getCupos_disponibles() + " / " + paquete.getCupos_maximos());
+        
+        if (paquete.tieneCupos()) {
+            lblCupos.setForeground(new Color(27, 94, 32));
+        } else {
+             lblCupos.setForeground(new Color(127, 16, 16));
+        }
+    }
     
+    private void limpiarFormulario() {
+        txtNombre.setText("");  txtApPaterno.setText("");  txtApMaterno.setText("");
+        txtTelefono.setText(""); txtCorreo.setText("");
+        txtNumDoc.setText("");   txtFechaEmision.setText(""); txtFechaVencimiento.setText("");
+        txtEdad.setText("");
+        cbxTipoDoc.setSelectedIndex(0);
+        cbxResidencia.setSelectedIndex(0);
+        lblVigencia.setText("");
+        lblVigencia.setOpaque(false);
+        lblVigencia.repaint();
+        btnRegistrar.setEnabled(false);
+    }
+
+    private void mostrarError(String mensaje) {
+        JOptionPane.showMessageDialog(this, mensaje, "ERROR", JOptionPane.ERROR_MESSAGE);
+    }
     
     private void btnValidarDocumentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnValidarDocumentoActionPerformed
         // TODO add your handling code here:
@@ -690,39 +722,6 @@ public class RegistroPasajero extends javax.swing.JPanel {
         actualizarInfoCupos();
     }//GEN-LAST:event_cbxPaqueteActionPerformed
 
-    private void actualizarInfoCupos() {
-        PaqueteTuristico paquete = (PaqueteTuristico) cbxPaquete.getSelectedItem(); 
-        
-         if (paquete == null) {
-            lblCupos.setText("-- / --");
-            return;
-        }
-        
-        lblCupos.setText(paquete.getCupos_disponibles() + " / " + paquete.getCupos_maximos());
-        
-        if (paquete.tieneCupos()) {
-            lblCupos.setForeground(new Color(27, 94, 32));
-        } else {
-             lblCupos.setForeground(new Color(127, 16, 16));
-        }
-    }
-    
-    private void limpiarFormulario() {
-        txtNombre.setText("");  txtApPaterno.setText("");  txtApMaterno.setText("");
-        txtTelefono.setText(""); txtCorreo.setText("");
-        txtNumDoc.setText("");   txtFechaEmision.setText(""); txtFechaVencimiento.setText("");
-        txtEdad.setText("");
-        cbxTipoDoc.setSelectedIndex(0);
-        cbxResidencia.setSelectedIndex(0);
-        lblVigencia.setText("");
-        lblVigencia.setOpaque(false);
-        lblVigencia.repaint();
-        btnRegistrar.setEnabled(false);
-    }
-
-    private void mostrarError(String mensaje) {
-        JOptionPane.showMessageDialog(this, mensaje, "ERROR", JOptionPane.ERROR_MESSAGE);
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAsignarPaquete;

@@ -75,18 +75,13 @@ public class Pasajero {
         this.correo = correo;
     }
     
+    
+    
     public String unificarDatos(){
         return nombre + " "+ap_paterno+" "+ap_materno;
     }
     
     public boolean numTelefonoValido() {
         return telefono.matches("\\d{9}");
-    }
-    
-    public void verDatos(){
-        System.out.println("Pasajero:\nApellido Paterno: "+this.ap_paterno+
-                "\tApellido Materno: "+this.ap_materno+
-                "\nNombre: "+this.nombre+"\tTelefono: "+this.telefono+
-                "\nCorreo Electronico: "+this.correo);
     }
 }

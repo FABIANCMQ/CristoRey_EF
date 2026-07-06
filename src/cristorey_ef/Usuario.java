@@ -14,16 +14,18 @@ public abstract class Usuario {
     protected String nombre;
     protected String correo;
     protected String clave_ingreso;
+    protected double sueldo;
     protected boolean bloqueado;
     
     public Documento documento;
 
-    public Usuario(String codigo_usuario, String cargo, String nombre, String correo, String clave_ingreso, Documento documento) {
+    public Usuario(String codigo_usuario, String cargo, String nombre, String correo, String clave_ingreso, double sueldo, Documento documento) {
         this.codigo_usuario = codigo_usuario;
         this.cargo = cargo;
         this.nombre = nombre;
         this.correo = correo;
         this.clave_ingreso = clave_ingreso;
+        this.sueldo = sueldo;
         this.documento = documento;
         this.bloqueado = false;
     }
@@ -70,6 +72,14 @@ public abstract class Usuario {
         this.clave_ingreso = clave_ingreso;
     }
 
+    public double getSueldo() {
+        return sueldo;
+    }
+
+    public void setSueldo(double sueldo) {
+        this.sueldo = sueldo;
+    }
+
     public boolean isBloqueado() {
         return bloqueado;
     }
@@ -78,23 +88,6 @@ public abstract class Usuario {
         this.bloqueado = bloqueado;
     }
     
-    
-    
-    public void iniciarSesion(){
-        System.out.println("Bienvenido " + nombre);
-    }
-    
-    public void identificarUsuario(){
-        System.out.println("===IDENTIFICACION DEL USUARIO===\nCodigo Usuario: "
-                +this.codigo_usuario+"\nNombre: "+this.nombre);
-    }
-   
-    public void bloquearEdicion() {
-        this.bloqueado = true;
-    }
-    public boolean puedeEditar(){
-        return !this.bloqueado;
-    } 
     
     public boolean validarAcceso(String correo, String clave) {
         return this.correo.equals(correo) && this.clave_ingreso.equals(clave);

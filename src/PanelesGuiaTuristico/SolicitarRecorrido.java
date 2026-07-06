@@ -123,13 +123,14 @@ public class SolicitarRecorrido extends javax.swing.JPanel {
 
         jLabel.setFont(new java.awt.Font("Forte", 0, 24)); // NOI18N
         jLabel.setForeground(new java.awt.Color(80, 50, 22));
-        jLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/viaje-en-coche.png"))); // NOI18N
+        jLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/solicitarRecorrido.png"))); // NOI18N
         jLabel.setText("Solicitar recorrido turistico");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(20, 30, 10, 0);
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(9, 6, 0, 0);
         add(jLabel, gridBagConstraints);
 
         lblEstado.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
@@ -138,8 +139,8 @@ public class SolicitarRecorrido extends javax.swing.JPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(0, 32, 16, 30);
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(10, 29, 0, 0);
         add(lblEstado, gridBagConstraints);
 
         jScrollPaneLista.setBorder(null);
@@ -152,10 +153,14 @@ public class SolicitarRecorrido extends javax.swing.JPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.ipadx = 691;
+        gridBagConstraints.ipady = 334;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 32, 20, 30);
+        gridBagConstraints.insets = new java.awt.Insets(16, 26, 31, 21);
         add(jScrollPaneLista, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
