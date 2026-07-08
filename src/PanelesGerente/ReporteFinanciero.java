@@ -3,7 +3,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
 package PanelesGerente;
-
+import Conexion.ConexionBD;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import cristorey_ef.PaqueteTuristico;
 import cristorey_ef.Reserva;
 import cristorey_ef.ReservaControlador;
@@ -54,71 +58,72 @@ public class ReporteFinanciero extends javax.swing.JPanel {
     }
     
     private void generarReporte() {
-        LocalDate desde;
-        LocalDate hasta;
-        try {
-            desde = LocalDate.parse(txtDesde.getText().trim(), FORMATO);
-            hasta = LocalDate.parse(txtHasta.getText().trim(), FORMATO);
-        } catch (DateTimeParseException ex) {
-            JOptionPane.showMessageDialog(this, "Ingrese fechas válidas con formato dd/MM/aaaa.",
-                    "Fecha inválida", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        if (hasta.isBefore(desde)) {
-            JOptionPane.showMessageDialog(this, "La fecha 'Hasta' no puede ser anterior a 'Desde'.",
-                    "Rango inválido", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        ArrayList<Reserva> reservas = rc.reservasEnRango(desde, hasta);
-        ArrayList<ReporteLinea> listaReporte = new ArrayList<>();
-        double totalIngresos = 0;
-
-        for (int i = 0; i < reservas.size(); i++) {
-        Reserva r = reservas.get(i);
-        if (!r.getEstado_aprobacion().equalsIgnoreCase("Aprobada")) {
-            continue;
-        }
-
-        String codigo = r.getPaquete().getCodigo_paquete();
-        double precio = r.getPrecio_final();
-        totalIngresos += precio;
-
-        ReporteLinea lineaEncontrada = null;
-        for (int j = 0; j < listaReporte.size(); j++) {
-            ReporteLinea linea = listaReporte.get(j);
-            if (linea.paquete.getCodigo_paquete().equals(codigo)) {
-                lineaEncontrada = linea;
-                break; 
-            }
-        }
-
-        if (lineaEncontrada == null) {
-            lineaEncontrada = new ReporteLinea(r.getPaquete());
-            listaReporte.add(lineaEncontrada);
-        }
-
-        lineaEncontrada.cantidad = lineaEncontrada.cantidad + 1;
-        lineaEncontrada.ingresos = lineaEncontrada.ingresos + precio;
+            LocalDate desde;
+    LocalDate hasta;
+    try {
+        desde = LocalDate.parse(txtDesde.getText().trim(), FORMATO);
+        hasta = LocalDate.parse(txtHasta.getText().trim(), FORMATO);
+    } catch (DateTimeParseException ex) {
+        JOptionPane.showMessageDialog(this, "Ingrese fechas válidas con formato dd/MM/aaaa.",
+                "Fecha inválida", JOptionPane.WARNING_MESSAGE);
+        return;
+    }
+    if (hasta.isBefore(desde)) {
+        JOptionPane.showMessageDialog(this, "La fecha 'Hasta' no puede ser anterior a 'Desde'.",
+                "Rango inválido", JOptionPane.WARNING_MESSAGE);
+        return;
     }
 
     DefaultTableModel modelo = (DefaultTableModel) tblIngresoTour.getModel();
     modelo.setRowCount(0);
+    double totalIngresos = 0;
 
-    for (int i = 0; i < listaReporte.size(); i++) {
-        ReporteLinea linea = listaReporte.get(i);
+    try (Connection con = ConexionBD.conectar()) {
 
-        modelo.addRow(new Object[]{
-            linea.paquete.getNombre_paquete(),
-            linea.cantidad,
-            String.format("%.2f", linea.ingresos)
-        });
+        if (con == null) {
+            JOptionPane.showMessageDialog(this,
+                    "No se pudo conectar a la base de datos.",
+                    "Error de conexión", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        PreparedStatement ps = con.prepareStatement(
+            "SELECT pt.codigo_paquete, pt.nombre_paquete, COUNT(*) AS cantidad, SUM(r.precio_final) AS ingresos "
+            + "FROM Reserva r "
+            + "JOIN PaqueteTuristico pt ON r.codigo_paquete = pt.codigo_paquete "
+            + "WHERE r.estado = 'Activa' AND r.estado_aprobacion = 'Aprobada' "
+            + "AND r.fecha_reserva BETWEEN ? AND ? "
+            + "GROUP BY pt.codigo_paquete, pt.nombre_paquete"
+        );
+        ps.setDate(1, Date.valueOf(desde));
+        ps.setDate(2, Date.valueOf(hasta));
+
+        ResultSet rs = ps.executeQuery();
+
+        while (rs.next()) {
+            double ingresosLinea = rs.getDouble("ingresos");
+            totalIngresos += ingresosLinea;
+
+            modelo.addRow(new Object[]{
+                rs.getString("codigo_paquete"),
+                rs.getString("nombre_paquete"),
+                rs.getInt("cantidad"),
+                String.format("%.2f", ingresosLinea)
+            });
+        }
+
+    } catch (Exception ex) {
+        JOptionPane.showMessageDialog(this,
+                "Error al generar el reporte:\n" + ex.getMessage(),
+                "Error", JOptionPane.ERROR_MESSAGE);
+        return;
     }
 
-
-        lblTotal.setText("Ingresos totales: S/" + totalIngresos);
-    }
-    
+    lblTotal.setText("Ingresos totales: S/" + String.format("%.2f", totalIngresos));
+    lblGanancias.setText(String.format("S/ %.2f", totalIngresos));
+}
+  
+   
     class ReporteLinea {
         PaqueteTuristico paquete;
         int cantidad = 0;
@@ -162,6 +167,12 @@ public class ReporteFinanciero extends javax.swing.JPanel {
 
         lblHasta.setText("Hasta (dd/MM/aaaa):");
 
+        txtHasta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtHastaActionPerformed(evt);
+            }
+        });
+
         jLabel17.setFont(new java.awt.Font("Forte", 0, 24)); // NOI18N
         jLabel17.setForeground(new java.awt.Color(80, 50, 22));
         jLabel17.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/reporteVentas.png"))); // NOI18N
@@ -203,6 +214,7 @@ public class ReporteFinanciero extends javax.swing.JPanel {
         btnGenerarReporte.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         btnGenerarReporte.setForeground(new java.awt.Color(255, 255, 255));
         btnGenerarReporte.setText("Generar reporte");
+        btnGenerarReporte.setToolTipText("");
         btnGenerarReporte.setEnabled(false);
         btnGenerarReporte.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -252,7 +264,7 @@ public class ReporteFinanciero extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnLimpiar)
                         .addGap(22, 22, 22))))
-            .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 915, Short.MAX_VALUE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 832, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -288,7 +300,7 @@ public class ReporteFinanciero extends javax.swing.JPanel {
                 .addGap(33, 33, 33)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 224, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 113, Short.MAX_VALUE)
                 .addGap(37, 37, 37)
                 .addComponent(lblTotal)
                 .addGap(26, 26, 26))
@@ -296,13 +308,25 @@ public class ReporteFinanciero extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
-        generarReporte();
+       
+         txtDesde.setText(LocalDate.now().format(FORMATO));
+    txtHasta.setText(LocalDate.now().format(FORMATO));
+
+    DefaultTableModel modelo = (DefaultTableModel) tblIngresoTour.getModel();
+    modelo.setRowCount(0);
+
+    lblTotal.setText("Total");
+    lblGanancias.setText("S/ 0.00");
     }//GEN-LAST:event_btnLimpiarActionPerformed
 
     private void btnGenerarReporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarReporteActionPerformed
         // TODO add your handling code here:
         generarReporte();
     }//GEN-LAST:event_btnGenerarReporteActionPerformed
+
+    private void txtHastaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtHastaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtHastaActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

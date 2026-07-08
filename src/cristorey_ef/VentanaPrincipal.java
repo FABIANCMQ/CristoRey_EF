@@ -23,14 +23,15 @@ import javax.swing.JPanel;
  * @author Usuario
  */
 public class VentanaPrincipal extends javax.swing.JFrame {
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(VentanaPrincipal.class.getName());
     /**
      * Creates new form PantallaPrincipal
      */
+    private static java.util.logging.Logger logger = java.util.logging.Logger.getLogger(VentanaPrincipal.class.getName());
     private UsuarioControlador usuarioControlador;
     private PasajeroControlador pasajeroControlador;
     private ReservaControlador reservaControlador;
     private PaqueteTuristicoControlador paqueteTuristicoControlador;
+    
     
     Container contenidoOriginal;
     VentanaPrincipalAdmin admin;

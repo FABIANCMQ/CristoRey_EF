@@ -3,7 +3,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
 package PanelesGenerales;
-
+import Conexion.ConexionBD;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import cristorey_ef.Pasajero;
 import cristorey_ef.PasajeroControlador;
 import cristorey_ef.Reserva;
@@ -53,15 +57,57 @@ public class Pasajeros extends javax.swing.JPanel {
     }
     
     private void cargarTabla() {
-        DefaultTableModel modelo = (DefaultTableModel) tblPasajeros.getModel();
-        modelo.setRowCount(0);
+        
+     DefaultTableModel modelo = (DefaultTableModel) tblPasajeros.getModel();
+     modelo.setRowCount(0);
 
-        List<Pasajero> listaPasajeros = pc.getPasajero();
-        for (int i = 0; i < listaPasajeros.size(); i++) {
-            Pasajero p = listaPasajeros.get(i);
-            agregarFilaPasajero(modelo, p);
-        }    
+    try (Connection con = ConexionBD.conectar()) {
+
+        if (con == null) {
+            JOptionPane.showMessageDialog(this,
+                    "No se pudo conectar a la base de datos.",
+                    "Error de conexión", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        Statement st = con.createStatement();
+        ResultSet rs = st.executeQuery(
+            "SELECT p.nombre, p.ap_paterno, p.ap_materno, p.nro_doc, p.telefono, p.correo, "
+            + "r.fecha_reserva, pt.nombre_paquete "
+            + "FROM pasajero p "
+            + "LEFT JOIN Reserva r ON p.nro_doc = r.nro_doc AND r.estado = 'Activa' "
+            + "LEFT JOIN PaqueteTuristico pt ON r.codigo_paquete = pt.codigo_paquete "
+            + "ORDER BY p.nro_doc"
+        );
+
+        while (rs.next()) {
+            String nombre = rs.getString("nombre");
+            String apPaterno = rs.getString("ap_paterno");
+            String apMaterno = rs.getString("ap_materno");
+            String nroDoc = rs.getString("nro_doc");
+            String telefono = rs.getString("telefono");
+            String correo = rs.getString("correo");
+
+            java.sql.Date fechaSql = rs.getDate("fecha_reserva");
+            String fecha = (fechaSql != null) ? fechaSql.toLocalDate().format(FORMATO_FECHA) : "-";
+
+            String paquete = rs.getString("nombre_paquete");
+            if (paquete == null) {
+                paquete = "Sin paquete asignado";
+            }
+
+            modelo.addRow(new Object[]{
+                nombre, apPaterno, apMaterno, nroDoc, telefono, correo, fecha, paquete
+            });
+        }
+
+    } catch (Exception ex) {
+        JOptionPane.showMessageDialog(this,
+                "Error al cargar los pasajeros desde la base de datos:\n" + ex.getMessage(),
+                "Error", JOptionPane.ERROR_MESSAGE);
     }
+}
+
     
     private void agregarFilaPasajero(DefaultTableModel modelo, Pasajero p) {
         ArrayList<Reserva> reservas = rc.buscarReservasActivasPorDocumento( p.getDocumento().getNro_doc());
@@ -86,29 +132,75 @@ public class Pasajeros extends javax.swing.JPanel {
     }
     
     private void buscarPasajero() {
-        String dato = txtDato.getText();
+    String dato = txtDato.getText().trim();
 
-        if (dato.isEmpty()) {
-            cargarTabla();
+    if (dato.isEmpty()) {
+        cargarTabla();
+        return;
+    }
+
+    DefaultTableModel modelo = (DefaultTableModel) tblPasajeros.getModel();
+    modelo.setRowCount(0);
+
+    try (Connection con = ConexionBD.conectar()) {
+
+        if (con == null) {
+            JOptionPane.showMessageDialog(this,
+                    "No se pudo conectar a la base de datos.",
+                    "Error de conexión", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        Pasajero encontrado = pc.buscarPasajero(dato);
+        PreparedStatement ps = con.prepareStatement(
+            "SELECT p.nombre, p.ap_paterno, p.ap_materno, p.nro_doc, p.telefono, p.correo, "
+            + "r.fecha_reserva, pt.nombre_paquete "
+            + "FROM pasajero p "
+            + "LEFT JOIN Reserva r ON p.nro_doc = r.nro_doc AND r.estado = 'Activa' "
+            + "LEFT JOIN PaqueteTuristico pt ON r.codigo_paquete = pt.codigo_paquete "
+            + "WHERE p.nombre LIKE ? OR p.nro_doc LIKE ? "
+            + "ORDER BY p.nro_doc"
+        );
+        ps.setString(1, "%" + dato + "%");
+        ps.setString(2, "%" + dato + "%");
 
-        DefaultTableModel modelo = (DefaultTableModel) tblPasajeros.getModel();
-        modelo.setRowCount(0);
+        ResultSet rs = ps.executeQuery();
+        boolean encontrado = false;
 
-        if (encontrado == null) {
+        while (rs.next()) {
+            encontrado = true;
+            String nombre = rs.getString("nombre");
+            String apPaterno = rs.getString("ap_paterno");
+            String apMaterno = rs.getString("ap_materno");
+            String nroDoc = rs.getString("nro_doc");
+            String telefono = rs.getString("telefono");
+            String correo = rs.getString("correo");
+
+            java.sql.Date fechaSql = rs.getDate("fecha_reserva");
+            String fecha = (fechaSql != null) ? fechaSql.toLocalDate().format(FORMATO_FECHA) : "-";
+
+            String paquete = rs.getString("nombre_paquete");
+            if (paquete == null) {
+                paquete = "Sin paquete asignado";
+            }
+
+            modelo.addRow(new Object[]{
+                nombre, apPaterno, apMaterno, nroDoc, telefono, correo, fecha, paquete
+            });
+        }
+
+        if (!encontrado) {
             JOptionPane.showMessageDialog(this,
                     "No se encontró ningún pasajero con el nombre o documento ingresado.",
-                    "Pasajero no encontrado",
-                    JOptionPane.WARNING_MESSAGE);
-            return;
+                    "Pasajero no encontrado", JOptionPane.WARNING_MESSAGE);
         }
 
-        agregarFilaPasajero(modelo, encontrado);
+    } catch (Exception ex) {
+        JOptionPane.showMessageDialog(this,
+                "Error al buscar el pasajero en la base de datos:\n" + ex.getMessage(),
+                "Error", JOptionPane.ERROR_MESSAGE);
     }
-    
+}
+         
     
 
     /**

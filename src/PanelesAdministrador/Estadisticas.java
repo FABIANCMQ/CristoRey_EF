@@ -4,11 +4,16 @@
  */
 package PanelesAdministrador;
 
-import cristorey_ef.PaqueteTuristico;
+import Conexion.ConexionBD;
 import cristorey_ef.ReservaControlador;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Locale;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -25,55 +30,163 @@ public class Estadisticas extends javax.swing.JPanel {
     public Estadisticas(ReservaControlador rc) {
         initComponents();
 
-        this.rc=rc;
+        this.rc = rc;
+
         tblRanking.getTableHeader().setBackground(new java.awt.Color(255, 170, 44));
         tblRanking.getTableHeader().setForeground(java.awt.Color.WHITE);
-        tblRanking.getTableHeader().setDefaultRenderer(new javax.swing.table.DefaultTableCellRenderer(){
+        tblRanking.getTableHeader().setDefaultRenderer(new javax.swing.table.DefaultTableCellRenderer() {
             @Override
-            public java.awt.Component getTableCellRendererComponent(javax.swing.JTable table, Object value,
-                    boolean isSelected, boolean hasFocus, int row, int column) {
+            public java.awt.Component getTableCellRendererComponent(
+                    javax.swing.JTable table,
+                    Object value,
+                    boolean isSelected,
+                    boolean hasFocus,
+                    int row,
+                    int column) {
+
                 javax.swing.JLabel c = (javax.swing.JLabel) super.getTableCellRendererComponent(
                         table, value, isSelected, hasFocus, row, column);
+
                 c.setBackground(table.getTableHeader().getBackground());
                 c.setForeground(table.getTableHeader().getForeground());
                 c.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-                c.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 1, java.awt.Color.LIGHT_GRAY));
+                c.setBorder(javax.swing.BorderFactory.createMatteBorder(
+                        0, 0, 1, 1, java.awt.Color.LIGHT_GRAY));
 
                 return c;
             }
         });
 
-        lblMes.setText(LocalDate.now().format(DateTimeFormatter.ofPattern("EEEE, dd 'de' MMMM 'de' yyyy")));
+        lblMes.setText(LocalDate.now().format(
+                DateTimeFormatter.ofPattern("EEEE, dd 'de' MMMM 'de' yyyy")
+        ));
 
         cargarEstadisticas();
     }
 
     private void cargarEstadisticas() {
-        double ganancias = rc.gananciasUltimoMes();
-        lblGanancias.setText(String.valueOf("S/"+ ganancias));
-
-        String diaPopular = rc.diaMasConcurridoUltimoMes();
-        lblDiaConcurrido.setText(diaPopular);
-
-        DefaultTableModel modelo = (DefaultTableModel) tblRanking.getModel();
+         DefaultTableModel modelo = (DefaultTableModel) tblRanking.getModel();
         modelo.setRowCount(0);
 
-        ArrayList<ReservaControlador.RankingPaquete> ranking = rc.rankingPopularidadPaquetes();
+        try (Connection con = ConexionBD.conectar()) {
 
-        if (ranking.isEmpty()) {
-            modelo.addRow(new Object[]{"Sin reservas registradas este mes", "-", "-", "-"});
-            return;
-        }
+            if (con == null) {
+                JOptionPane.showMessageDialog(this,
+                        "No se pudo conectar a la base de datos.",
+                        "Error de conexión",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
 
-        for (int i = 0; i < ranking.size(); i++) {
-            ReservaControlador.RankingPaquete item = ranking.get(i);
-            PaqueteTuristico p = item.getPaquete();
-            modelo.addRow(new Object[]{
-                p.getNombre_paquete(),
-                p.getDestino(),
-                item.getCantidadReservas(),
-                String.format("%.1f %%", item.getPorcentaje())
-            });
+            // 1. Ganancias del mes actual
+            try (Statement st = con.createStatement();
+                 ResultSet rsGanancias = st.executeQuery(
+                         "SELECT ISNULL(SUM(precio_final), 0) AS total "
+                         + "FROM Reserva "
+                         + "WHERE estado = 'Activa' "
+                         + "AND MONTH(fecha_reserva) = MONTH(GETDATE()) "
+                         + "AND YEAR(fecha_reserva) = YEAR(GETDATE())"
+                 )) {
+
+                double ganancias = 0;
+
+                if (rsGanancias.next()) {
+                    ganancias = rsGanancias.getDouble("total");
+                }
+
+                lblGanancias.setText(String.format("S/ %.2f", ganancias));
+            }
+
+            // 2. Día más concurrido del mes actual
+            try (Statement st2 = con.createStatement();
+                 ResultSet rsDia = st2.executeQuery(
+                         "SELECT TOP 1 fecha_reserva, COUNT(*) AS cantidad "
+                         + "FROM Reserva "
+                         + "WHERE estado = 'Activa' "
+                         + "AND MONTH(fecha_reserva) = MONTH(GETDATE()) "
+                         + "AND YEAR(fecha_reserva) = YEAR(GETDATE()) "
+                         + "GROUP BY fecha_reserva "
+                         + "ORDER BY cantidad DESC"
+                 )) {
+
+                if (rsDia.next()) {
+                    java.sql.Date fechaSql = rsDia.getDate("fecha_reserva");
+
+                    String diaFormateado = fechaSql.toLocalDate()
+                            .format(DateTimeFormatter.ofPattern(
+                                    "dd 'de' MMMM",
+                                    new Locale("es", "ES")
+                            ));
+
+                    lblDiaConcurrido.setText(diaFormateado);
+                } else {
+                    lblDiaConcurrido.setText("Sin datos");
+                }
+            }
+
+            // 3. Ranking de popularidad de paquetes turísticos del mes actual
+            ArrayList<String> nombres = new ArrayList<>();
+            ArrayList<String> destinos = new ArrayList<>();
+            ArrayList<Integer> cantidades = new ArrayList<>();
+
+            int totalReservas = 0;
+
+            try (Statement st3 = con.createStatement();
+                 ResultSet rsRanking = st3.executeQuery(
+                         "SELECT pt.nombre_paquete, pt.destino, COUNT(*) AS cantidad "
+                         + "FROM Reserva r "
+                         + "INNER JOIN PaqueteTuristico pt "
+                         + "ON r.codigo_paquete = pt.codigo_paquete "
+                         + "WHERE r.estado = 'Activa' "
+                         + "AND MONTH(r.fecha_reserva) = MONTH(GETDATE()) "
+                         + "AND YEAR(r.fecha_reserva) = YEAR(GETDATE()) "
+                         + "GROUP BY pt.nombre_paquete, pt.destino "
+                         + "ORDER BY cantidad DESC"
+                 )) {
+
+                while (rsRanking.next()) {
+                    String nombrePaquete = rsRanking.getString("nombre_paquete");
+                    String destino = rsRanking.getString("destino");
+                    int cantidad = rsRanking.getInt("cantidad");
+
+                    nombres.add(nombrePaquete);
+                    destinos.add(destino);
+                    cantidades.add(cantidad);
+
+                    totalReservas += cantidad;
+                }
+            }
+
+            if (nombres.isEmpty()) {
+                modelo.addRow(new Object[]{
+                    "Sin reservas registradas este mes",
+                    "-",
+                    "-",
+                    "-"
+                });
+            } else {
+                for (int i = 0; i < nombres.size(); i++) {
+
+                    double porcentaje = 0;
+
+                    if (totalReservas > 0) {
+                        porcentaje = (cantidades.get(i) * 100.0) / totalReservas;
+                    }
+
+                    modelo.addRow(new Object[]{
+                        nombres.get(i),
+                        destinos.get(i),
+                        cantidades.get(i),
+                        String.format("%.1f %%", porcentaje)
+                    });
+                }
+            }
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this,
+                    "Error al cargar estadísticas desde la base de datos:\n" + ex.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 

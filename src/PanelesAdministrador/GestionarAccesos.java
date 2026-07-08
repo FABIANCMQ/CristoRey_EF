@@ -4,12 +4,13 @@
  */
 package PanelesAdministrador;
 
-import cristorey_ef.Administrador;
-import cristorey_ef.Gerente;
-import cristorey_ef.Usuario;
+import Conexion.ConexionBD;
 import cristorey_ef.UsuarioControlador;
 import java.awt.Color;
-import java.util.List;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -25,28 +26,40 @@ public class GestionarAccesos extends javax.swing.JPanel {
     private UsuarioControlador uc;
     public GestionarAccesos(UsuarioControlador uc) {
         initComponents();
+
         this.uc = uc;
+
         tblUsuarios.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 seleccionUsuario();
             }
         });
+
         tblUsuarios.getTableHeader().setBackground(new java.awt.Color(255, 170, 44));
         tblUsuarios.getTableHeader().setForeground(java.awt.Color.WHITE);
-        tblUsuarios.getTableHeader().setDefaultRenderer(new javax.swing.table.DefaultTableCellRenderer(){
+        tblUsuarios.getTableHeader().setDefaultRenderer(new javax.swing.table.DefaultTableCellRenderer() {
             @Override
-            public java.awt.Component getTableCellRendererComponent(javax.swing.JTable table, Object value,
-                    boolean isSelected, boolean hasFocus, int row, int column) {
+            public java.awt.Component getTableCellRendererComponent(
+                    javax.swing.JTable table,
+                    Object value,
+                    boolean isSelected,
+                    boolean hasFocus,
+                    int row,
+                    int column) {
+
                 javax.swing.JLabel c = (javax.swing.JLabel) super.getTableCellRendererComponent(
                         table, value, isSelected, hasFocus, row, column);
+
                 c.setBackground(table.getTableHeader().getBackground());
                 c.setForeground(table.getTableHeader().getForeground());
                 c.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-                c.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 1, java.awt.Color.LIGHT_GRAY));
+                c.setBorder(javax.swing.BorderFactory.createMatteBorder(
+                        0, 0, 1, 1, java.awt.Color.LIGHT_GRAY));
 
                 return c;
             }
         });
+
         cargarTabla();
     }
 
@@ -54,46 +67,75 @@ public class GestionarAccesos extends javax.swing.JPanel {
         DefaultTableModel modelo = (DefaultTableModel) tblUsuarios.getModel();
         modelo.setRowCount(0);
 
-        List<Usuario> lista = uc.getUsuario();
-        for (int i = 0; i < lista.size(); i++) {
-            Usuario u = lista.get(i);
-            String estado;
-            if (u.isBloqueado()) {
-                estado = "Bloqueado";
-            } else {
-                estado = "Activo";
+        try (Connection con = ConexionBD.conectar()) {
+
+            if (con == null) {
+                JOptionPane.showMessageDialog(this,
+                        "No se pudo conectar a la base de datos.",
+                        "Error de conexión",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
             }
 
-            modelo.addRow(new Object[]{
-                u.getCodigo_usuario(),
-                u.getNombre(),
-                u.getCorreo(),
-                u.getCargo(),
-                estado
-            });
+            try (Statement st = con.createStatement();
+                 ResultSet rs = st.executeQuery(
+                         "SELECT codigo_usuario, nombre, correo, cargo, bloqueado "
+                         + "FROM usuario "
+                         + "ORDER BY codigo_usuario"
+                 )) {
+
+                while (rs.next()) {
+
+                    String codigo = rs.getString("codigo_usuario");
+                    String nombre = rs.getString("nombre");
+                    String correo = rs.getString("correo");
+                    String cargo = rs.getString("cargo");
+                    boolean bloqueado = rs.getBoolean("bloqueado");
+
+                    String estado;
+
+                    if (bloqueado) {
+                        estado = "Bloqueado";
+                    } else {
+                        estado = "Activo";
+                    }
+
+                    modelo.addRow(new Object[]{
+                        codigo,
+                        nombre,
+                        correo,
+                        cargo,
+                        estado
+                    });
+                }
+            }
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this,
+                    "Error al cargar usuarios desde la base de datos:\n" + ex.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
     private void seleccionUsuario() {
         int fila = tblUsuarios.getSelectedRow();
+
         if (fila < 0) {
             btnBloquear.setEnabled(false);
             return;
         }
 
-        Usuario u = uc.getUsuario().get(fila);
+        DefaultTableModel modelo = (DefaultTableModel) tblUsuarios.getModel();
 
-        lblUsuario.setText(u.getNombre());
-        lblCargo.setText(u.getCargo());
-        
-        if (u instanceof Administrador) {
-            lblEstado.setText("Protegido");
-            lblEstado.setForeground(new Color(100, 100, 100));
-            btnBloquear.setText("No disponible");
-            btnBloquear.setEnabled(false);
-            return;
-        }
-        
-        if (u instanceof Gerente) {
+        String codigo = modelo.getValueAt(fila, 0).toString();
+        String nombre = modelo.getValueAt(fila, 1).toString();
+        String cargo = modelo.getValueAt(fila, 3).toString();
+        String estado = modelo.getValueAt(fila, 4).toString();
+
+        lblUsuario.setText(nombre);
+        lblCargo.setText(cargo);
+
+        if (esUsuarioProtegido(codigo, cargo)) {
             lblEstado.setText("Protegido");
             lblEstado.setForeground(new Color(100, 100, 100));
             btnBloquear.setText("No disponible");
@@ -101,7 +143,7 @@ public class GestionarAccesos extends javax.swing.JPanel {
             return;
         }
 
-        if (u.isBloqueado()) {
+        if (estado.equals("Bloqueado")) {
             lblEstado.setText("Bloqueado");
             lblEstado.setForeground(new Color(180, 30, 30));
             btnBloquear.setText("Desbloquear");
@@ -112,8 +154,24 @@ public class GestionarAccesos extends javax.swing.JPanel {
             btnBloquear.setText("Bloquear");
             btnBloquear.setBackground(new Color(180, 30, 30));
         }
+
         btnBloquear.setEnabled(true);
     }
+    private boolean esUsuarioProtegido(String codigo, String cargo) {
+
+        if (codigo == null || cargo == null) {
+            return false;
+        }
+
+        String codigoMayus = codigo.toUpperCase();
+        String cargoMayus = cargo.toUpperCase();
+
+        return codigoMayus.startsWith("ADM")
+                || codigoMayus.startsWith("GER")
+                || cargoMayus.equals("ADMINISTRADOR")
+                || cargoMayus.equals("GERENTE");
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -267,36 +325,86 @@ public class GestionarAccesos extends javax.swing.JPanel {
     private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
         // TODO add your handling code here:\
         cargarTabla();
-        lblUsuario.setText("–--");
-        lblCargo.setText("–--");
-        lblEstado.setText("--–");
+
+        lblUsuario.setText("---");
+        lblCargo.setText("---");
+        lblEstado.setText("---");
         lblEstado.setForeground(Color.GRAY);
+        btnBloquear.setText("Bloquear");
+        btnBloquear.setBackground(new Color(180, 30, 30));
         btnBloquear.setEnabled(false);
     }//GEN-LAST:event_btnActualizarActionPerformed
 
     private void btnBloquearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBloquearActionPerformed
         // TODO add your handling code here:
         int fila = tblUsuarios.getSelectedRow();
-        if (fila == -1) return;
 
-        Usuario u = uc.getUsuario().get(fila);
-        Administrador admin = new Administrador("","","", "","", "",0, null);
+        if (fila == -1) {
+            return;
+        }
 
-        if (u.isBloqueado()) {
-            admin.desbloquearUsuario(u);
+        DefaultTableModel modelo = (DefaultTableModel) tblUsuarios.getModel();
+
+        String codigo = modelo.getValueAt(fila, 0).toString();
+        String nombre = modelo.getValueAt(fila, 1).toString();
+        String cargo = modelo.getValueAt(fila, 3).toString();
+        String estadoActual = modelo.getValueAt(fila, 4).toString();
+
+        if (esUsuarioProtegido(codigo, cargo)) {
             JOptionPane.showMessageDialog(this,
-                u.getNombre() + " fue desbloqueado correctamente.",
-                "Acceso restaurado", JOptionPane.INFORMATION_MESSAGE);
-        } else {
-            admin.bloquearUsuario(u);
+                    "Este usuario está protegido y no puede ser bloqueado.",
+                    "Acción no permitida",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        boolean nuevoEstadoBloqueado = !estadoActual.equals("Bloqueado");
+
+        try (Connection con = ConexionBD.conectar()) {
+
+            if (con == null) {
+                JOptionPane.showMessageDialog(this,
+                        "No se pudo conectar a la base de datos.",
+                        "Error de conexión",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            try (PreparedStatement ps = con.prepareStatement(
+                    "UPDATE usuario SET bloqueado = ? WHERE codigo_usuario = ?"
+            )) {
+
+                ps.setBoolean(1, nuevoEstadoBloqueado);
+                ps.setString(2, codigo);
+                ps.executeUpdate();
+            }
+
+            if (nuevoEstadoBloqueado) {
+                JOptionPane.showMessageDialog(this,
+                        nombre + " fue bloqueado correctamente.",
+                        "Acceso bloqueado",
+                        JOptionPane.WARNING_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this,
+                        nombre + " fue desbloqueado correctamente.",
+                        "Acceso restaurado",
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
+
+        } catch (Exception ex) {
             JOptionPane.showMessageDialog(this,
-                u.getNombre() + " fue bloqueado correctamente.",
-                "Acceso bloqueado", JOptionPane.WARNING_MESSAGE);
+                    "Error al actualizar el acceso del usuario:\n" + ex.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
         }
 
         cargarTabla();
-        tblUsuarios.setRowSelectionInterval(fila, fila);
-        seleccionUsuario();     
+
+        if (fila < tblUsuarios.getRowCount()) {
+            tblUsuarios.setRowSelectionInterval(fila, fila);
+            seleccionUsuario();
+        } 
     }//GEN-LAST:event_btnBloquearActionPerformed
 
 

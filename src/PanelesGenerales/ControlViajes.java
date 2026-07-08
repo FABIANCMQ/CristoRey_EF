@@ -3,6 +3,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
 package PanelesGenerales;
+import Conexion.ConexionBD;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import javax.swing.JOptionPane;
 
 import cristorey_ef.PaqueteTuristico;
 import cristorey_ef.PaqueteTuristicoControlador;
@@ -19,53 +24,79 @@ public class ControlViajes extends javax.swing.JPanel {
      * Creates new form Tours
      */
     private PaqueteTuristicoControlador ptc;
-    private ArrayList<PaqueteTuristico> paquetes;
     
     public ControlViajes(PaqueteTuristicoControlador ptc) {
-        initComponents();
-        this.ptc = ptc;
-        this.paquetes = ptc.getPaquete();
-        
-        tblPaquetes.getTableHeader().setBackground(new java.awt.Color(255, 170, 44));
-        tblPaquetes.getTableHeader().setForeground(java.awt.Color.WHITE);
-        tblPaquetes.getTableHeader().setDefaultRenderer(new javax.swing.table.DefaultTableCellRenderer(){
-            @Override
-            public java.awt.Component getTableCellRendererComponent(javax.swing.JTable table, Object value,
-                    boolean isSelected, boolean hasFocus, int row, int column) {
-                javax.swing.JLabel c = (javax.swing.JLabel) super.getTableCellRendererComponent(
-                        table, value, isSelected, hasFocus, row, column);
-                c.setBackground(table.getTableHeader().getBackground());
-                c.setForeground(table.getTableHeader().getForeground());
-                c.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-                c.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 1, java.awt.Color.LIGHT_GRAY));
+    initComponents();
+    this.ptc = ptc;
 
-                return c;
-            }
-        });
-        cargarTabla();
-    }
+    tblPaquetes.getTableHeader().setBackground(new java.awt.Color(255, 170, 44));
+    tblPaquetes.getTableHeader().setForeground(java.awt.Color.WHITE);
+    tblPaquetes.getTableHeader().setDefaultRenderer(new javax.swing.table.DefaultTableCellRenderer(){
+        @Override
+        public java.awt.Component getTableCellRendererComponent(javax.swing.JTable table, Object value,
+                boolean isSelected, boolean hasFocus, int row, int column) {
+            javax.swing.JLabel c = (javax.swing.JLabel) super.getTableCellRendererComponent(
+                    table, value, isSelected, hasFocus, row, column);
+            c.setBackground(table.getTableHeader().getBackground());
+            c.setForeground(table.getTableHeader().getForeground());
+            c.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+            c.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 1, java.awt.Color.LIGHT_GRAY));
+
+            return c;
+        }
+    });
+    cargarTabla();
+}
+   
     
     private void cargarTabla() {
+        
         DefaultTableModel modelo = (DefaultTableModel) tblPaquetes.getModel();
         modelo.setRowCount(0);
-        int totalPasajeros = 0;
-        
-        for (PaqueteTuristico p : paquetes) {
-            int inscritos = p.getCupos_maximos() - p.getCupos_disponibles();
-            totalPasajeros += inscritos;
 
-             modelo.addRow(new Object[]{
-                p.getNombre_paquete(),
-                p.getHorario(),
-                inscritos,
-                p.getCupos_maximos(),
-                p.getCupos_disponibles(),
-                String.format("%.1f %%", p.porcentajeOcupacion()),
-                p.getCosto()
-            });    
+    try (Connection con = ConexionBD.conectar()) {
+
+        if (con == null) {
+            JOptionPane.showMessageDialog(this,
+                    "No se pudo conectar a la base de datos.",
+                    "Error de conexión", JOptionPane.ERROR_MESSAGE);
+            return;
         }
-    }
 
+        Statement st = con.createStatement();
+        ResultSet rs = st.executeQuery(
+            "SELECT nombre_paquete, horario, cupos_maximos, cupos_disponibles, costo "
+            + "FROM PaqueteTuristico"
+        );
+
+        while (rs.next()) {
+            String nombre = rs.getString("nombre_paquete");
+            String horario = rs.getString("horario");
+            int cuposMax = rs.getInt("cupos_maximos");
+            int cuposDisp = rs.getInt("cupos_disponibles");
+            double costo = rs.getDouble("costo");
+
+            int inscritos = cuposMax - cuposDisp;
+            double porcentaje = cuposMax > 0 ? (inscritos * 100.0 / cuposMax) : 0;
+
+            modelo.addRow(new Object[]{
+                nombre,
+                horario,
+                inscritos,
+                cuposMax,
+                cuposDisp,
+                String.format("%.1f %%", porcentaje),
+                costo
+            });
+        }
+
+    } catch (Exception ex) {
+        JOptionPane.showMessageDialog(this,
+                "Error al cargar los paquetes desde la base de datos:\n" + ex.getMessage(),
+                "Error", JOptionPane.ERROR_MESSAGE);
+    }
+}
+      
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -102,9 +133,9 @@ public class ControlViajes extends javax.swing.JPanel {
                 "Paquete Turístico", "Horario", "Inscritos", "Cupos Máx.", "Disponibles", "%  Ocupado", "Precio"
             }
         ));
-        tblPaquetes.setMaximumSize(new java.awt.Dimension(30, 112));
-        tblPaquetes.setMinimumSize(new java.awt.Dimension(30, 112));
-        tblPaquetes.setPreferredSize(new java.awt.Dimension(30, 112));
+        tblPaquetes.setMaximumSize(new java.awt.Dimension(30, 350));
+        tblPaquetes.setMinimumSize(new java.awt.Dimension(30, 350));
+        tblPaquetes.setPreferredSize(new java.awt.Dimension(30, 350));
         tblPaquetes.setRowHeight(28);
         tblPaquetes.setShowHorizontalLines(true);
         tblPaquetes.setShowVerticalLines(true);
@@ -151,9 +182,9 @@ public class ControlViajes extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel17)
                     .addComponent(btnActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(43, 43, 43)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 274, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 289, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
     }// </editor-fold>//GEN-END:initComponents

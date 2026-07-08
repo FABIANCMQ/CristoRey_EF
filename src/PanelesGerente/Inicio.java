@@ -5,6 +5,11 @@
 package PanelesGerente;
 
 import PanelesPlanillero.*;
+import Conexion.ConexionBD;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import javax.swing.JOptionPane;
 import cristorey_ef.PaqueteTuristico;
 import cristorey_ef.PaqueteTuristicoControlador;
 import cristorey_ef.ReservaControlador;
@@ -240,19 +245,49 @@ public class Inicio extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void cargarReporteGeneral() {
-        
-        ArrayList<PaqueteTuristico> paquetes = ptc.getPaquete();
-        int totalInscritos = 0;
-        for (int i = 0; i < paquetes.size(); i++) {
-            PaqueteTuristico p = paquetes.get(i);
-            totalInscritos += p.contarPasajeros();
-        }
-        lblNumPasajeros.setText(String.valueOf(totalInscritos));
+            try (Connection con = ConexionBD.conectar()) {
 
-        double ganancias = rc.gananciasUltimoMes();
+        if (con == null) {
+            JOptionPane.showMessageDialog(this,
+                    "No se pudo conectar a la base de datos.",
+                    "Error de conexión", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // 1. Total de pasajeros registrados
+        Statement st = con.createStatement();
+        ResultSet rsPasajeros = st.executeQuery("SELECT COUNT(*) AS total FROM pasajero");
+
+        int totalPasajeros = 0;
+        if (rsPasajeros.next()) {
+            totalPasajeros = rsPasajeros.getInt("total");
+        }
+        lblNumPasajeros.setText(String.valueOf(totalPasajeros));
+
+        // 2. Ganancias del mes actual
+        Statement st2 = con.createStatement();
+        ResultSet rsGanancias = st2.executeQuery(
+            "SELECT ISNULL(SUM(precio_final), 0) AS total FROM Reserva "
+            + "WHERE estado = 'Activa' AND estado_aprobacion = 'Aprobada' "
+            + "AND MONTH(fecha_reserva) = MONTH(GETDATE()) "
+            + "AND YEAR(fecha_reserva) = YEAR(GETDATE())"
+        );
+
+        double ganancias = 0;
+        if (rsGanancias.next()) {
+            ganancias = rsGanancias.getDouble("total");
+        }
         lblGanancias.setFont(new java.awt.Font("Forte", 0, 22));
-        lblGanancias.setText("S/" + ganancias);
+        lblGanancias.setText(String.format("S/%.2f", ganancias));
+
+    } catch (Exception ex) {
+        JOptionPane.showMessageDialog(this,
+                "Error al cargar el reporte:\n" + ex.getMessage(),
+                "Error", JOptionPane.ERROR_MESSAGE);
     }
+}
+        
+       
     private void btnDatosAdminActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDatosAdminActionPerformed
         // TODO add your handling code here:
         VentanaPrincipal ventana =(VentanaPrincipal) SwingUtilities.getWindowAncestor(this);

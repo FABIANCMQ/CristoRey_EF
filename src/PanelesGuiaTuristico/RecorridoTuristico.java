@@ -5,20 +5,23 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
 package PanelesGuiaTuristico;
-
+import Conexion.ConexionBD;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import javax.swing.JOptionPane;
 import cristorey_ef.GuiaTuristico;
-import cristorey_ef.Pasajero;
 import cristorey_ef.PaqueteTuristico;
 import cristorey_ef.PaqueteTuristicoControlador;
-import cristorey_ef.Reserva;
 import cristorey_ef.ReservaControlador;
 import cristorey_ef.UsuarioControlador;
 import java.awt.Color;
 import java.awt.Component;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.JList;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
@@ -33,7 +36,8 @@ public class RecorridoTuristico extends javax.swing.JPanel {
     private final PaqueteTuristicoControlador ptc;
     private final SimpleDateFormat formatoHora = new SimpleDateFormat("HH:mm:ss");
     private GuiaTuristico guia;
-
+    private final Map<String, Integer> conteoInscritos = new HashMap<>();
+    
     public RecorridoTuristico(UsuarioControlador uc, PaqueteTuristicoControlador ptc, ReservaControlador rc) {
         initComponents();
         this.uc = uc;
@@ -92,86 +96,164 @@ public class RecorridoTuristico extends javax.swing.JPanel {
     }
 
     private PaqueteTuristico buscarPaqueteAsignado() {
-        if (guia == null) {
+    if (guia == null) {
         return null;
-        }
-        String recorrido = guia.getRecorrido_asignado();
-        if (recorrido == null || recorrido.isEmpty()) {
+    }
+    String recorrido = guia.getRecorrido_asignado();
+    if (recorrido == null || recorrido.isEmpty()) {
+        return null;
+    }
+
+    try (Connection con = ConexionBD.conectar()) {
+        if (con == null) {
             return null;
         }
-        for (PaqueteTuristico paquete : ptc.getPaquete()) {
-            if (paquete.getNombre_paquete().equalsIgnoreCase(recorrido)
-                    || paquete.getCodigo_paquete().equalsIgnoreCase(recorrido)) {
-                return paquete;
-            }
+
+        PreparedStatement ps = con.prepareStatement(
+            "SELECT codigo_paquete, nombre_paquete, destino, costo, horario, cupos_maximos, cupos_disponibles "
+            + "FROM PaqueteTuristico WHERE codigo_paquete = ? OR nombre_paquete = ?"
+        );
+        ps.setString(1, recorrido);
+        ps.setString(2, recorrido);
+
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            return new PaqueteTuristico(
+                rs.getString("nombre_paquete"),
+                rs.getString("codigo_paquete"),
+                rs.getString("destino"),
+                rs.getDouble("costo"),
+                rs.getString("horario"),
+                rs.getInt("cupos_maximos"),
+                rs.getInt("cupos_disponibles")
+            );
         }
-        return null;
+
+    } catch (Exception ex) {
+        System.out.println("Error al buscar el paquete asignado: " + ex.getMessage());
     }
-    
-    private List<Pasajero> pasajerosAprobados(PaqueteTuristico paquete) {
-        List<Pasajero> aprobados = new ArrayList<>();
-        if (paquete == null) {
-            return aprobados;
-        }
-        List<Pasajero> listaPasajeros = paquete.getListaPasajeros();
-        for (int i = 0; i < listaPasajeros.size(); i++) {
-            Pasajero p = listaPasajeros.get(i);
-            Reserva reserva = rc.buscarReservaActiva(p.getDocumento().getNro_doc(), paquete.getCodigo_paquete());
-            if (reserva != null && reserva.getEstado_aprobacion().equalsIgnoreCase("Aprobada")) {
-                aprobados.add(p);
-            }
-        }
-        return aprobados;
-    }
+    return null;
+}
 
     private void cargarComboPaquetes() {
-        javax.swing.DefaultComboBoxModel<PaqueteTuristico> modelo = new javax.swing.DefaultComboBoxModel<>();
-        
-        List<PaqueteTuristico> listaPaquetes = ptc.getPaquete();
-        for (int i = 0; i < listaPaquetes.size(); i++) {
-            PaqueteTuristico paq = listaPaquetes.get(i);
-            modelo.addElement(paq);
-        }
-        
-        cbxPaqueteGuia.setModel(modelo);
-        
-        cbxPaqueteGuia.setRenderer(new javax.swing.DefaultListCellRenderer() {
-            @Override
-            public Component getListCellRendererComponent(JList<?> list, Object value, int index,
-                    boolean isSelected, boolean cellHasFocus) {
-                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                if (value instanceof PaqueteTuristico) {
-                    PaqueteTuristico paq = (PaqueteTuristico) value;
-                    setText(paq.getCodigo_paquete() + " - " + paq.getNombre_paquete()
-                        + " (" + pasajerosAprobados(paq).size() + " inscritos)");
-                }
-                return this;
-            }
-        });
-    }
+     javax.swing.DefaultComboBoxModel<PaqueteTuristico> modelo = new javax.swing.DefaultComboBoxModel<>();
+     conteoInscritos.clear();
 
-    private void cargarTabla(PaqueteTuristico paquete) {
-        DefaultTableModel modelo = (DefaultTableModel) tblPasajeros.getModel();
-        modelo.setRowCount(0);
+    try (Connection con = ConexionBD.conectar()) {
 
-        if (paquete == null) {
-            lblTotalInscritos.setText("Total inscritos: --");
+        if (con == null) {
+            JOptionPane.showMessageDialog(this,
+                    "No se pudo conectar a la base de datos.",
+                    "Error de conexión", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        List<Pasajero> lista = pasajerosAprobados(paquete);
-
-        for (int i = 0; i < lista.size(); i++) {
-            Pasajero p = lista.get(i);
-            modelo.addRow(new Object[]{
-                p.getDocumento().getNro_doc(),
-                p.unificarDatos(),
-                p.getTelefono()
-            });
+        Statement stConteo = con.createStatement();
+        ResultSet rsConteo = stConteo.executeQuery(
+            "SELECT codigo_paquete, COUNT(*) AS cantidad FROM Reserva "
+            + "WHERE estado = 'Activa' AND estado_aprobacion = 'Aprobada' "
+            + "GROUP BY codigo_paquete"
+        );
+        while (rsConteo.next()) {
+            conteoInscritos.put(rsConteo.getString("codigo_paquete"), rsConteo.getInt("cantidad"));
         }
-        lblTotalInscritos.setText("Total inscritos: " + lista.size()
-            + " / " + paquete.getCupos_maximos());
+
+        Statement st = con.createStatement();
+        ResultSet rs = st.executeQuery(
+            "SELECT codigo_paquete, nombre_paquete, destino, costo, horario, cupos_maximos, cupos_disponibles "
+            + "FROM PaqueteTuristico"
+        );
+
+        while (rs.next()) {
+            PaqueteTuristico paq = new PaqueteTuristico(
+                rs.getString("nombre_paquete"),
+                rs.getString("codigo_paquete"),
+                rs.getString("destino"),
+                rs.getDouble("costo"),
+                rs.getString("horario"),
+                rs.getInt("cupos_maximos"),
+                rs.getInt("cupos_disponibles")
+            );
+            modelo.addElement(paq);
+        }
+
+    } catch (Exception ex) {
+        JOptionPane.showMessageDialog(this,
+                "Error al cargar los paquetes:\n" + ex.getMessage(),
+                "Error", JOptionPane.ERROR_MESSAGE);
     }
+
+    cbxPaqueteGuia.setModel(modelo);
+
+    cbxPaqueteGuia.setRenderer(new javax.swing.DefaultListCellRenderer() {
+        @Override
+        public Component getListCellRendererComponent(JList<?> list, Object value, int index,
+                boolean isSelected, boolean cellHasFocus) {
+            super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            if (value instanceof PaqueteTuristico) {
+                PaqueteTuristico paq = (PaqueteTuristico) value;
+                int inscritos = conteoInscritos.getOrDefault(paq.getCodigo_paquete(), 0);
+                setText(paq.getCodigo_paquete() + " - " + paq.getNombre_paquete()
+                    + " (" + inscritos + " inscritos)");
+            }
+            return this;
+        }
+    });
+}
+          
+
+    private void cargarTabla(PaqueteTuristico paquete) {
+     DefaultTableModel modelo = (DefaultTableModel) tblPasajeros.getModel();
+     modelo.setRowCount(0);
+
+    if (paquete == null) {
+        lblTotalInscritos.setText("Total inscritos: --");
+        return;
+    }
+
+    int total = 0;
+
+    try (Connection con = ConexionBD.conectar()) {
+
+        if (con == null) {
+            JOptionPane.showMessageDialog(this,
+                    "No se pudo conectar a la base de datos.",
+                    "Error de conexión", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        PreparedStatement ps = con.prepareStatement(
+            "SELECT p.nro_doc, p.nombre, p.ap_paterno, p.ap_materno, p.telefono "
+            + "FROM Reserva r "
+            + "JOIN pasajero p ON r.nro_doc = p.nro_doc "
+            + "WHERE r.codigo_paquete = ? AND r.estado = 'Activa' AND r.estado_aprobacion = 'Aprobada'"
+        );
+        ps.setString(1, paquete.getCodigo_paquete());
+
+        ResultSet rs = ps.executeQuery();
+
+        while (rs.next()) {
+            String nombreCompleto = rs.getString("nombre") + " "
+                    + rs.getString("ap_paterno") + " " + rs.getString("ap_materno");
+
+            modelo.addRow(new Object[]{
+                rs.getString("nro_doc"),
+                nombreCompleto,
+                rs.getString("telefono")
+            });
+            total++;
+        }
+
+    } catch (Exception ex) {
+        JOptionPane.showMessageDialog(this,
+                "Error al cargar los pasajeros:\n" + ex.getMessage(),
+                "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
+    lblTotalInscritos.setText("Total inscritos: " + total
+        + " / " + paquete.getCupos_maximos());
+ }
+        
 
     private void registrarNotificacion(String mensaje) {
         String hora = formatoHora.format(new Date());

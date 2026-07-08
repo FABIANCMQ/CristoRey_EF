@@ -4,9 +4,12 @@
  */
 package PanelesAdministrador;
 
-import cristorey_ef.PaqueteTuristico;
+import Conexion.ConexionBD;
 import cristorey_ef.PaqueteTuristicoControlador;
-import java.util.ArrayList;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import javax.swing.JOptionPane;
 /**
  *
  * @author Usuario
@@ -17,39 +20,100 @@ public class ReporteDiario extends javax.swing.JPanel {
      * Creates new form Estadisticas
      */
     private PaqueteTuristicoControlador ptc;
+
     public ReporteDiario(PaqueteTuristicoControlador ptc) {
         initComponents();
         this.ptc = ptc;
         cargarDatos();
     }
+
     
     private void cargarDatos() {
-        ArrayList<PaqueteTuristico> paquetes = ptc.getPaquete();
+        try (Connection con = ConexionBD.conectar()) {
 
-        int totalInscritos     = 0;
-        double sumaOcupacion   = 0;
-        String nombrePopular   = "–--";
-        int maxInscritos       = -1;
-
-        for (int i = 0; i < paquetes.size(); i++) {
-            PaqueteTuristico p = paquetes.get(i);
-            int inscritos   = p.contarPasajeros();
-            double ocup     = p.porcentajeOcupacion();
-
-            totalInscritos += inscritos;
-            sumaOcupacion  += ocup;
-
-            if (inscritos > maxInscritos) {
-                maxInscritos   = inscritos;
-                nombrePopular  = p.getNombre_paquete();
+            if (con == null) {
+                JOptionPane.showMessageDialog(this,
+                        "No se pudo conectar a la base de datos.",
+                        "Error de conexión",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
             }
+
+            // 1. Total de pasajeros registrados en la base de datos
+            try (Statement st = con.createStatement();
+                 ResultSet rsTotal = st.executeQuery(
+                         "SELECT COUNT(*) AS total FROM pasajero"
+                 )) {
+
+                int totalPasajeros = 0;
+
+                if (rsTotal.next()) {
+                    totalPasajeros = rsTotal.getInt("total");
+                }
+
+                lblNumTotal.setText(String.valueOf(totalPasajeros));
+            }
+
+            // 2. Porcentaje promedio de ocupación de todos los paquetes turísticos
+            int cantidadPaquetes = 0;
+            double sumaOcupacion = 0;
+
+            try (Statement st2 = con.createStatement();
+                 ResultSet rsOcupacion = st2.executeQuery(
+                         "SELECT cupos_maximos, cupos_disponibles "
+                         + "FROM PaqueteTuristico"
+                 )) {
+
+                while (rsOcupacion.next()) {
+                    int cuposMaximos = rsOcupacion.getInt("cupos_maximos");
+                    int cuposDisponibles = rsOcupacion.getInt("cupos_disponibles");
+
+                    int inscritos = cuposMaximos - cuposDisponibles;
+
+                    double ocupacion = 0;
+
+                    if (cuposMaximos > 0) {
+                        ocupacion = (inscritos * 100.0) / cuposMaximos;
+                    }
+
+                    sumaOcupacion += ocupacion;
+                    cantidadPaquetes++;
+                }
+            }
+
+            double promedioOcupacion = 0;
+
+            if (cantidadPaquetes > 0) {
+                promedioOcupacion = sumaOcupacion / cantidadPaquetes;
+            }
+
+            lblNumPromedio.setText(String.format("%.1f%%", promedioOcupacion));
+
+            // 3. Paquete más popular según reservas activas
+            try (Statement st3 = con.createStatement();
+                 ResultSet rsPopular = st3.executeQuery(
+                         "SELECT TOP 1 pt.nombre_paquete, COUNT(*) AS cantidad "
+                         + "FROM Reserva r "
+                         + "INNER JOIN PaqueteTuristico pt "
+                         + "ON r.codigo_paquete = pt.codigo_paquete "
+                         + "WHERE r.estado = 'Activa' "
+                         + "GROUP BY pt.nombre_paquete "
+                         + "ORDER BY cantidad DESC"
+                 )) {
+
+                if (rsPopular.next()) {
+                    lblNomPopular.setText(rsPopular.getString("nombre_paquete"));
+                } else {
+                    lblNomPopular.setText("Sin datos");
+                }
+            }
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this,
+                    "Error al cargar el reporte diario desde la base de datos:\n" + ex.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
-
-        lblNumTotal.setText(String.valueOf(totalInscritos));
-        lblNomPopular.setText(nombrePopular);
-
-        double promedio = sumaOcupacion / paquetes.size();
-        lblNumPromedio.setText(String.valueOf("%"+ promedio));
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -261,6 +325,7 @@ public class ReporteDiario extends javax.swing.JPanel {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
+        
         cargarDatos();
     }//GEN-LAST:event_jButton1ActionPerformed
 

@@ -3,7 +3,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
 package PanelesGuiaTuristico;
-
+import Conexion.ConexionBD;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import javax.swing.JOptionPane;
 import cristorey_ef.GuiaTuristico;
 import cristorey_ef.PaqueteTuristico;
 import cristorey_ef.PaqueteTuristicoControlador;
@@ -40,40 +44,91 @@ public class Inicio extends javax.swing.JPanel {
     }
     
     private PaqueteTuristico buscarPaqueteAsignado() {
+        
         if (guia == null || !guia.tieneAsignacion()) {
-            return null;
-        }
-        String codigo = guia.getRecorrido_asignado();
-        for (PaqueteTuristico p : ptc.getPaquete()) {
-            if (p.getCodigo_paquete().equalsIgnoreCase(codigo)
-                    || p.getNombre_paquete().equalsIgnoreCase(codigo)) {
-                return p;
-            }
-        }
         return null;
     }
+    String codigo = guia.getRecorrido_asignado();
 
+    try (Connection con = ConexionBD.conectar()) {
+        if (con == null) {
+            return null;
+        }
+
+        PreparedStatement ps = con.prepareStatement(
+            "SELECT codigo_paquete, nombre_paquete, destino, costo, horario, cupos_maximos, cupos_disponibles "
+            + "FROM PaqueteTuristico WHERE codigo_paquete = ? OR nombre_paquete = ?"
+        );
+        ps.setString(1, codigo);
+        ps.setString(2, codigo);
+
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            return new PaqueteTuristico(
+                rs.getString("nombre_paquete"),
+                rs.getString("codigo_paquete"),
+                rs.getString("destino"),
+                rs.getDouble("costo"),
+                rs.getString("horario"),
+                rs.getInt("cupos_maximos"),
+                rs.getInt("cupos_disponibles")
+            );
+        }
+
+    } catch (Exception ex) {
+        System.out.println("Error al buscar el paquete asignado: " + ex.getMessage());
+    }
+    return null;
+}
+        
     private void cargarReporteGeneral() {
+        
+    PaqueteTuristico paqueteAsignado = buscarPaqueteAsignado();
 
-        PaqueteTuristico paqueteAsignado = buscarPaqueteAsignado();
+    lblAsignacion.setFont(new java.awt.Font("Rockwell", 0, 18));
 
-        lblAsignacion.setFont(new java.awt.Font("Rockwell", 0, 18));
+    if (paqueteAsignado != null) {
+        lblCuposTotales.setText(String.valueOf(paqueteAsignado.getCupos_maximos()));
+        lblAsignacion.setText(paqueteAsignado.getCodigo_paquete());
 
-        if (paqueteAsignado != null) {
-            lblCuposTotales.setText(String.valueOf(paqueteAsignado.getCupos_maximos()));
-            lblNumPasajeros.setText(String.valueOf(paqueteAsignado.contarPasajeros()));
-            lblAsignacion.setText(paqueteAsignado.getCodigo_paquete());
-        } else {
-            lblCuposTotales.setText("0");
-            lblNumPasajeros.setText("0");
-            if (guia != null && guia.tieneSolicitudPendiente()) {
-                lblAsignacion.setText("Pendiente");
+        try (Connection con = ConexionBD.conectar()) {
+
+            if (con == null) {
+                lblNumPasajeros.setText("0");
             } else {
-                lblAsignacion.setText("Sin asignar");
+                PreparedStatement ps = con.prepareStatement(
+                    "SELECT COUNT(*) AS total FROM Reserva "
+                    + "WHERE codigo_paquete = ? AND estado = 'Activa' AND estado_aprobacion = 'Aprobada'"
+                );
+                ps.setString(1, paqueteAsignado.getCodigo_paquete());
+
+                ResultSet rs = ps.executeQuery();
+                int totalPasajeros = 0;
+                if (rs.next()) {
+                    totalPasajeros = rs.getInt("total");
+                }
+                lblNumPasajeros.setText(String.valueOf(totalPasajeros));
             }
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this,
+                    "Error al cargar los pasajeros del tour:\n" + ex.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            lblNumPasajeros.setText("0");
+        }
+
+    } else {
+        lblCuposTotales.setText("0");
+        lblNumPasajeros.setText("0");
+        if (guia != null && guia.tieneSolicitudPendiente()) {
+            lblAsignacion.setText("Pendiente");
+        } else {
+            lblAsignacion.setText("Sin asignar");
         }
     }
+}
 
+       
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

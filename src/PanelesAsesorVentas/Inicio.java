@@ -3,7 +3,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
 package PanelesAsesorVentas;
-
+import Conexion.ConexionBD;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import javax.swing.JOptionPane;
 import cristorey_ef.GuiaTuristico;
 import cristorey_ef.PaqueteTuristico;
 import cristorey_ef.PaqueteTuristicoControlador;
@@ -288,31 +292,47 @@ public class Inicio extends javax.swing.JPanel {
 
     private void cargarReporteGeneral() {
         
-        ArrayList<PaqueteTuristico> paquetes = ptc.getPaquete();
-        int totalInscritos = 0;
-        for (int i = 0; i < paquetes.size(); i++) {
-            PaqueteTuristico p = paquetes.get(i);
-            totalInscritos += p.contarPasajeros();
+            try (Connection con = ConexionBD.conectar()) {
+
+        if (con == null) {
+            JOptionPane.showMessageDialog(this,
+                    "No se pudo conectar a la base de datos.",
+                    "Error de conexión", JOptionPane.ERROR_MESSAGE);
+        } else {
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery("SELECT COUNT(*) AS total FROM pasajero");
+
+            int totalPasajeros = 0;
+            if (rs.next()) {
+                totalPasajeros = rs.getInt("total");
+            }
+            lblNumPasajeros.setText(String.valueOf(totalPasajeros));
         }
-        lblNumPasajeros.setText(String.valueOf(totalInscritos));
 
-        int reservasPendientes = rc.reservasPendientesAprobacion().size();
-        lblReservasAprobar.setText(String.valueOf(reservasPendientes));
+    } catch (Exception ex) {
+        JOptionPane.showMessageDialog(this,
+                "Error al cargar el total de pasajeros:\n" + ex.getMessage(),
+                "Error", JOptionPane.ERROR_MESSAGE);
+    }
 
-        int totalGuias = 0;
-        int guiasAsignados = 0;
-        for (Usuario u : uc.getUsuario()) {
-            if (u instanceof GuiaTuristico) {
-                totalGuias++;
-                if (((GuiaTuristico) u).tieneAsignacion()) {
-                    guiasAsignados++;
-                }
+    // Reservas por aprobar (sigue igual, en memoria)
+    int reservasPendientes = rc.reservasPendientesAprobacion().size();
+    lblReservasAprobar.setText(String.valueOf(reservasPendientes));
+
+    // Guías asignados (sigue igual, en memoria)
+    int totalGuias = 0;
+    int guiasAsignados = 0;
+    for (Usuario u : uc.getUsuario()) {
+        if (u instanceof GuiaTuristico) {
+            totalGuias++;
+            if (((GuiaTuristico) u).tieneAsignacion()) {
+                guiasAsignados++;
             }
         }
-        lblGuiaAsigndos.setText(guiasAsignados + "/" + totalGuias);
-        
-        
     }
+    lblGuiaAsigndos.setText(guiasAsignados + "/" + totalGuias);
+}
+
     private void btnDatosAdminActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDatosAdminActionPerformed
         // TODO add your handling code here:
         VentanaPrincipal ventana =(VentanaPrincipal) SwingUtilities.getWindowAncestor(this);

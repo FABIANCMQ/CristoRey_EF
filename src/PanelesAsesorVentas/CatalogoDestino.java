@@ -4,6 +4,11 @@
  */
 package PanelesAsesorVentas;
 
+import Conexion.ConexionBD;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import cristorey_ef.AsesorVentas;
 import cristorey_ef.PaqueteTuristico;
 import cristorey_ef.PaqueteTuristicoControlador;
@@ -55,84 +60,150 @@ public class CatalogoDestino extends javax.swing.JPanel {
     }
     
     private void buscarTour() {
-        String destino = txtDestino.getText().trim();
+     String destino = txtDestino.getText().trim();
 
-        if (destino.isEmpty()) {
-            cargarTabla();
-            return;
-        }
-
-        ArrayList<PaqueteTuristico> encontrados = ptc.buscarDestino(destino);
-
-        DefaultTableModel modelo = (DefaultTableModel) tblCatalogo.getModel();
-        modelo.setRowCount(0);
-
-        if (encontrados.isEmpty()) {
-            JOptionPane.showMessageDialog(this,
-                    "No se encontró ningún destino con el nombre ingresado",
-                    "Destino no encontrado",
-                    JOptionPane.WARNING_MESSAGE);
-            lblResultados.setText("0 tour(s) encontrado(s)");
-            return;
-        }
-
-        for (int i = 0; i < encontrados.size(); i++) {
-            agregarFilaCatalogo(modelo, encontrados.get(i));
-        }
-        lblResultados.setText(encontrados.size() + " tour(s) encontrado(s)");
+    if (destino.isEmpty()) {
+        cargarTabla();
+        return;
     }
+
+    DefaultTableModel modelo = (DefaultTableModel) tblCatalogo.getModel();
+    modelo.setRowCount(0);
+    int total = 0;
+
+    try (Connection con = ConexionBD.conectar()) {
+
+        if (con == null) {
+            JOptionPane.showMessageDialog(this,
+                    "No se pudo conectar a la base de datos.",
+                    "Error de conexión", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        PreparedStatement ps = con.prepareStatement(
+            "SELECT codigo_paquete, nombre_paquete, destino, costo FROM PaqueteTuristico "
+            + "WHERE nombre_paquete LIKE ? OR destino LIKE ?"
+        );
+        ps.setString(1, "%" + destino + "%");
+        ps.setString(2, "%" + destino + "%");
+
+        ResultSet rs = ps.executeQuery();
+
+        while (rs.next()) {
+            modelo.addRow(new Object[]{
+                rs.getString("codigo_paquete"),
+                rs.getString("nombre_paquete"),
+                rs.getString("destino"),
+                "S/ " + rs.getDouble("costo")
+            });
+            total++;
+        }
+
+    } catch (Exception ex) {
+        JOptionPane.showMessageDialog(this,
+                "Error al buscar el destino:\n" + ex.getMessage(),
+                "Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    if (total == 0) {
+        JOptionPane.showMessageDialog(this,
+                "No se encontró ningún destino con el nombre ingresado",
+                "Destino no encontrado", JOptionPane.WARNING_MESSAGE);
+    }
+
+    lblResultados.setText(total + " tour(s) encontrado(s)");
+}
+        
 
     private void cargarTabla() {
-        DefaultTableModel modelo = (DefaultTableModel) tblCatalogo.getModel();
-        modelo.setRowCount(0);
-        ArrayList<PaqueteTuristico> paquetes = ptc.getPaquete();
-        for (int i = 0; i < paquetes.size(); i++) {
-            PaqueteTuristico pt = paquetes.get(i);
-            agregarFilaCatalogo(modelo, pt);
+     DefaultTableModel modelo = (DefaultTableModel) tblCatalogo.getModel();
+     modelo.setRowCount(0);
+     int total = 0;
+
+    try (Connection con = ConexionBD.conectar()) {
+
+        if (con == null) {
+            JOptionPane.showMessageDialog(this,
+                    "No se pudo conectar a la base de datos.",
+                    "Error de conexión", JOptionPane.ERROR_MESSAGE);
+            return;
         }
-        lblResultados.setText(paquetes.size() + " tour(s) encontrado(s)");
-        lblDisponibilidad.setText("Seleccione un paquete para ver su disponibilidad real de asientos.");
-        lblDisponibilidad.setForeground(new Color(102, 102, 102));
+
+        Statement st = con.createStatement();
+        ResultSet rs = st.executeQuery(
+            "SELECT codigo_paquete, nombre_paquete, destino, costo FROM PaqueteTuristico"
+        );
+
+        while (rs.next()) {
+            modelo.addRow(new Object[]{
+                rs.getString("codigo_paquete"),
+                rs.getString("nombre_paquete"),
+                rs.getString("destino"),
+                "S/ " + rs.getDouble("costo")
+            });
+            total++;
+        }
+
+    } catch (Exception ex) {
+        JOptionPane.showMessageDialog(this,
+                "Error al cargar el catálogo:\n" + ex.getMessage(),
+                "Error", JOptionPane.ERROR_MESSAGE);
     }
-    
-    private void agregarFilaCatalogo(DefaultTableModel modelo, PaqueteTuristico pt) {
-        modelo.addRow(new Object[]{
-            pt.getCodigo_paquete(),
-            pt.getNombre_paquete(),
-            pt.getDestino(),
-            "S/ " + pt.getCosto()
-        });
-    }
+
+    lblResultados.setText(total + " tour(s) encontrado(s)");
+    lblDisponibilidad.setText("Seleccione un paquete para ver su disponibilidad real de asientos.");
+    lblDisponibilidad.setForeground(new Color(102, 102, 102));
+}
+        
 
     private void seleccionPaquete() {
-        int fila = tblCatalogo.getSelectedRow();
-        if (fila < 0) {
+            int fila = tblCatalogo.getSelectedRow();
+    if (fila < 0) {
+        return;
+    }
+    String codigo = (String) tblCatalogo.getModel().getValueAt(fila, 0);
+
+    try (Connection con = ConexionBD.conectar()) {
+
+        if (con == null) {
+            lblDisponibilidad.setText("No se pudo conectar a la base de datos.");
+            lblDisponibilidad.setForeground(new Color(127, 16, 16));
             return;
         }
-        String codigo = (String) tblCatalogo.getModel().getValueAt(fila, 0);
-        PaqueteTuristico paquete = ptc.buscarCodigo(codigo);
 
-        if (paquete == null) {
+        PreparedStatement ps = con.prepareStatement(
+            "SELECT nombre_paquete, cupos_maximos, cupos_disponibles FROM PaqueteTuristico WHERE codigo_paquete = ?"
+        );
+        ps.setString(1, codigo);
+        ResultSet rs = ps.executeQuery();
+
+        if (rs.next()) {
+            String nombre = rs.getString("nombre_paquete");
+            int cuposMax = rs.getInt("cupos_maximos");
+            int cuposDisp = rs.getInt("cupos_disponibles");
+
+            String dispo = nombre + " Disponibilidad real: "
+                    + cuposDisp + " / " + cuposMax + " asientos";
+
+            boolean tieneCupos = cuposDisp > 0;
+            if (!tieneCupos) {
+                dispo = dispo + "  (SIN CUPOS)";
+            }
+
+            lblDisponibilidad.setText(dispo);
+            lblDisponibilidad.setForeground(tieneCupos ? new Color(27, 94, 32) : new Color(127, 16, 16));
+        } else {
             lblDisponibilidad.setText("No se pudo obtener la disponibilidad del paquete.");
             lblDisponibilidad.setForeground(new Color(127, 16, 16));
-            return;
         }
 
-        String dispo = paquete.getNombre_paquete() + " Disponibilidad real: " 
-                    + paquete.getCupos_disponibles() + " / " + paquete.getCupos_maximos() + " asientos";
-
-        if (!paquete.tieneCupos()) {
-            dispo = dispo + "  (SIN CUPOS)";
-        }
-
-        lblDisponibilidad.setText(dispo);
-        
-        if (paquete.tieneCupos()) {
-            lblDisponibilidad.setForeground(new Color(27, 94, 32));
-        } else {
-            lblDisponibilidad.setForeground(new Color(127, 16, 16));
-        }
+    } catch (Exception ex) {
+        lblDisponibilidad.setText("Error al consultar disponibilidad: " + ex.getMessage());
+        lblDisponibilidad.setForeground(new Color(127, 16, 16));
     }
+}
+        
 
     /**
      * This method is called from within the constructor to initialize the form.

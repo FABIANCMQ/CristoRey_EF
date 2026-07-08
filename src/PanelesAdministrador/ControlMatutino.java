@@ -4,15 +4,17 @@
  */
 package PanelesAdministrador;
 
-import cristorey_ef.Documento;
-import cristorey_ef.PaqueteTuristico;
+import Conexion.ConexionBD;
 import cristorey_ef.PaqueteTuristicoControlador;
-import cristorey_ef.Pasajero;
 import java.awt.Color;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
 import javax.swing.border.LineBorder;
 
 
@@ -27,16 +29,21 @@ public class ControlMatutino extends javax.swing.JPanel {
      */
     DefaultListModel<String> modeloLista = new DefaultListModel<>();
     private PaqueteTuristicoControlador ptc;
+
     public ControlMatutino(PaqueteTuristicoControlador ptc) {
         initComponents();
+
         this.ptc = ptc;
+
         modeloLista.addElement("Lista de documentos vencidos");
         listDocsVencidos.setModel(modeloLista);
-        lblAlerta.setVisible(false);
-        lblFecha.setText(LocalDate.now().format(DateTimeFormatter.ofPattern("EEEE, dd 'de' MMMM 'de' yyyy")));
-    }
-    
 
+        lblAlerta.setVisible(false);
+
+        lblFecha.setText(LocalDate.now().format(
+                DateTimeFormatter.ofPattern("EEEE, dd 'de' MMMM 'de' yyyy")
+        ));
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -319,49 +326,97 @@ public class ControlMatutino extends javax.swing.JPanel {
     private void btnCargarReporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCargarReporteActionPerformed
         // TODO add your handling code here:
         cargarReporte();
+       
     }//GEN-LAST:event_btnCargarReporteActionPerformed
 
     private void cargarReporte() {
-        ArrayList<PaqueteTuristico> paquetes = ptc.getPaquete();
-        
-        ArrayList<String> numDocsVencidos = new ArrayList();
+        ArrayList<String> numDocsVencidos = new ArrayList<>();
 
-        int totalPasajeros = 0;
-        int docsVencidos   = 0;
+        try (Connection con = ConexionBD.conectar()) {
 
-        for (int i = 0; i < paquetes.size(); i++) {
-            PaqueteTuristico p = paquetes.get(i);
-            int inscritos = p.getCupos_maximos() - p.getCupos_disponibles();
-            totalPasajeros += inscritos;
+            if (con == null) {
+                JOptionPane.showMessageDialog(this,
+                        "No se pudo conectar a la base de datos.",
+                        "Error de conexión",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
 
-            for (Pasajero pas : p.getListaPasajeros()) {
-                Documento doc = pas.getDocumento();
-                if (!doc.documentoVigente()) {
-                    docsVencidos++;
-                    
-                    numDocsVencidos.add(doc.getNro_doc());
+            try (Statement st = con.createStatement();
+                 ResultSet rsPasajeros = st.executeQuery(
+                         "SELECT COUNT(*) AS total FROM pasajero"
+                 )) {
+
+                int totalPasajeros = 0;
+
+                if (rsPasajeros.next()) {
+                    totalPasajeros = rsPasajeros.getInt("total");
+                }
+
+                lblNumPasajeros.setText(String.valueOf(totalPasajeros));
+            }
+
+            try (Statement st2 = con.createStatement();
+                 ResultSet rsViajes = st2.executeQuery(
+                         "SELECT COUNT(*) AS total FROM Reserva "
+                         + "WHERE estado = 'Activa' "
+                         + "AND fecha_reserva = CAST(GETDATE() AS DATE)"
+                 )) {
+
+                int viajesHoy = 0;
+
+                if (rsViajes.next()) {
+                    viajesHoy = rsViajes.getInt("total");
+                }
+
+                lblNumViajes.setText(String.valueOf(viajesHoy));
+            }
+
+            try (Statement st3 = con.createStatement();
+                 ResultSet rsVencidos = st3.executeQuery(
+                         "SELECT nro_doc FROM documento "
+                         + "WHERE fecha_vencimiento < CAST(GETDATE() AS DATE)"
+                 )) {
+
+                while (rsVencidos.next()) {
+                    numDocsVencidos.add(rsVencidos.getString("nro_doc"));
                 }
             }
-        }
 
-        lblNumPasajeros.setText(String.valueOf(totalPasajeros));
-        lblNumViajes.setText(String.valueOf(paquetes.size()));
-        lblNumVencidos.setText(String.valueOf(docsVencidos));
+            int docsVencidos = numDocsVencidos.size();
 
-        lblAlerta.setVisible(docsVencidos > 0);
-        
-        modeloLista.clear();
-        
-        if (numDocsVencidos.isEmpty()) {
-            modeloLista.addElement("No hay documentos vencidos :)");
-        } else {
-            for (String numeroDoc : numDocsVencidos) {
-                modeloLista.addElement(numeroDoc);
+            lblNumVencidos.setText(String.valueOf(docsVencidos));
+            lblAlerta.setVisible(docsVencidos > 0);
+
+            modeloLista.clear();
+
+            if (numDocsVencidos.isEmpty()) {
+                modeloLista.addElement("No hay documentos vencidos :)");
+                limpiarBordeLista();
+            } else {
+                for (String numeroDoc : numDocsVencidos) {
+                    modeloLista.addElement(numeroDoc);
+                }
+
+                ((javax.swing.JComponent) listDocsVencidos.getParent().getParent())
+                        .setBorder(new LineBorder(Color.RED, 2));
             }
-            ((javax.swing.JComponent) listDocsVencidos.getParent().getParent())
-                .setBorder(new LineBorder(Color.RED, 2));
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this,
+                    "Error al cargar el reporte matutino: " + ex.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
-        
+    }
+    
+    private void limpiarBordeLista() {
+        try {
+            ((javax.swing.JComponent) listDocsVencidos.getParent().getParent())
+                    .setBorder(null);
+        } catch (Exception e) {
+            System.out.println("No se pudo limpiar el borde de la lista.");
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

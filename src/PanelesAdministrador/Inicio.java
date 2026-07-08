@@ -3,7 +3,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
 package PanelesAdministrador;
-
+import Conexion.ConexionBD;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import javax.swing.JOptionPane;
 import cristorey_ef.PaqueteTuristico;
 import cristorey_ef.PaqueteTuristicoControlador;
 import cristorey_ef.ReservaControlador;
@@ -34,29 +38,81 @@ public class Inicio extends javax.swing.JPanel {
     
     private void cargarReporteGeneral() {
         
-        ArrayList<PaqueteTuristico> paquetes = ptc.getPaquete();
-        String nombrePopular   = "–--";
-        int maxInscritos       = -1;
-        int totalInscritos     = 0;
-        for (int i = 0; i < paquetes.size(); i++) {
-            PaqueteTuristico p = paquetes.get(i);
-            int inscritos   = p.contarPasajeros();
-            totalInscritos += inscritos;
-             if (inscritos > maxInscritos) {
-                maxInscritos   = inscritos;
-                nombrePopular  = p.getNombre_paquete();
+            try (Connection con = ConexionBD.conectar()) {
+
+        if (con == null) {
+            JOptionPane.showMessageDialog(this,
+                    "No se pudo conectar a la base de datos.",
+                    "Error de conexión", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Total de pasajeros 
+        try (Statement st = con.createStatement();
+             ResultSet rsPasajeros = st.executeQuery("SELECT COUNT(*) AS total FROM pasajero")) {
+
+            int totalPasajeros = 0;
+            if (rsPasajeros.next()) {
+                totalPasajeros = rsPasajeros.getInt("total");
+            }
+            lblNumPasajeros.setText(String.valueOf(totalPasajeros));
+        }
+
+        //  Ganancias del mes 
+        try (Statement st2 = con.createStatement();
+             ResultSet rsGanancias = st2.executeQuery(
+                 "SELECT ISNULL(SUM(precio_final), 0) AS total FROM Reserva "
+                 + "WHERE estado = 'Activa' "
+                 + "AND MONTH(fecha_reserva) = MONTH(GETDATE()) "
+                 + "AND YEAR(fecha_reserva) = YEAR(GETDATE())"
+             )) {
+
+            double ganancias = 0;
+            if (rsGanancias.next()) {
+                ganancias = rsGanancias.getDouble("total");
+            }
+            lblGanancias.setText(String.format("S/%.2f", ganancias));
+        }
+
+        //  Viajes del día 
+        try (Statement st3 = con.createStatement();
+             ResultSet rsViajes = st3.executeQuery(
+                 "SELECT COUNT(*) AS total FROM Reserva "
+                 + "WHERE estado = 'Activa' AND fecha_reserva = CAST(GETDATE() AS DATE)"
+             )) {
+
+            int viajesHoy = 0;
+            if (rsViajes.next()) {
+                viajesHoy = rsViajes.getInt("total");
+            }
+            lblNumViajes.setText(String.valueOf(viajesHoy));
+        }
+
+        // 4. Paquete más popular (histórico, todas las reservas)
+        try (Statement st4 = con.createStatement();
+             ResultSet rsPopular = st4.executeQuery(
+                 "SELECT TOP 1 pt.nombre_paquete, COUNT(*) AS cantidad "
+                 + "FROM Reserva r "
+                 + "INNER JOIN PaqueteTuristico pt ON r.codigo_paquete = pt.codigo_paquete "
+                 + "WHERE r.estado = 'Activa' "
+                 + "GROUP BY pt.nombre_paquete "
+                 + "ORDER BY cantidad DESC"
+             )) {
+
+            if (rsPopular.next()) {
+                lblNomPopular.setText(rsPopular.getString("nombre_paquete"));
+            } else {
+                lblNomPopular.setText("Sin datos");
             }
         }
-        lblNumPasajeros.setText(String.valueOf(totalInscritos));
-        
-        double ganancias = rc.gananciasUltimoMes();
-        lblGanancias.setText(String.valueOf("S/"+ ganancias));
-        
-        lblNumViajes.setText(String.valueOf(paquetes.size()));
-        
-        lblNomPopular.setText(nombrePopular);
-    }
 
+    } catch (Exception ex) {
+        JOptionPane.showMessageDialog(this,
+                "Error al cargar el resumen de inicio:\n" + ex.getMessage(),
+                "Error", JOptionPane.ERROR_MESSAGE);
+    }
+}
+        
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

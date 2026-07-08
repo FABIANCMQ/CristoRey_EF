@@ -4,6 +4,11 @@
  */
 package PanelesGerente;
 
+import Conexion.ConexionBD;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import cristorey_ef.PaqueteTuristico;
 import cristorey_ef.PaqueteTuristicoControlador;
 import java.awt.Component;
@@ -51,71 +56,153 @@ public class Tarifas extends javax.swing.JPanel {
     }
     
     private void cargarTabla() {
-        DefaultTableModel modelo = (DefaultTableModel) tblPaquetes.getModel();
-        modelo.setRowCount(0);
-        
-        for (PaqueteTuristico p : paquetes) {
-            int inscritos = p.getCupos_maximos() - p.getCupos_disponibles();
+            DefaultTableModel modelo = (DefaultTableModel) tblPaquetes.getModel();
+    modelo.setRowCount(0);
 
-             modelo.addRow(new Object[]{
-                p.getNombre_paquete(),
-                p.getHorario(),
-                p.getCupos_maximos(),
-                p.getCosto()
-            });    
+    try (Connection con = ConexionBD.conectar()) {
+
+        if (con == null) {
+            JOptionPane.showMessageDialog(this,
+                    "No se pudo conectar a la base de datos.",
+                    "Error de conexión", JOptionPane.ERROR_MESSAGE);
+            return;
         }
+
+        Statement st = con.createStatement();
+        ResultSet rs = st.executeQuery(
+            "SELECT codigo_paquete, nombre_paquete, horario, cupos_maximos, costo FROM PaqueteTuristico"
+        );
+
+        while (rs.next()) {
+            modelo.addRow(new Object[]{
+                rs.getString("codigo_paquete"),
+                rs.getString("nombre_paquete"),
+                rs.getString("horario"),
+                rs.getInt("cupos_maximos"),
+                rs.getDouble("costo")
+            });
+        }
+
+    } catch (Exception ex) {
+        JOptionPane.showMessageDialog(this,
+                "Error al cargar las tarifas:\n" + ex.getMessage(),
+                "Error", JOptionPane.ERROR_MESSAGE);
     }
+}
+        
+       
     
     private void cargarPaquetes() {
-        javax.swing.DefaultComboBoxModel<PaqueteTuristico> modelo = new javax.swing.DefaultComboBoxModel<>();
-        for (PaqueteTuristico paq : ptc.getPaquete()) {
+            javax.swing.DefaultComboBoxModel<PaqueteTuristico> modelo = new javax.swing.DefaultComboBoxModel<>();
+
+    try (Connection con = ConexionBD.conectar()) {
+
+        if (con == null) {
+            return;
+        }
+
+        Statement st = con.createStatement();
+        ResultSet rs = st.executeQuery(
+            "SELECT codigo_paquete, nombre_paquete, destino, costo, horario, cupos_maximos, cupos_disponibles "
+            + "FROM PaqueteTuristico"
+        );
+
+        while (rs.next()) {
+            PaqueteTuristico paq = new PaqueteTuristico(
+                rs.getString("nombre_paquete"),
+                rs.getString("codigo_paquete"),
+                rs.getString("destino"),
+                rs.getDouble("costo"),
+                rs.getString("horario"),
+                rs.getInt("cupos_maximos"),
+                rs.getInt("cupos_disponibles")
+            );
             modelo.addElement(paq);
         }
-        cbxPaquete.setModel(modelo);
-        cbxPaquete.setRenderer(new DefaultListCellRenderer() {
-            @Override
-            public Component getListCellRendererComponent(JList<?> list, Object value, int index,
-                    boolean isSelected, boolean cellHasFocus) {
-                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                if (value instanceof PaqueteTuristico) {
-                    PaqueteTuristico paq = (PaqueteTuristico) value;
-                    setText(paq.getCodigo_paquete() + " - " + paq.getNombre_paquete()
-                            + " (" + paq.getHorario() + ")");
-                }
-                return this;
-            }
-        });
+
+    } catch (Exception ex) {
+        JOptionPane.showMessageDialog(this,
+                "Error al cargar los paquetes:\n" + ex.getMessage(),
+                "Error", JOptionPane.ERROR_MESSAGE);
     }
 
-    private void mostrarCostoActual() {
-        PaqueteTuristico paquete = (PaqueteTuristico) cbxPaquete.getSelectedItem(); 
-        if (paquete == null) {
-            lblCostoActual.setText("S/---");
-            return;
+    cbxPaquete.setModel(modelo);
+    cbxPaquete.setRenderer(new DefaultListCellRenderer() {
+        @Override
+        public Component getListCellRendererComponent(JList<?> list, Object value, int index,
+                boolean isSelected, boolean cellHasFocus) {
+            super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            if (value instanceof PaqueteTuristico) {
+                PaqueteTuristico paq = (PaqueteTuristico) value;
+                setText(paq.getCodigo_paquete() + " - " + paq.getNombre_paquete()
+                        + " (" + paq.getHorario() + ")");
+            }
+            return this;
         }
+    });
+
+    mostrarCostoActual();
+}
+        
+      
+    private void mostrarCostoActual() {
+            PaqueteTuristico paquete = (PaqueteTuristico) cbxPaquete.getSelectedItem();
+    if (paquete == null) {
+        lblCostoActual.setText("S/---");
+        return;
     }
+    lblCostoActual.setText(String.format("S/%.2f", paquete.getCosto()));
+}
+        
 
     private void aplicarTarifa() {
-        PaqueteTuristico paquete = (PaqueteTuristico) cbxPaquete.getSelectedItem();
-        double nuevoPrecio;
-        if (paquete == null) {
-            JOptionPane.showMessageDialog(this, "Seleccione un paquete turístico.",
-                    "Dato incompleto", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        try {
-            nuevoPrecio = Double.parseDouble(txtPrecioNuevo.getText().trim());
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "Ingrese un precio numérico válido",
-                    "Dato inválido", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        
-        ptc.actualizarTarifa(paquete.getCodigo_paquete(), nuevoPrecio);
-        JOptionPane.showMessageDialog(this, "Tarifa actualizada. Nuevo precio: S/" + paquete.getCosto());
-        mostrarCostoActual();
+            PaqueteTuristico paquete = (PaqueteTuristico) cbxPaquete.getSelectedItem();
+    double nuevoPrecio;
+
+    if (paquete == null) {
+        JOptionPane.showMessageDialog(this, "Seleccione un paquete turístico.",
+                "Dato incompleto", JOptionPane.WARNING_MESSAGE);
+        return;
+    }
+    try {
+        nuevoPrecio = Double.parseDouble(txtPrecioNuevo.getText().trim());
+    } catch (NumberFormatException ex) {
+        JOptionPane.showMessageDialog(this, "Ingrese un precio numérico válido",
+                "Dato inválido", JOptionPane.WARNING_MESSAGE);
+        return;
     }
 
+    try (Connection con = ConexionBD.conectar()) {
+
+        if (con == null) {
+            JOptionPane.showMessageDialog(this,
+                    "No se pudo conectar a la base de datos.",
+                    "Error de conexión", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        PreparedStatement ps = con.prepareStatement(
+            "UPDATE PaqueteTuristico SET costo = ? WHERE codigo_paquete = ?"
+        );
+        ps.setDouble(1, nuevoPrecio);
+        ps.setString(2, paquete.getCodigo_paquete());
+        ps.executeUpdate();
+
+        paquete.setCosto(nuevoPrecio);
+
+        JOptionPane.showMessageDialog(this, "Tarifa actualizada. Nuevo precio: S/" + paquete.getCosto());
+
+        mostrarCostoActual();
+        cargarTabla();
+
+    } catch (Exception ex) {
+        JOptionPane.showMessageDialog(this,
+                "Error al actualizar la tarifa:\n" + ex.getMessage(),
+                "Error", JOptionPane.ERROR_MESSAGE);
+    }
+}
+        
+    
     /**
      * This method is called from within the constructor to initialize the
      * form. WARNING: Do NOT modify this code. The content of this method is
@@ -160,9 +247,9 @@ public class Tarifas extends javax.swing.JPanel {
                 "Código", "Paquete Turístico", "Horario", "Cupos Máx.", "Precio"
             }
         ));
-        tblPaquetes.setMaximumSize(new java.awt.Dimension(30, 112));
-        tblPaquetes.setMinimumSize(new java.awt.Dimension(30, 112));
-        tblPaquetes.setPreferredSize(new java.awt.Dimension(30, 112));
+        tblPaquetes.setMaximumSize(new java.awt.Dimension(30, 350));
+        tblPaquetes.setMinimumSize(new java.awt.Dimension(30, 350));
+        tblPaquetes.setPreferredSize(new java.awt.Dimension(30, 350));
         tblPaquetes.setRowHeight(28);
         tblPaquetes.setShowHorizontalLines(true);
         tblPaquetes.setShowVerticalLines(true);

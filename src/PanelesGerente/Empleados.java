@@ -3,7 +3,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
 package PanelesGerente;
-
+import Conexion.ConexionBD;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import cristorey_ef.Usuario;
 import cristorey_ef.UsuarioControlador;
 import java.util.List;
@@ -50,59 +54,108 @@ public class Empleados extends javax.swing.JPanel {
     }
     
     private void cargarTabla() {
-        DefaultTableModel modelo = (DefaultTableModel) tblEmpleados.getModel();
-        modelo.setRowCount(0);
+            DefaultTableModel modelo = (DefaultTableModel) tblEmpleados.getModel();
+    modelo.setRowCount(0);
 
-        List<Usuario> lista = uc.getUsuario();
-        for (int i = 0; i < lista.size(); i++) {
-            Usuario u = lista.get(i);
+    try (Connection con = ConexionBD.conectar()) {
 
+        if (con == null) {
+            JOptionPane.showMessageDialog(this,
+                    "No se pudo conectar a la base de datos.",
+                    "Error de conexión", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        Statement st = con.createStatement();
+        ResultSet rs = st.executeQuery(
+            "SELECT codigo_usuario, nombre, correo, cargo, sueldo FROM usuario"
+        );
+
+        while (rs.next()) {
             modelo.addRow(new Object[]{
-                u.getCodigo_usuario(),
-                u.getNombre(),
-                u.getCorreo(),
-                u.getCargo(),
-                u.getSueldo()
+                rs.getString("codigo_usuario"),
+                rs.getString("nombre"),
+                rs.getString("correo"),
+                rs.getString("cargo"),
+                rs.getDouble("sueldo")
             });
         }
+
+    } catch (Exception ex) {
+        JOptionPane.showMessageDialog(this,
+                "Error al cargar los empleados:\n" + ex.getMessage(),
+                "Error", JOptionPane.ERROR_MESSAGE);
     }
-    
+}
+        
+      
     private void seleccionUsuario() {
-        int fila = tblEmpleados.getSelectedRow();
-        if (fila < 0) {
-            btnGuardarSueldo.setEnabled(false);
-            return;
-        }
+            int fila = tblEmpleados.getSelectedRow();
+    if (fila < 0) {
+        btnGuardarSueldo.setEnabled(false);
+        return;
+    }
 
-        Usuario u = uc.getUsuario().get(fila);
+     DefaultTableModel modelo = (DefaultTableModel) tblEmpleados.getModel();
+     String nombre = modelo.getValueAt(fila, 1).toString();
+     String codigo = modelo.getValueAt(fila, 0).toString();
 
-        lblNombre.setText(u.getNombre());
-        lblCodigo.setText(u.getCodigo_usuario());
-        txtSueldo.setText("");
-        btnGuardarSueldo.setEnabled(true);
+     lblNombre.setText(nombre);
+     lblCodigo.setText(codigo);
+     txtSueldo.setText("");
+     btnGuardarSueldo.setEnabled(true);
+        
+        
     }
     private void guardarSueldo() {
-        int fila = tblEmpleados.getSelectedRow();
-        Usuario u = uc.getUsuario().get(fila);
-        String codigo = u.getCodigo_usuario();
-        double sueldo;
-        
-        try {
-            sueldo = Double.parseDouble(txtSueldo.getText().trim());
-            if (sueldo < 0) {
-                throw new NumberFormatException();
-            }
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "Ingrese un sueldo numérico válido.",
-                    "Dato inválido", JOptionPane.WARNING_MESSAGE);
+            int fila = tblEmpleados.getSelectedRow();
+    if (fila < 0) {
+        return;
+    }
+
+    DefaultTableModel modelo = (DefaultTableModel) tblEmpleados.getModel();
+    String codigo = modelo.getValueAt(fila, 0).toString();
+    double sueldo;
+
+    try {
+        sueldo = Double.parseDouble(txtSueldo.getText().trim());
+        if (sueldo < 0) {
+            throw new NumberFormatException();
+        }
+    } catch (NumberFormatException ex) {
+        JOptionPane.showMessageDialog(this, "Ingrese un sueldo numérico válido.",
+                "Dato inválido", JOptionPane.WARNING_MESSAGE);
+        return;
+    }
+
+    try (Connection con = ConexionBD.conectar()) {
+
+        if (con == null) {
+            JOptionPane.showMessageDialog(this,
+                    "No se pudo conectar a la base de datos.",
+                    "Error de conexión", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        uc.asignarSueldo(codigo, sueldo);
-        JOptionPane.showMessageDialog(this, "Sueldo actualizado correctamente.");;
-        actualizar();
+        PreparedStatement ps = con.prepareStatement(
+            "UPDATE usuario SET sueldo = ? WHERE codigo_usuario = ?"
+        );
+        ps.setDouble(1, sueldo);
+        ps.setString(2, codigo);
+        ps.executeUpdate();
+
+        JOptionPane.showMessageDialog(this, "Sueldo actualizado correctamente.");
+
+    } catch (Exception ex) {
+        JOptionPane.showMessageDialog(this,
+                "Error al actualizar el sueldo:\n" + ex.getMessage(),
+                "Error", JOptionPane.ERROR_MESSAGE);
+        return;
     }
-    
+
+    actualizar();
+}
+        
     private void actualizar(){
         cargarTabla();
         lblNombre.setText("–--");

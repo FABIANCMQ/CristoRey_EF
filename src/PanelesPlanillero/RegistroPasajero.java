@@ -3,7 +3,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
 package PanelesPlanillero;
-
+import Conexion.ConexionBD;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import cristorey_ef.Documento;
 import cristorey_ef.PaqueteTuristico;
 import cristorey_ef.PaqueteTuristicoControlador;
@@ -524,25 +528,58 @@ public class RegistroPasajero extends javax.swing.JPanel {
     }
     
     private void cargarPaquetes() {
-        javax.swing.DefaultComboBoxModel<PaqueteTuristico> modelo = new javax.swing.DefaultComboBoxModel<>();
-        for (PaqueteTuristico paq : ptc.getPaquete()) {
+        
+            javax.swing.DefaultComboBoxModel<PaqueteTuristico> modelo = new javax.swing.DefaultComboBoxModel<>();
+
+    try (Connection con = ConexionBD.conectar()) {
+
+        if (con == null) {
+            JOptionPane.showMessageDialog(this,
+                    "No se pudo conectar a la base de datos.",
+                    "Error de conexión", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        Statement st = con.createStatement();
+        ResultSet rs = st.executeQuery(
+            "SELECT codigo_paquete, nombre_paquete, destino, costo, horario, "
+            + "cupos_maximos, cupos_disponibles FROM PaqueteTuristico"
+        );
+
+        while (rs.next()) {
+            PaqueteTuristico paq = new PaqueteTuristico(
+                rs.getString("nombre_paquete"),
+                rs.getString("codigo_paquete"),
+                rs.getString("destino"),
+                rs.getDouble("costo"),
+                rs.getString("horario"),
+                rs.getInt("cupos_maximos"),
+                rs.getInt("cupos_disponibles")
+            );
             modelo.addElement(paq);
         }
-        cbxPaquete.setModel(modelo);
-        cbxPaquete.setRenderer(new DefaultListCellRenderer() {
-            @Override
-            public Component getListCellRendererComponent(JList<?> list, Object value, int index,
-                    boolean isSelected, boolean cellHasFocus) {
-                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                if (value instanceof PaqueteTuristico) {
-                    PaqueteTuristico paq = (PaqueteTuristico) value;
-                    setText(paq.getNombre_paquete());
-                }
-                return this;
-            }
-        });
+
+    } catch (Exception ex) {
+        JOptionPane.showMessageDialog(this,
+                "Error al cargar los paquetes:\n" + ex.getMessage(),
+                "Error", JOptionPane.ERROR_MESSAGE);
     }
-    
+
+    cbxPaquete.setModel(modelo);
+    cbxPaquete.setRenderer(new DefaultListCellRenderer() {
+        @Override
+        public Component getListCellRendererComponent(JList<?> list, Object value, int index,
+                boolean isSelected, boolean cellHasFocus) {
+            super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            if (value instanceof PaqueteTuristico) {
+                PaqueteTuristico paq = (PaqueteTuristico) value;
+                setText(paq.getNombre_paquete());
+            }
+            return this;
+        }
+    });
+}
+      
     private void actualizarInfoCupos() {
         PaqueteTuristico paquete = (PaqueteTuristico) cbxPaquete.getSelectedItem(); 
         
@@ -631,41 +668,78 @@ public class RegistroPasajero extends javax.swing.JPanel {
 
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
         // TODO add your handling code here:
-        if (!camposPasajeroCompletos()) {
-            return;
-        }
-        String nroDoc = txtNumDoc.getText().trim();
         
-        if (pc.buscarDocumento(nroDoc) != null) {
-            mostrarError("Ya existe un pasajero registrado con el N° de documento " + nroDoc+ "Reinscripción detectada");
-            return;
-        }
-        
-        Documento doc = obtenerDocumento();
-        
-        if (doc == null || !doc.documentoVigente()) {
-            mostrarError("Debe validar primero el documento");
-            return;
-        }
-        
-        Pasajero pasajero = new Pasajero(
-            txtApPaterno.getText().trim(),
-            txtApMaterno.getText().trim(),
-            txtNombre.getText().trim(),
-            txtTelefono.getText().trim(),
-            txtCorreo.getText().trim(),
-            doc
-        );
-        if (!pasajero.numTelefonoValido()) {
-            mostrarError("El número de teléfono debe tener exactamente 9 dígitos");
-            return;
-        }
-        
-        pc.registrarPasajero(pasajero);
+            if (!camposPasajeroCompletos()) {
+        return;
+    }
+    String nroDoc = txtNumDoc.getText().trim();
 
-        JOptionPane.showMessageDialog(this,
-                "Pasajero " + pasajero.unificarDatos() + " registrado correctamente"
-                +"Ahora puede asignarlo a un paquete turístico");
+    if (pc.buscarDocumento(nroDoc) != null) {
+        mostrarError("Ya existe un pasajero registrado con el N° de documento " + nroDoc + "Reinscripción detectada");
+        return;
+    }
+
+    Documento doc = obtenerDocumento();
+
+    if (doc == null || !doc.documentoVigente()) {
+        mostrarError("Debe validar primero el documento");
+        return;
+    }
+
+    Pasajero pasajero = new Pasajero(
+        txtApPaterno.getText().trim(),
+        txtApMaterno.getText().trim(),
+        txtNombre.getText().trim(),
+        txtTelefono.getText().trim(),
+        txtCorreo.getText().trim(),
+        doc
+    );
+    if (!pasajero.numTelefonoValido()) {
+        mostrarError("El número de teléfono debe tener exactamente 9 dígitos");
+        return;
+    }
+
+    pc.registrarPasajero(pasajero);
+
+    try (Connection con = ConexionBD.conectar()) {
+
+        if (con == null) {
+            mostrarError("No se pudo conectar a la base de datos. El pasajero no se guardó.");
+            return;
+        }
+
+        PreparedStatement psDoc = con.prepareStatement(
+            "INSERT INTO documento (nro_doc, tipo_doc, fecha_emision, fecha_vencimiento, tipo_residencia, edad) "
+            + "VALUES (?, ?, ?, ?, ?, ?)"
+        );
+        psDoc.setString(1, doc.getNro_doc());
+        psDoc.setString(2, doc.getTipo_doc());
+        psDoc.setDate(3, java.sql.Date.valueOf(doc.getFecha_emision()));
+        psDoc.setDate(4, java.sql.Date.valueOf(doc.getFecha_vencimiento()));
+        psDoc.setString(5, doc.getTipo_residencia());
+        psDoc.setInt(6, doc.getEdad());
+        psDoc.executeUpdate();
+
+        PreparedStatement psPas = con.prepareStatement(
+            "INSERT INTO pasajero (nro_doc, ap_paterno, ap_materno, nombre, telefono, correo) "
+            + "VALUES (?, ?, ?, ?, ?, ?)"
+        );
+        psPas.setString(1, doc.getNro_doc());
+        psPas.setString(2, pasajero.getAp_paterno());
+        psPas.setString(3, pasajero.getAp_materno());
+        psPas.setString(4, pasajero.getNombre());
+        psPas.setString(5, pasajero.getTelefono());
+        psPas.setString(6, pasajero.getCorreo());
+        psPas.executeUpdate();
+
+    } catch (Exception ex) {
+        mostrarError("El pasajero se registró en el sistema, pero hubo un error al guardarlo en la base de datos:\n" + ex.getMessage());
+        return;
+    }
+
+    JOptionPane.showMessageDialog(this,
+            "Pasajero " + pasajero.unificarDatos() + " registrado correctamente"
+            + "Ahora puede asignarlo a un paquete turístico");     
     }//GEN-LAST:event_btnRegistrarActionPerformed
 
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
@@ -675,46 +749,84 @@ public class RegistroPasajero extends javax.swing.JPanel {
 
     private void btnAsignarPaqueteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAsignarPaqueteActionPerformed
         // TODO add your handling code here:
-        String nroDoc = txtNumDoc.getText().trim();
+            String nroDoc = txtNumDoc.getText().trim();
 
-        if (nroDoc.isEmpty()) {
-            mostrarError("Ingrese el N° de documento del pasajero a asignar");
-            txtNumDoc.requestFocus();
+    if (nroDoc.isEmpty()) {
+        mostrarError("Ingrese el N° de documento del pasajero a asignar");
+        txtNumDoc.requestFocus();
+        return;
+    }
+
+    Pasajero pasajero = pc.buscarDocumento(nroDoc);
+
+    if (pasajero == null) {
+        mostrarError("Primero debe registrar al pasajero");
+        return;
+    }
+
+    PaqueteTuristico paquete = (PaqueteTuristico) cbxPaquete.getSelectedItem();
+
+    if (paquete == null) {
+        mostrarError("Seleccione un paquete turístico");
+        return;
+    }
+
+    if (rc.buscarReservaActiva(nroDoc, paquete.getCodigo_paquete()) != null) {
+        mostrarError("El pasajero ya está registrado en el paquete " + paquete.getNombre_paquete() +
+                "Reinscripción no permitida");
+        return;
+    }
+
+    if (!paquete.tieneCupos()) {
+        mostrarError("No hay cupos disponibles en el paquete " + paquete.getNombre_paquete() + "Sin cupos disponibles");
+        return;
+    }
+
+    boolean asignado = rc.registrarReserva(pasajero, paquete, 0);
+
+    if (asignado) {
+
+        try (Connection con = ConexionBD.conectar()) {
+
+            if (con == null) {
+                mostrarError("No se pudo conectar a la base de datos. La reserva no se guardó.");
+                return;
+            }
+
+            String codigoReserva = "RES-" + System.currentTimeMillis();
+
+            PreparedStatement psReserva = con.prepareStatement(
+                "INSERT INTO Reserva (codigo_reserva, nro_doc, codigo_paquete, precio_final, estado, estado_aprobacion, fecha_reserva) "
+                + "VALUES (?, ?, ?, ?, 'Activa', 'Pendiente', ?)"
+            );
+            psReserva.setString(1, codigoReserva);
+            psReserva.setString(2, nroDoc);
+            psReserva.setString(3, paquete.getCodigo_paquete());
+            psReserva.setDouble(4, paquete.getCosto());
+            psReserva.setDate(5, java.sql.Date.valueOf(LocalDate.now()));
+            psReserva.executeUpdate();
+
+            PreparedStatement psCupo = con.prepareStatement(
+                "UPDATE PaqueteTuristico SET cupos_disponibles = cupos_disponibles - 1 WHERE codigo_paquete = ?"
+            );
+            psCupo.setString(1, paquete.getCodigo_paquete());
+            psCupo.executeUpdate();
+
+        } catch (Exception ex) {
+            mostrarError("La solicitud se registró en el sistema, pero hubo un error al guardarla en la base de datos:\n" + ex.getMessage());
             return;
         }
 
-        Pasajero pasajero = pc.buscarDocumento(nroDoc);
-        
-        if (pasajero == null) {
-            mostrarError("Primero debe registrar al pasajero");
-            return;
-        }
+        JOptionPane.showMessageDialog(this,
+                "Solicitud registrada para " + pasajero.unificarDatos() + " en el paquete "
+                + paquete.getNombre_paquete() + ". Queda pendiente de aprobación por el asesor de ventas.");
 
-        PaqueteTuristico paquete = (PaqueteTuristico) cbxPaquete.getSelectedItem();
-        
-        if (rc.buscarReservaActiva(nroDoc, paquete.getCodigo_paquete()) != null) {
-            mostrarError( "El pasajero ya está registrado en el paquete " + paquete.getNombre_paquete() +
-                    "Reinscripción no permitida");
-            return;
-        }
-
-        if (!paquete.tieneCupos()) {
-            mostrarError("No hay cupos disponibles en el paquete " + paquete.getNombre_paquete() +"Sin cupos disponibles");
-            return;
-        }
-
-        boolean asignado = rc.registrarReserva(pasajero, paquete, 0);
-
-        if (asignado) {
-            JOptionPane.showMessageDialog(this,
-                    "Solicitud registrada para " + pasajero.unificarDatos() + " en el paquete "
-                    + paquete.getNombre_paquete() + ". Queda pendiente de aprobación por el asesor de ventas.");
-            actualizarInfoCupos();
-            cbxPaquete.repaint();
-        } else {
-            mostrarError("No se pudo asignar el paquete. Verifique que el documento del pasajero esté vigente.");
-        }
-        
+        cargarPaquetes();
+        actualizarInfoCupos();
+        cbxPaquete.repaint();
+    } else {
+        mostrarError("No se pudo asignar el paquete. Verifique que el documento del pasajero esté vigente.");
+    }
     }//GEN-LAST:event_btnAsignarPaqueteActionPerformed
 
     private void cbxPaqueteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxPaqueteActionPerformed

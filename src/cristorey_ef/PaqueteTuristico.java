@@ -20,7 +20,7 @@ public class PaqueteTuristico {
     private int cupos_maximos;
 
     private ArrayList<Pasajero> listaPasajeros;
-    private final ArrayList<Promocion> promociones = new ArrayList<>();
+    private ArrayList<Promocion> promociones = new ArrayList<>();
 
     public PaqueteTuristico(String nombre_paquete, String codigo_paquete, String destino, double costo, String horario, int cupos_disponibles, int cupos_maximos) {
         this.nombre_paquete = nombre_paquete;
